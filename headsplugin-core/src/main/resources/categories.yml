@@ -1,0 +1,68 @@
+## YAML Template.
+---
+
+predefinedcategories:
+    food: 1
+    alphabet: 2
+    interior: 3
+    blocks: 4
+    characters: 5
+    mobs: 6
+    misc: 7
+    devices: 8
+    color: 9
+    games: 10
+    pokemon: 11
+    mh-alphabet:
+        id: 12
+        loader: minecraftheads
+        categoryname: alphabet
+    mh-decoration:
+        id: 13
+        loader: minecraftheads
+        categoryname: decoration
+    mh-blocks:
+        id: 14
+        loader: minecraftheads
+        categoryname: blocks
+    mh-humans:
+        id: 15
+        loader: minecraftheads
+        categoryname: humans
+    mh-humanoid:
+        id: 16
+        loader: minecraftheads
+        categoryname: humanoid
+    mh-animals:
+        id: 17
+        loader: minecraftheads
+        categoryname: animals
+    mh-monsters:
+        id: 18
+        loader: minecraftheads
+        categoryname: monsters
+    mh-miscellaneous:
+        id: 19
+        loader: minecraftheads
+        categoryname: miscellaneous
+    mh-plants:
+        id: 20
+        loader: minecraftheads
+        categoryname: plants
+    mh-food-drinks:
+        id: 21
+        loader: minecraftheads
+        categoryname: food-drinks
+
+customcategories:
+    sweeper:
+        id: 22
+        loader: mineskin
+        urls: 
+        - Minesweeper
+        - TNT
+    rwby:
+        id: 23
+        loader: freshcoal
+        urls:
+        - rwby
