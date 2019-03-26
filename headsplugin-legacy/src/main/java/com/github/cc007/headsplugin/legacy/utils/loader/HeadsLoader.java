@@ -23,8 +23,8 @@
  */
 package com.github.cc007.headsplugin.legacy.utils.loader;
 
-import com.github.cc007.headsplugin.legacy.exceptions.AuthenticationException;
 import com.github.cc007.headsplugin.legacy.HeadsPlugin;
+import com.github.cc007.headsplugin.legacy.exceptions.AuthenticationException;
 import com.github.cc007.headsplugin.legacy.utils.heads.Head;
 import com.github.cc007.headsplugin.legacy.utils.heads.HeadsCategories;
 import com.github.cc007.headsplugin.legacy.utils.heads.HeadsCategory;

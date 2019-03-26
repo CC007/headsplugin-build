@@ -27,7 +27,6 @@ import com.github.cc007.headsplugin.legacy.HeadsPlugin;
 import com.github.cc007.headsplugin.legacy.utils.URLReader;
 import com.github.cc007.headsplugin.legacy.utils.heads.Head;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
@@ -37,12 +36,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
-import java.util.logging.Level;
-import org.apache.commons.codec.binary.Base64;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
