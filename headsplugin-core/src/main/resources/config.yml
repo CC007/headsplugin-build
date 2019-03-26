@@ -1,0 +1,29 @@
+# used for new version detection
+version: ${project.version}
+
+# config for the freshcoal api
+freshcoal:
+    # server to look for the category heads
+    predefinedcategoriesurl: https://freshcoal.com/mainapi.php?query=
+
+    # server to look for the custom heads
+    customcategoriesurl: https://freshcoal.com/api.php?query=
+
+# config for the mineskin api
+mineskin:
+    # server to look for the custom heads using the mineskin api
+    customcategoriesurl: http://api.mineskin.org/get/
+    
+    # server to save new custom heads to using the mineskin api
+    generateurl: http://api.mineskin.org/generate/user/
+
+# config for the minecraft-heads api
+minecraftheads:
+    # server to look for the category heads using the minecraft-heads website
+    predefinedcategoriesurl: https://minecraft-heads.com/scripts/api.php?tags=true&cat=
+    
+    ## server to look for the custom heads using the minecraft-heads website (not available yet
+    # customcategoriesurl: 
+
+# maximum response time from the server to respond
+connectiontimeout: 10000
