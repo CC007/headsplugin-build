@@ -38,55 +38,61 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- *
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class FreshCoalLoader implements DatabaseLoader {
+public class FreshCoalLoader implements DatabaseLoader
+{
 
-    @Override
-    public List<Head> getHeads(String urlString, String searchTerm) throws MalformedURLException, SocketTimeoutException, IOException {
-        JsonArray json;
-        String all = URLReader.readUrl(urlString + searchTerm, "application/x-www-form-urlencoded", "POST");
-        if (all == null) {
-            throw new UnknownHostException("The website returns an unknown format. The url has probably been incorrectly set. Url string: " + urlString + searchTerm);
-        }
-        try {
-            String body = all.substring(all.indexOf("<body>") + 6, all.indexOf("</body>"));
-            body = body.trim();
-            JsonParser jsonParser = new JsonParser();
-            json = jsonParser.parse(body).getAsJsonArray();
-        } catch (StringIndexOutOfBoundsException | JsonSyntaxException ex) {
-            throw new UnknownHostException("The website returns an unknown format. The url has probably been incorrectly set. Url string: " + urlString + searchTerm);
-        }
-        // now turn the JsonArray into a list of heads
-        List<Head> heads = new ArrayList<>();
-        for (int i = 0; i < json.size(); i++) {
-            String name = json.get(i).getAsJsonObject().getAsJsonPrimitive("name").getAsString();
-            UUID skullOwner = UUID.fromString(json.get(i).getAsJsonObject().getAsJsonPrimitive("skullowner").getAsString());
-            String value = json.get(i).getAsJsonObject().getAsJsonPrimitive("value").getAsString();
-            heads.add(new Head(name, value, skullOwner));
-        }
-        return heads;
-    }
+	@Override
+	public List<Head> getHeads(String urlString, String searchTerm) throws MalformedURLException, SocketTimeoutException, IOException
+	{
+		JsonArray json;
+		String all = URLReader.readUrl(urlString + searchTerm, "application/x-www-form-urlencoded", "POST");
+		if (all == null) {
+			throw new UnknownHostException("The website returns an unknown format. The url has probably been incorrectly set. Url string: " + urlString + searchTerm);
+		}
+		try {
+			String body = all.substring(all.indexOf("<body>") + 6, all.indexOf("</body>"));
+			body = body.trim();
+			JsonParser jsonParser = new JsonParser();
+			json = jsonParser.parse(body).getAsJsonArray();
+		}
+		catch (StringIndexOutOfBoundsException | JsonSyntaxException ex) {
+			throw new UnknownHostException("The website returns an unknown format. The url has probably been incorrectly set. Url string: " + urlString + searchTerm);
+		}
+		// now turn the JsonArray into a list of heads
+		List<Head> heads = new ArrayList<>();
+		for (int i = 0; i < json.size(); i++) {
+			String name = json.get(i).getAsJsonObject().getAsJsonPrimitive("name").getAsString();
+			UUID skullOwner = UUID.fromString(json.get(i).getAsJsonObject().getAsJsonPrimitive("skullowner").getAsString());
+			String value = json.get(i).getAsJsonObject().getAsJsonPrimitive("value").getAsString();
+			heads.add(new Head(name, value, skullOwner));
+		}
+		return heads;
+	}
 
-    @Override
-    public Head addHead(String urlString, UUID playerUuid, String name) {
-        return null;
-    }
+	@Override
+	public Head addHead(String urlString, UUID playerUuid, String name)
+	{
+		return null;
+	}
 
-    @Override
-    public String getCategoriesUrl() {
-        return HeadsPlugin.getHeadsPlugin().getConfig().getString("freshcoal.predefinedcategoriesurl");
-    }
+	@Override
+	public String getCategoriesUrl()
+	{
+		return HeadsPlugin.getHeadsPlugin().getConfig().getString("freshcoal.predefinedcategoriesurl");
+	}
 
-    @Override
-    public String getSearchUrl() {
-        return HeadsPlugin.getHeadsPlugin().getConfig().getString("freshcoal.customcategoriesurl");
-    }
+	@Override
+	public String getSearchUrl()
+	{
+		return HeadsPlugin.getHeadsPlugin().getConfig().getString("freshcoal.customcategoriesurl");
+	}
 
-    @Override
-    public String getGenerateUrl() {
-        return null;
-    }
+	@Override
+	public String getGenerateUrl()
+	{
+		return null;
+	}
 
 }

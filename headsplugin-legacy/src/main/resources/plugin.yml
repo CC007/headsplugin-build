@@ -5,11 +5,11 @@ main: com.github.cc007.headsplugin.legacy.HeadsPlugin
 author: Rik Schaaf aka CC007 (http://coolcat007.nl/)
 softdepend: [Multiverse-Core]
 description: >
-             The base heads API for other plugins to use
+  The base heads API for other plugins to use
 commands:
-    headspluginapi:
-        description: "Commands for the HeadsPluginAPI"
-        aliases: [headsplugin, hdspluginapi, hdsplugin]
+  headspluginapi:
+    description: "Commands for the HeadsPluginAPI"
+    aliases: [headsplugin, hdspluginapi, hdsplugin]
 permissions:
-    headspluginapi.update:
-        description: Allows the user register the heads plugin
+  headspluginapi.update:
+    description: Allows the user register the heads plugin

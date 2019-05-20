@@ -31,19 +31,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 /**
- *
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class HeadsCommandListener implements Listener{
-    @EventHandler(priority = EventPriority.LOW)
-    public void onCommandPreProcess(PlayerCommandPreprocessEvent event) {
-        CommandSender sender = event.getPlayer();
-        String[] cmd = event.getMessage().split(" ");
-        if(cmd[0].equals("/heads")) {
-            if(HeadsPlugin.getHeadsPlugin().getPlugin("HeadsInventory") == null) {
-                sender.sendMessage(HeadsPlugin.pluginChatPrefix(true) + "This command is only available if you have installed both HeadsPlugin and HeadsInventory.");
-                event.setCancelled(true);
-            }
-        }
-    }
+public class HeadsCommandListener implements Listener
+{
+	@EventHandler(priority = EventPriority.LOW)
+	public void onCommandPreProcess(PlayerCommandPreprocessEvent event)
+	{
+		CommandSender sender = event.getPlayer();
+		String[] cmd = event.getMessage().split(" ");
+		if (cmd[0].equals("/heads")) {
+			if (HeadsPlugin.getHeadsPlugin().getPlugin("HeadsInventory") == null) {
+				sender.sendMessage(HeadsPlugin.pluginChatPrefix(true) + "This command is only available if you have installed both HeadsPlugin and HeadsInventory.");
+				event.setCancelled(true);
+			}
+		}
+	}
 }
