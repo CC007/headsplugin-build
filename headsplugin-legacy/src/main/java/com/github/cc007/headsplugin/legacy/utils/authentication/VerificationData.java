@@ -29,26 +29,28 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 
 /**
- *
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class VerificationData {
+public class VerificationData
+{
 
-    private final boolean verification;
+	private final boolean verification;
 
-    public VerificationData(String dataString) {
-        if("".equals(dataString)){
-            verification = false;
-            Bukkit.getLogger().log(Level.WARNING, "No data was received from the server. Assume that the verification failed.");
-            return;
-        }
-        JsonParser parser = new JsonParser();
-        JsonObject serverData = (JsonObject) parser.parse(dataString);
-        verification = serverData.get("verification").getAsBoolean();
-    }
+	public VerificationData(String dataString)
+	{
+		if ("".equals(dataString)) {
+			verification = false;
+			Bukkit.getLogger().log(Level.WARNING, "No data was received from the server. Assume that the verification failed.");
+			return;
+		}
+		JsonParser parser = new JsonParser();
+		JsonObject serverData = (JsonObject) parser.parse(dataString);
+		verification = serverData.get("verification").getAsBoolean();
+	}
 
-    public boolean isVerified() {
-        return verification;
-    }
+	public boolean isVerified()
+	{
+		return verification;
+	}
 
 }

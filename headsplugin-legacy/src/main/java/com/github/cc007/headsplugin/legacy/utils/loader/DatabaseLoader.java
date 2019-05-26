@@ -31,17 +31,19 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- *
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public interface DatabaseLoader {
+public interface DatabaseLoader
+{
 
-    public abstract List<Head> getHeads(String urlString, String searchTerm) throws MalformedURLException, SocketTimeoutException, IOException;
-    
-    public abstract Head addHead(String urlString, UUID playerUuid, String headName) throws MalformedURLException, SocketTimeoutException, IOException;
-    
-    public abstract String getCategoriesUrl() throws UnsupportedOperationException;
-    public abstract String getSearchUrl() throws UnsupportedOperationException;
-    public abstract String getGenerateUrl() throws UnsupportedOperationException;
+	public abstract List<Head> getHeads(String urlString, String searchTerm) throws MalformedURLException, SocketTimeoutException, IOException;
+
+	public abstract Head addHead(String urlString, UUID playerUuid, String headName) throws MalformedURLException, SocketTimeoutException, IOException;
+
+	public abstract String getCategoriesUrl() throws UnsupportedOperationException;
+
+	public abstract String getSearchUrl() throws UnsupportedOperationException;
+
+	public abstract String getGenerateUrl() throws UnsupportedOperationException;
 
 }

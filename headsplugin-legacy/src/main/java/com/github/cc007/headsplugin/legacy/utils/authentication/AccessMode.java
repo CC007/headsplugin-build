@@ -24,12 +24,12 @@
 package com.github.cc007.headsplugin.legacy.utils.authentication;
 
 /**
- *
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public enum AccessMode {
-    FULL,
-    LITE,
-    EXPIRED,
-    NONE
+public enum AccessMode
+{
+	FULL,
+	LITE,
+	EXPIRED,
+	NONE
 }

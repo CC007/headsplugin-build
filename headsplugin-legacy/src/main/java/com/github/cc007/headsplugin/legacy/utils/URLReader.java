@@ -36,50 +36,55 @@ import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 
 /**
- *
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class URLReader {
-    
-    public static String readUrl(String urlString, String contentType, String requestMethod) throws MalformedURLException, SocketTimeoutException, IOException {
-        HttpURLConnection request = null;
-        try {
-            URL url = new URL(urlString);
-            request = (HttpURLConnection) url.openConnection();
+public class URLReader
+{
 
-            try {
-                request.setRequestMethod(requestMethod);
-            } catch (ProtocolException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, null, ex);
-            }
+	public static String readUrl(String urlString, String contentType, String requestMethod) throws MalformedURLException, SocketTimeoutException, IOException
+	{
+		HttpURLConnection request = null;
+		try {
+			URL url = new URL(urlString);
+			request = (HttpURLConnection) url.openConnection();
 
-            request.setDoOutput(true);
-            request.setDoInput(true);
-            request.setInstanceFollowRedirects(false);
-            request.setRequestProperty("Content-Type", contentType);
-            request.setRequestProperty("charset", "utf-8");
-            request.setUseCaches(false);
-            request.setConnectTimeout(HeadsPlugin.getHeadsPlugin().getConfig().getInt("connectiontimeout"));
+			try {
+				request.setRequestMethod(requestMethod);
+			}
+			catch (ProtocolException ex) {
+				Bukkit.getLogger().log(Level.SEVERE, null, ex);
+			}
 
-            int responseCode = request.getResponseCode();
+			request.setDoOutput(true);
+			request.setDoInput(true);
+			request.setInstanceFollowRedirects(false);
+			request.setRequestProperty("Content-Type", contentType);
+			request.setRequestProperty("charset", "utf-8");
+			request.setUseCaches(false);
+			request.setConnectTimeout(HeadsPlugin.getHeadsPlugin().getConfig().getInt("connectiontimeout"));
 
-            if (responseCode == 200) {
-                String encoding = request.getContentEncoding();
-                encoding = encoding == null ? "UTF-8" : encoding;
-                try {
-                    return IOUtils.toString(request.getInputStream(), encoding);
-                } catch (IOException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, null, ex);
-                }
-            } else {
-                throw new UnknownHostException("The website didn't return the heads. The url has probably been incorrectly set.\n Url: " + urlString + "\n response code: " + responseCode);
-            }
-        } finally {
+			int responseCode = request.getResponseCode();
 
-            if (request != null) {
-                request.disconnect();
-            }
-        }
-        return null;
-    }
+			if (responseCode == 200) {
+				String encoding = request.getContentEncoding();
+				encoding = encoding == null ? "UTF-8" : encoding;
+				try {
+					return IOUtils.toString(request.getInputStream(), encoding);
+				}
+				catch (IOException ex) {
+					Bukkit.getLogger().log(Level.SEVERE, null, ex);
+				}
+			}
+			else {
+				throw new UnknownHostException("The website didn't return the heads. The url has probably been incorrectly set.\n Url: " + urlString + "\n response code: " + responseCode);
+			}
+		}
+		finally {
+
+			if (request != null) {
+				request.disconnect();
+			}
+		}
+		return null;
+	}
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2015 Rik Schaaf aka CC007 <http://coolcat007.nl/>.
@@ -64,318 +64,354 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- *
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class HeadsPlugin extends JavaPlugin {
+public class HeadsPlugin extends JavaPlugin
+{
 
-    private Logger log;
-    private HeadsUtils headsUtils;
-    private FileConfiguration categoriesConfig = null;
-    private File categoriesConfigFile = null;
-    private FileConfiguration config = null;
-    private File configFile = null;
-    private AccessMode accessMode;
+	private Logger log;
+	private HeadsUtils headsUtils;
+	private FileConfiguration categoriesConfig = null;
+	private File categoriesConfigFile = null;
+	private FileConfiguration config = null;
+	private File configFile = null;
+	private AccessMode accessMode;
 
-    @Override
-    public void onEnable() {
-        /* Setup the logger */
-        log = getLogger();
-        
-        /* Config stuffs */
-        getCategoriesConfig().options().copyDefaults(true);
-        getConfig().options().copyDefaults(true);
-        saveDefaultConfig();
+	public static HeadsPlugin getHeadsPlugin()
+	{
+		Plugin headsPlugin = Bukkit.getServer().getPluginManager().getPlugin("HeadsPluginAPI");
+		if (headsPlugin != null && headsPlugin.isEnabled() && headsPlugin instanceof HeadsPlugin) {
+			return (HeadsPlugin) headsPlugin;
+		}
+		else {
+			Bukkit.getLogger().log(Level.WARNING, "The heads plugin has not been enabled yet");
+			return null;
+		}
+	}
 
-        /* 1.9.0 specific code to clean up cache files (they were moved to the cache folder) */
-        File dir = getDataFolder(); 
-        FileFilter fileFilter = new WildcardFileFilter("*.json");
-        File[] fileList = dir.listFiles(fileFilter); 
-        if(fileList.length > 0) {
-            log.warning("cache files were found outside of the cache folder. In version HeadsPluginAPI 1.9.0 and later you can find the heads cache in the folder <serverLocation>/plugins/HeadsPluginAPI/cache");
-        }
-        for (File file : fileList) {
-            file.delete();
-        }
+	/**
+	 * get the minecraft chat prefix for this plugin
+	 *
+	 * @param colored whether or not the prefix should be colored
+	 * @return the minecraft chat prefix for this plugin
+	 */
+	public static String pluginChatPrefix(boolean colored)
+	{
+		if (colored) {
+			return ChatColor.DARK_AQUA + "[" + ChatColor.GOLD + "Heads" + ChatColor.GREEN + "Plugin" + ChatColor.AQUA + "API" + ChatColor.DARK_AQUA + "]" + ChatColor.WHITE + " ";
+		}
+		else {
+			return "[HeadsPluginAPI] ";
+		}
+	}
 
-        try {
-            addRootCA();
-        } catch (CertificateException ex){
-            log.warning("Something went wrong with adding a certificate for freshcoal. This can happen when using the /reload command. In that case the exception can be ignored: " + ex.getMessage());
-        } catch (IOException | KeyManagementException | KeyStoreException | NoSuchAlgorithmException ex) {
-            log.log(Level.SEVERE, null, ex);
-        }
+	public static DatabaseLoader getDefaultDatabaseLoader()
+	{
+		return new FreshCoalLoader();//TODO configurable;
+	}
 
-        //authenticate();
+	@Override
+	public void onEnable()
+	{
+		/* Setup the logger */
+		log = getLogger();
 
-        /* Register the headsplugin command */
-        getCommand("headsplugin").setExecutor(new HeadsPluginCommand(this));
+		/* Config stuffs */
+		getCategoriesConfig().options().copyDefaults(true);
+		getConfig().options().copyDefaults(true);
+		saveDefaultConfig();
 
-        /* Register the /heads command listener */
-        getServer().getPluginManager().registerEvents(new HeadsCommandListener(), this);
+		/* 1.9.0 specific code to clean up cache files (they were moved to the cache folder) */
+		File dir = getDataFolder();
+		FileFilter fileFilter = new WildcardFileFilter("*.json");
+		File[] fileList = dir.listFiles(fileFilter);
+		if (fileList.length > 0) {
+			log.warning("cache files were found outside of the cache folder. In version HeadsPluginAPI 1.9.0 and later you can find the heads cache in the folder <serverLocation>/plugins/HeadsPluginAPI/cache");
+		}
+		for (File file : fileList) {
+			file.delete();
+		}
 
-        /* Setup the utils */
-        headsUtils = HeadsUtils.getInstance(log);
+		try {
+			addRootCA();
+		}
+		catch (CertificateException ex) {
+			log.warning("Something went wrong with adding a certificate for freshcoal. This can happen when using the /reload command. In that case the exception can be ignored: " + ex.getMessage());
+		}
+		catch (IOException | KeyManagementException | KeyStoreException | NoSuchAlgorithmException ex) {
+			log.log(Level.SEVERE, null, ex);
+		}
 
-        /* Load the categories */
-        Thread t = new Thread() {
+		//authenticate();
 
-            @Override
-            public void run() {
-                try {
-                    headsUtils.loadCategories();
-                } catch (SocketTimeoutException ex) {
-                    try {
-                        headsUtils.loadCategories();
-                    } catch (SocketTimeoutException ex2) {
-                        log.severe("The server did not respond. Please check if the heads website is online.");
-                        log.log(Level.SEVERE, null, ex2);
-                    } catch (MalformedURLException ex2) {
-                        log.severe("The url is malformed. Please check the config file");
-                        log.log(Level.SEVERE, null, ex2);
-                    } catch (IOException ex2) {
-                        log.severe("An unknown exception has occurred. Please check if the heads website is online.");
-                        log.log(Level.SEVERE, null, ex2);
-                    }
-                } catch (MalformedURLException ex) {
-                    log.severe("The url is malformed. Please check the config file");
-                    log.log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    log.severe("An unknown exception has occurred. Please check if the heads website is online.");
-                    log.log(Level.SEVERE, null, ex);
-                }
-            }
+		/* Register the headsplugin command */
+		getCommand("headsplugin").setExecutor(new HeadsPluginCommand(this));
 
-        };
+		/* Register the /heads command listener */
+		getServer().getPluginManager().registerEvents(new HeadsCommandListener(), this);
 
-        t.start();
-    }
+		/* Setup the utils */
+		headsUtils = HeadsUtils.getInstance(log);
 
-    @Override
-    public void onDisable() {
-        if (headsUtils != null) {
-            for (HeadsCategory category : headsUtils.getCategories().getList()) {
-                category.clear();
-            }
-            headsUtils.getCategories().clear();
-            headsUtils = null;
-        }
-    }
+		/* Load the categories */
+		Thread t = new Thread()
+		{
 
-    /**
-     * Gets a plugin
-     *
-     * @param pluginName Name of the plugin to get
-     * @return The plugin from name
-     */
-    public Plugin getPlugin(String pluginName) {
-        if (getServer().getPluginManager().getPlugin(pluginName) != null && getServer().getPluginManager().getPlugin(pluginName).isEnabled()) {
-            return getServer().getPluginManager().getPlugin(pluginName);
-        } else {
-            getLogger().log(Level.WARNING, "Could not find plugin \"{0}\"!", pluginName);
-            return null;
-        }
-    }
+			@Override
+			public void run()
+			{
+				try {
+					headsUtils.loadCategories();
+				}
+				catch (SocketTimeoutException ex) {
+					try {
+						headsUtils.loadCategories();
+					}
+					catch (SocketTimeoutException ex2) {
+						log.severe("The server did not respond. Please check if the heads website is online.");
+						log.log(Level.SEVERE, null, ex2);
+					}
+					catch (MalformedURLException ex2) {
+						log.severe("The url is malformed. Please check the config file");
+						log.log(Level.SEVERE, null, ex2);
+					}
+					catch (IOException ex2) {
+						log.severe("An unknown exception has occurred. Please check if the heads website is online.");
+						log.log(Level.SEVERE, null, ex2);
+					}
+				}
+				catch (MalformedURLException ex) {
+					log.severe("The url is malformed. Please check the config file");
+					log.log(Level.SEVERE, null, ex);
+				}
+				catch (IOException ex) {
+					log.severe("An unknown exception has occurred. Please check if the heads website is online.");
+					log.log(Level.SEVERE, null, ex);
+				}
+			}
 
-    public void authenticate() {
-        /* Check if the config is correctly configured */
-        if (getConfig().getString("authenticationkey").equals("0")) {
-            log.severe("The HeadsPlugin config file has not been correctly configured yet. Make sure that the authentication key and world are set.");
-        }
+		};
 
-        /* Set the access mode of the plugin */
-        this.accessMode = KeyAuthenticator.getAccessMode(getConfig().getString("authenticationkey"));
-    }
+		t.start();
+	}
 
-    public static HeadsPlugin getHeadsPlugin() {
-        Plugin headsPlugin = Bukkit.getServer().getPluginManager().getPlugin("HeadsPluginAPI");
-        if (headsPlugin != null && headsPlugin.isEnabled() && headsPlugin instanceof HeadsPlugin) {
-            return (HeadsPlugin) headsPlugin;
-        } else {
-            Bukkit.getLogger().log(Level.WARNING, "The heads plugin has not been enabled yet");
-            return null;
-        }
-    }
+	@Override
+	public void onDisable()
+	{
+		if (headsUtils != null) {
+			for (HeadsCategory category : headsUtils.getCategories().getList()) {
+				category.clear();
+			}
+			headsUtils.getCategories().clear();
+			headsUtils = null;
+		}
+	}
 
-    /**
-     * Method to reload the config.yml config file
-     */
-    @Override
-    public void reloadConfig() {
-        if (configFile == null) {
-            configFile = new File(getDataFolder(), "config.yml");
-        }
-        config = YamlConfiguration.loadConfiguration(configFile);
+	/**
+	 * Gets a plugin
+	 *
+	 * @param pluginName Name of the plugin to get
+	 * @return The plugin from name
+	 */
+	public Plugin getPlugin(String pluginName)
+	{
+		if (getServer().getPluginManager().getPlugin(pluginName) != null && getServer().getPluginManager().getPlugin(pluginName).isEnabled()) {
+			return getServer().getPluginManager().getPlugin(pluginName);
+		}
+		else {
+			getLogger().log(Level.WARNING, "Could not find plugin \"{0}\"!", pluginName);
+			return null;
+		}
+	}
 
-        // Look for defaults in the jar
-        Reader defConfigStream = null;
-        try {
-            defConfigStream = new InputStreamReader(this.getResource("config.yml"), "UTF8");
-        } catch (UnsupportedEncodingException ex) {
-            getLogger().log(Level.SEVERE, null, ex);
-        }
-        if (defConfigStream != null) {
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            config.setDefaults(defConfig);
-        }
-    }
+	public void authenticate()
+	{
+		/* Check if the config is correctly configured */
+		if (getConfig().getString("authenticationkey").equals("0")) {
+			log.severe("The HeadsPlugin config file has not been correctly configured yet. Make sure that the authentication key and world are set.");
+		}
 
-    /**
-     * Method to get YML content of the config.yml config file
-     *
-     * @return YML content of the catagories.yml config file
-     */
-    @Override
-    public FileConfiguration getConfig() {
-        if (config == null) {
-            reloadConfig();
-        }
-        return config;
-    }
+		/* Set the access mode of the plugin */
+		this.accessMode = KeyAuthenticator.getAccessMode(getConfig().getString("authenticationkey"));
+	}
 
-    /**
-     * Method to save the config.yml config file
-     */
-    @Override
-    public void saveConfig() {
-        if (config == null || configFile == null) {
-            return;
-        }
-        try {
-            getConfig().save(configFile);
-        } catch (IOException ex) {
-            getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
-        }
-    }
+	/**
+	 * Method to reload the config.yml config file
+	 */
+	@Override
+	public void reloadConfig()
+	{
+		if (configFile == null) {
+			configFile = new File(getDataFolder(), "config.yml");
+		}
+		config = YamlConfiguration.loadConfiguration(configFile);
 
-    /**
-     * Method to reload the categories.yml config file
-     */
-    public void reloadCategoriesConfig() {
-        if (categoriesConfigFile == null) {
-            categoriesConfigFile = new File(getDataFolder(), "categories.yml");
-        }
-        categoriesConfig = YamlConfiguration.loadConfiguration(categoriesConfigFile);
+		// Look for defaults in the jar
+		Reader defConfigStream = null;
+		try {
+			defConfigStream = new InputStreamReader(this.getResource("config.yml"), "UTF8");
+		}
+		catch (UnsupportedEncodingException ex) {
+			getLogger().log(Level.SEVERE, null, ex);
+		}
+		if (defConfigStream != null) {
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+			config.setDefaults(defConfig);
+		}
+	}
 
-        // Look for defaults in the jar
-        Reader defConfigStream = null;
-        try {
-            defConfigStream = new InputStreamReader(this.getResource("categories.yml"), "UTF8");
-        } catch (UnsupportedEncodingException ex) {
-            getLogger().log(Level.SEVERE, null, ex);
-        }
-        if (defConfigStream != null) {
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            categoriesConfig.setDefaults(defConfig);
-        }
-    }
+	/**
+	 * Method to get YML content of the config.yml config file
+	 *
+	 * @return YML content of the catagories.yml config file
+	 */
+	@Override
+	public FileConfiguration getConfig()
+	{
+		if (config == null) {
+			reloadConfig();
+		}
+		return config;
+	}
 
-    /**
-     * Method to get YML content of the categories.yml config file
-     *
-     * @return YML content of the categories.yml config file
-     */
-    public FileConfiguration getCategoriesConfig() {
-        if (categoriesConfig == null) {
-            reloadCategoriesConfig();
-        }
-        return categoriesConfig;
-    }
+	/**
+	 * Method to save the config.yml config file
+	 */
+	@Override
+	public void saveConfig()
+	{
+		if (config == null || configFile == null) {
+			return;
+		}
+		try {
+			getConfig().save(configFile);
+		}
+		catch (IOException ex) {
+			getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
+		}
+	}
 
-    /**
-     * Method to save the catagories.yml config file
-     */
-    public void saveCategoriesConfig() {
-        if (categoriesConfig == null || categoriesConfigFile == null) {
-            return;
-        }
-        try {
-            getCategoriesConfig().save(categoriesConfigFile);
-        } catch (IOException ex) {
-            getLogger().log(Level.SEVERE, "Could not save config to " + categoriesConfigFile, ex);
-        }
-    }
+	/**
+	 * Method to reload the categories.yml config file
+	 */
+	public void reloadCategoriesConfig()
+	{
+		if (categoriesConfigFile == null) {
+			categoriesConfigFile = new File(getDataFolder(), "categories.yml");
+		}
+		categoriesConfig = YamlConfiguration.loadConfiguration(categoriesConfigFile);
 
-    /**
-     * Method to save the default config file
-     */
-    @Override
-    public void saveDefaultConfig() {
-        String version = getConfig().getString("version", null);
-        if (categoriesConfigFile == null) {
-            categoriesConfigFile = new File(getDataFolder(), "categories.yml");
-        }
-        if (!categoriesConfigFile.exists()) {
-            saveResource("categories.yml", false);
-            reloadCategoriesConfig();
-        } else if (!getDescription().getVersion().equals(version)) {
-            getLogger().log(
-                    Level.WARNING, "New version detected: {0}->{1}. Saving new default categories.", 
-                    new Object[]{(version == null ? "(?)" : version), getDescription().getVersion()}
-            );
-            saveResource("categories.yml", true);
-            reloadCategoriesConfig();
-        }
-        if (configFile == null) {
-            configFile = new File(getDataFolder(), "config.yml");
-        }
-        if (!configFile.exists()) {
-            saveResource("config.yml", false);
-            reloadConfig();
-        } else if (!getDescription().getVersion().equals(version)) {
-            getLogger().log(
-                    Level.WARNING, "New version detected: {0}->{1}. Saving new default config.", 
-                    new Object[]{(version == null ? "(?)" : version), getDescription().getVersion()}
-            );
-            saveResource("config.yml", true);
-            reloadConfig();
-        }
-    }
+		// Look for defaults in the jar
+		Reader defConfigStream = null;
+		try {
+			defConfigStream = new InputStreamReader(this.getResource("categories.yml"), "UTF8");
+		}
+		catch (UnsupportedEncodingException ex) {
+			getLogger().log(Level.SEVERE, null, ex);
+		}
+		if (defConfigStream != null) {
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+			categoriesConfig.setDefaults(defConfig);
+		}
+	}
 
-    /**
-     * get the minecraft chat prefix for this plugin
-     *
-     * @param colored whether or not the prefix should be colored
-     * @return the minecraft chat prefix for this plugin
-     */
-    public static String pluginChatPrefix(boolean colored) {
-        if (colored) {
-            return ChatColor.DARK_AQUA + "[" + ChatColor.GOLD + "Heads" + ChatColor.GREEN + "Plugin" + ChatColor.AQUA + "API" + ChatColor.DARK_AQUA + "]" + ChatColor.WHITE + " ";
-        } else {
-            return "[HeadsPluginAPI] ";
-        }
-    }
+	/**
+	 * Method to get YML content of the categories.yml config file
+	 *
+	 * @return YML content of the categories.yml config file
+	 */
+	public FileConfiguration getCategoriesConfig()
+	{
+		if (categoriesConfig == null) {
+			reloadCategoriesConfig();
+		}
+		return categoriesConfig;
+	}
 
-    /**
-     * Get the HeadUtils instance
-     *
-     * @return the HeadUtils instance
-     */
-    public HeadsUtils getHeadsUtils() {
-        return headsUtils;
-    }
+	/**
+	 * Method to save the catagories.yml config file
+	 */
+	public void saveCategoriesConfig()
+	{
+		if (categoriesConfig == null || categoriesConfigFile == null) {
+			return;
+		}
+		try {
+			getCategoriesConfig().save(categoriesConfigFile);
+		}
+		catch (IOException ex) {
+			getLogger().log(Level.SEVERE, "Could not save config to " + categoriesConfigFile, ex);
+		}
+	}
 
-    public AccessMode getAccessMode() {
-        return accessMode;
-    }
+	/**
+	 * Method to save the default config file
+	 */
+	@Override
+	public void saveDefaultConfig()
+	{
+		String version = getConfig().getString("version", null);
+		if (categoriesConfigFile == null) {
+			categoriesConfigFile = new File(getDataFolder(), "categories.yml");
+		}
+		if (!categoriesConfigFile.exists()) {
+			saveResource("categories.yml", false);
+			reloadCategoriesConfig();
+		}
+		else if (!getDescription().getVersion().equals(version)) {
+			getLogger().log(
+				Level.WARNING, "New version detected: {0}->{1}. Saving new default categories.",
+				new Object[]{(version == null ? "(?)" : version), getDescription().getVersion()}
+			);
+			saveResource("categories.yml", true);
+			reloadCategoriesConfig();
+		}
+		if (configFile == null) {
+			configFile = new File(getDataFolder(), "config.yml");
+		}
+		if (!configFile.exists()) {
+			saveResource("config.yml", false);
+			reloadConfig();
+		}
+		else if (!getDescription().getVersion().equals(version)) {
+			getLogger().log(
+				Level.WARNING, "New version detected: {0}->{1}. Saving new default config.",
+				new Object[]{(version == null ? "(?)" : version), getDescription().getVersion()}
+			);
+			saveResource("config.yml", true);
+			reloadConfig();
+		}
+	}
 
-    public void addRootCA()throws CertificateException, IOException, KeyManagementException, KeyStoreException, NoSuchAlgorithmException{
-        try (InputStream fis = new BufferedInputStream(this.getClassLoader().getResourceAsStream("letsencrypt.crt"))) {
-            Certificate ca = CertificateFactory.getInstance("X.509").generateCertificate(fis);
-            KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-            Path ksPath = Paths.get(System.getProperty("java.home"), "lib", "security", "cacerts");
-            ks.load(Files.newInputStream(ksPath), "changeit".toCharArray());
-            ks.setCertificateEntry("LetsEncrypt CA", ca);
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmf.init(ks);
-            SSLContext ctx = SSLContext.getInstance("TLS");
-            ctx.init(null, tmf.getTrustManagers(), null);
-            HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory());
-        }
-    }
+	/**
+	 * Get the HeadUtils instance
+	 *
+	 * @return the HeadUtils instance
+	 */
+	public HeadsUtils getHeadsUtils()
+	{
+		return headsUtils;
+	}
 
-    public static DatabaseLoader getDefaultDatabaseLoader() {
-        return new FreshCoalLoader();//TODO configurable;
-    }
+	public AccessMode getAccessMode()
+	{
+		return accessMode;
+	}
+
+	public void addRootCA() throws CertificateException, IOException, KeyManagementException, KeyStoreException, NoSuchAlgorithmException
+	{
+		try (InputStream fis = new BufferedInputStream(this.getClassLoader().getResourceAsStream("letsencrypt.crt"))) {
+			Certificate ca = CertificateFactory.getInstance("X.509").generateCertificate(fis);
+			KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+			Path ksPath = Paths.get(System.getProperty("java.home"), "lib", "security", "cacerts");
+			ks.load(Files.newInputStream(ksPath), "changeit".toCharArray());
+			ks.setCertificateEntry("LetsEncrypt CA", ca);
+			TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+			tmf.init(ks);
+			SSLContext ctx = SSLContext.getInstance("TLS");
+			ctx.init(null, tmf.getTrustManagers(), null);
+			HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory());
+		}
+	}
 
 }

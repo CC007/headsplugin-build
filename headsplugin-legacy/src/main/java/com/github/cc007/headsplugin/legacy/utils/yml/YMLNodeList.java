@@ -28,67 +28,77 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class YMLNodeList {
+public class YMLNodeList
+{
 
-    List<Object> nodes;
+	List<Object> nodes;
 
-    public YMLNodeList(List<Object> nodes) {
-        this.nodes = nodes;
-    }
+	public YMLNodeList(List<Object> nodes)
+	{
+		this.nodes = nodes;
+	}
 
-    public YMLNode getNode(int index) {
-        return new YMLNode((Map<String, Object>) nodes.get(index));
-    }
+	public YMLNode getNode(int index)
+	{
+		return new YMLNode((Map<String, Object>) nodes.get(index));
+	}
 
-    public int getInt(int index) {
-        return Integer.parseInt(getString(index));
-    }
+	public int getInt(int index)
+	{
+		return Integer.parseInt(getString(index));
+	}
 
-    public boolean getBoolean(int index) {
-        return Boolean.parseBoolean(getString(index));
-    }
+	public boolean getBoolean(int index)
+	{
+		return Boolean.parseBoolean(getString(index));
+	}
 
-    public String getString(int index) {
-        return (String) nodes.get(index);
-    }
+	public String getString(int index)
+	{
+		return (String) nodes.get(index);
+	}
 
-    public int size() {
-        return nodes.size();
-    }
+	public int size()
+	{
+		return nodes.size();
+	}
 
-    public List<YMLNode> getNodes() {
-        List<YMLNode> resultNodes = new ArrayList<>();
-        for (Object node : nodes) {
-            resultNodes.add(new YMLNode((Map<String, Object>) node));
-        }
-        return resultNodes;
-    }
+	public List<YMLNode> getNodes()
+	{
+		List<YMLNode> resultNodes = new ArrayList<>();
+		for (Object node : nodes) {
+			resultNodes.add(new YMLNode((Map<String, Object>) node));
+		}
+		return resultNodes;
+	}
 
-    public List<Integer> getIntegers() {
-        List<Integer> resultNodes = new ArrayList<>();
-        for (Object node : nodes) {
-            resultNodes.add(Integer.parseInt((String) node));
-        }
-        return resultNodes;
-    }
+	public List<Integer> getIntegers()
+	{
+		List<Integer> resultNodes = new ArrayList<>();
+		for (Object node : nodes) {
+			resultNodes.add(Integer.parseInt((String) node));
+		}
+		return resultNodes;
+	}
 
-    public List<Boolean> getBooleans() {
-        List<Boolean> resultNodes = new ArrayList<>();
-        for (Object node : nodes) {
-            resultNodes.add(Boolean.parseBoolean((String) node));
-        }
-        return resultNodes;
-    }
+	public List<Boolean> getBooleans()
+	{
+		List<Boolean> resultNodes = new ArrayList<>();
+		for (Object node : nodes) {
+			resultNodes.add(Boolean.parseBoolean((String) node));
+		}
+		return resultNodes;
+	}
 
-    public List<String> getStrings() {
-        List<String> resultNodes = new ArrayList<>();
-        for (Object node : nodes) {
-            resultNodes.add((String) node);
-        }
-        return resultNodes;
-    }
+	public List<String> getStrings()
+	{
+		List<String> resultNodes = new ArrayList<>();
+		for (Object node : nodes) {
+			resultNodes.add((String) node);
+		}
+		return resultNodes;
+	}
 
 }

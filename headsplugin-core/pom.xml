@@ -1,221 +1,214 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.cc007</groupId>
-    <artifactId>headsplugin-core</artifactId>
-	<version>2.0.0</version>
+	<parent>
+		<groupId>com.github.cc007</groupId>
+		<artifactId>headsplugin-parent</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../headsplugin-parent</relativePath>
+	</parent>
 
-    <packaging>jar</packaging>
+	<artifactId>headsplugin-core</artifactId>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-    
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    
-    <developers>
-        <developer>
-            <id>cc007</id>
-            <name>Coolcat007</name>
-            <url>coolcat007.nl</url>
-            <roles>
-                <role>architect</role>
-                <role>developer</role>
-            </roles>
-            <timezone>Europe/Amsterdam</timezone>
-        </developer>
-    </developers>
-    
-    <distributionManagement>
-        <repository>
-            <id>repo</id>
-        </repository>
-        <snapshotRepository>
-            <id>snapshot-repo</id>
-        </snapshotRepository>
-    </distributionManagement>
-    
-    <repositories>
-        <repository>
-            <id>cc007-lib-releases-repo</id>
-            <url>https://github.com/CC007/maven-repo/raw/master/lib-releases</url>
-        </repository>
-        
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-<!--        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>-->
-        
-        <!-- YOU NEED TO MANUALLY ADD CRAFTBUKKIT, there is no known (legal) repository available -->
-        
-    </repositories>
-    <dependencies>
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-        </dependency>
-        
-        <!-- overridden dependencies -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.3.1</version>
-        </dependency>
-        
-        <!-- commons I/O -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.4</version>
-        </dependency>
-        
-        <!-- apache http components -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.4.1</version>
-        </dependency>
-        
-    </dependencies> 
-    
-    <!-- Build settings -->
-    <build>
-        <!-- Resource replacement -->
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
+	<packaging>jar</packaging>
 
-        <!-- Build plugins -->
-        <plugins>
-            <!-- Include the source jar as well -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
 
-            <!-- Define JDK for compilation -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>templating-maven-plugin</artifactId>
-                <version>1.0-alpha-3</version>
-                <executions>
-                    <execution>
-                        <id>filter-src</id>
-                        <goals>
-                            <goal>filter-sources</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            
-            <!-- keep this if you want to add your spigot version through the install:install-file goal -->
-            <!-- to use this goal set the following property: file=/path/to/file/spigot.jar -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.2</version>
-            </plugin>
-            
-            <!-- build with dependencies -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <minimizeJar>false</minimizeJar>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.spigotmc:*</exclude>
-                                    <exclude>org.bukkit:*</exclude>
-                                    <exclude>jline:jline</exclude>
-                                    <exclude>org.yaml:snakeyaml</exclude>
-                                    <exclude>com.google.code.gson:gson</exclude>
-                                    <exclude>com.google.guava:guava</exclude>
-                                    <exclude>net.md-5:bungeecord-chat</exclude>
-                                    <exclude>junit:junit</exclude>
-                                    <exclude>net.sf.jopt-simple:jopt-simple</exclude>
-                                    <exclude>org.avaje:ebean</exclude>
-                                    <exclude>commons-lang:commons-lang</exclude>
-                                    <exclude>com.googlecode.json-simple:json-simple</exclude>
-                                    <exclude>org.hamcrest:hamcrest-core</exclude>
-                                    <exclude>org.xerial:sqlite-jdbc</exclude>
-                                    <exclude>javax.persistence:persistence-api</exclude>
-                                    <exclude>mysql:mysql-connector-java</exclude>
-                                </excludes>
-                            </artifactSet>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.4</version>
-                <configuration>
-                    <additionalparam>-Xdoclint:none</additionalparam>
-                    <sourceFileIncludes>
-                        <include>bukkit/*.java</include>
-                        <include>utils/HeadsUtils.java</include>
-                        <include>utils/heads/*.java</include>
-                        <include>utils/loader/DatabaseLoader.java</include>
-                        <include>utils/loader/FreshCoalLoader.java</include>
-                        <include>utils/loader/MinecraftHeadsLoader.java</include>
-                        <include>utils/loader/MineSkinLoader.java</include>
-                    </sourceFileIncludes>
-                    <sourcepath>${basedir}/src/main/java/com/github/cc007/headsplugin</sourcepath>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+	<developers>
+		<developer>
+			<id>cc007</id>
+			<name>Coolcat007</name>
+			<url>coolcat007.nl</url>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>Europe/Amsterdam</timezone>
+		</developer>
+	</developers>
+
+	<distributionManagement>
+		<repository>
+			<id>repo</id>
+		</repository>
+		<snapshotRepository>
+			<id>snapshot-repo</id>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>cc007-lib-releases-repo</id>
+			<url>https://github.com/CC007/maven-repo/raw/master/lib-releases</url>
+		</repository>
+
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>dev.alangomes</groupId>
+			<artifactId>spigot-spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<!-- Build settings -->
+	<build>
+		<!-- Resource replacement -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<!-- Build plugins -->
+		<plugins>
+			<!-- Include the source jar as well -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Define JDK for compilation -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<finalName>HeadsPluginAPI-${project.version}</finalName>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>templating-maven-plugin</artifactId>
+				<version>1.0-alpha-3</version>
+				<executions>
+					<execution>
+						<id>filter-src</id>
+						<goals>
+							<goal>filter-sources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- keep this if you want to add your spigot version through the install:install-file goal -->
+			<!-- to use this goal set the following property: file=/path/to/file/spigot.jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5.2</version>
+			</plugin>
+
+			<!-- build with dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<minimizeJar>false</minimizeJar>
+							<artifactSet>
+								<excludes>
+									<exclude>org.spigotmc:*</exclude>
+									<exclude>org.bukkit:*</exclude>
+									<exclude>jline:jline</exclude>
+									<exclude>org.yaml:snakeyaml</exclude>
+									<exclude>com.google.code.gson:gson</exclude>
+									<exclude>com.google.guava:guava</exclude>
+									<exclude>net.md-5:bungeecord-chat</exclude>
+									<exclude>junit:junit</exclude>
+									<exclude>net.sf.jopt-simple:jopt-simple</exclude>
+									<exclude>org.avaje:ebean</exclude>
+									<exclude>commons-lang:commons-lang</exclude>
+									<exclude>com.googlecode.json-simple:json-simple</exclude>
+									<exclude>org.hamcrest:hamcrest-core</exclude>
+									<exclude>org.xerial:sqlite-jdbc</exclude>
+									<exclude>javax.persistence:persistence-api</exclude>
+									<exclude>mysql:mysql-connector-java</exclude>
+								</excludes>
+							</artifactSet>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.4</version>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+					<sourceFileIncludes>
+						<include>bukkit/*.java</include>
+						<include>utils/HeadsUtils.java</include>
+						<include>utils/heads/*.java</include>
+						<include>utils/loader/DatabaseLoader.java</include>
+						<include>utils/loader/FreshCoalLoader.java</include>
+						<include>utils/loader/MinecraftHeadsLoader.java</include>
+						<include>utils/loader/MineSkinLoader.java</include>
+					</sourceFileIncludes>
+					<sourcepath>${basedir}/src/main/java/com/github/cc007/headsplugin</sourcepath>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
