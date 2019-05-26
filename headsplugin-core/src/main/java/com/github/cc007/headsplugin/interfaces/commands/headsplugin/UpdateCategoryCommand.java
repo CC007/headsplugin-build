@@ -1,7 +1,7 @@
-package com.github.cc007.headsplugin.commands.headsplugin;
+package com.github.cc007.headsplugin.interfaces.commands.headsplugin;
 
 import com.github.cc007.headsplugin.HeadsPlugin;
-import com.github.cc007.headsplugin.commands.AbstractCommand;
+import com.github.cc007.headsplugin.interfaces.commands.AbstractCommand;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
 import dev.alangomes.springspigot.command.Subcommand;
 import org.bukkit.command.ConsoleCommandSender;

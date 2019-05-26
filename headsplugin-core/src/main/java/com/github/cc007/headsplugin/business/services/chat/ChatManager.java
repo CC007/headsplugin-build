@@ -1,4 +1,4 @@
-package com.github.cc007.headsplugin.chat;
+package com.github.cc007.headsplugin.business.services.chat;
 
 import org.bukkit.ChatColor;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
-package com.github.cc007.headsplugin.commands;
+package com.github.cc007.headsplugin.interfaces.commands;
 
-import com.github.cc007.headsplugin.commands.headsplugin.UpdateCategoryCommand;
+import com.github.cc007.headsplugin.interfaces.commands.headsplugin.UpdateCategoryCommand;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;

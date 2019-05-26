@@ -1,6 +1,6 @@
-package com.github.cc007.headsplugin.commands;
+package com.github.cc007.headsplugin.interfaces.commands;
 
-import com.github.cc007.headsplugin.chat.ChatManager;
+import com.github.cc007.headsplugin.business.services.chat.ChatManager;
 import dev.alangomes.springspigot.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import picocli.CommandLine.Model.CommandSpec;
