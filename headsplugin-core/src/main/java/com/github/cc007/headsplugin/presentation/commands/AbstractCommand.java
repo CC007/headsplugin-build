@@ -1,4 +1,4 @@
-package com.github.cc007.headsplugin.interfaces.commands;
+package com.github.cc007.headsplugin.presentation.commands;
 
 import com.github.cc007.headsplugin.business.services.chat.ChatManager;
 import dev.alangomes.springspigot.context.Context;

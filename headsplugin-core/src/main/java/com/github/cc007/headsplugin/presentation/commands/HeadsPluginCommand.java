@@ -1,7 +1,8 @@
-package com.github.cc007.headsplugin.interfaces.commands;
+package com.github.cc007.headsplugin.presentation.commands;
 
-import com.github.cc007.headsplugin.interfaces.commands.headsplugin.UpdateCategoryCommand;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
+import com.github.cc007.headsplugin.presentation.commands.headsplugin.MineSkinApiTestCommand;
+import com.github.cc007.headsplugin.presentation.commands.headsplugin.UpdateCategoryCommand;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -14,7 +15,7 @@ import picocli.CommandLine.Help.Ansi;
 	description = "Provides the commands for HeadsPlugin",
 	aliases = {"headsplugin", "hpa", "hp"},
 	mixinStandardHelpOptions = true,
-	subcommands = {UpdateCategoryCommand.class}
+	subcommands = {UpdateCategoryCommand.class, MineSkinApiTestCommand.class}
 )
 public class HeadsPluginCommand extends AbstractCommand
 {

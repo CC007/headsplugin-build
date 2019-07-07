@@ -14,6 +14,12 @@
 
 	<packaging>pom</packaging>
 
+	<properties>
+		<spring-boot.version>2.1.5.RELEASE</spring-boot.version>
+		<spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
+		<minecraft.version>1.8.8-R0.1-SNAPSHOT</minecraft.version>
+	</properties>
+
 	<repositories>
 
 		<!-- repo for github dependencies-->
@@ -26,38 +32,61 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring-boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
 			<!-- Spigot Spring Boot starter -->
 			<dependency>
 				<groupId>dev.alangomes</groupId>
 				<artifactId>spigot-spring-boot-starter</artifactId>
-				<version>0.11.0</version>
+				<version>0.18.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-cache</artifactId>
+				<version>${spring-boot.version}</version>
 			</dependency>
 
 			<!-- Bukkit API -->
 			<dependency>
 				<groupId>org.bukkit</groupId>
 				<artifactId>bukkit</artifactId>
-				<version>1.8.8-R0.1-SNAPSHOT</version>
+				<version>${minecraft.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>com.google.code.gson</groupId>
 						<artifactId>gson</artifactId>
 					</exclusion>
 				</exclusions>
+				<scope>provided</scope>
 			</dependency>
 
 			<!-- Craftbukkit API -->
 			<dependency>
 				<groupId>org.bukkit</groupId>
 				<artifactId>craftbukkit</artifactId>
-				<version>1.8.8-R0.1-SNAPSHOT</version>
+				<version>${minecraft.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>com.google.code.gson</groupId>
 						<artifactId>gson</artifactId>
 					</exclusion>
 				</exclusions>
+				<scope>provided</scope>
 			</dependency>
 
 			<!-- NBT API -->
@@ -72,6 +101,7 @@
 				<groupId>com.google.code.gson</groupId>
 				<artifactId>gson</artifactId>
 				<version>2.3.1</version>
+				<scope>provided</scope>
 			</dependency>
 
 			<!-- Commons I/O -->
@@ -81,11 +111,18 @@
 				<version>2.6</version>
 			</dependency>
 
+			<!-- Commons collections -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-collections4</artifactId>
+				<version>4.3</version>
+			</dependency>
+
 			<!-- Apache HTTP Components -->
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
-				<version>4.4.1</version>
+				<version>4.5.8</version>
 			</dependency>
 
 			<!-- Lombok -->
@@ -93,6 +130,25 @@
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
 				<version>1.18.6</version>
+			</dependency>
+
+			<!-- JSoup -->
+			<dependency>
+				<groupId>org.jsoup</groupId>
+				<artifactId>jsoup</artifactId>
+				<version>1.12.1</version>
+			</dependency>
+
+			<!-- Caching -->
+			<dependency>
+				<groupId>javax.cache</groupId>
+				<artifactId>cache-api</artifactId>
+				<version>1.1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ehcache</groupId>
+				<artifactId>ehcache</artifactId>
+				<version>3.6.2</version>
 			</dependency>
 
 
