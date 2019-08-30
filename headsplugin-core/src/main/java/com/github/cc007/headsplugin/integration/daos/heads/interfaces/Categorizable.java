@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface Catagorizable
+public interface Categorizable
 {
 	List<Head> getCategoryHeads(String categoryName);
 

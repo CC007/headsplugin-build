@@ -44,7 +44,7 @@ public class MineSkinApiTestCommand extends AbstractCommand
 			context.getSender().sendMessage(chatManager.getConsolePrefix() + "This command is only available for players.");
 		}
 
-		val heads = freshCoalDao.getHeads(searchTerm);
+		val heads = freshCoalDao.getCategoryHeads(freshCoalDao.getCategoryNames().get(0));
 		context.getPlayer().sendMessage(chatManager.getChatPrefix() + "The following heads are available:");
 		for (Head head : heads) {
 			context.getPlayer().sendMessage("   - " + head.getName());

@@ -1,7 +1,7 @@
 package com.github.cc007.headsplugin.integration.daos.heads;
 
 import com.github.cc007.headsplugin.business.domain.Head;
-import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Catagorizable;
+import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Categorizable;
 import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Searchable;
 import com.github.cc007.headsplugin.integration.mappers.FreshCoalHeadMapper;
 import com.github.cc007.headsplugin.integration.rest.clients.FreshCoalClient;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FreshCoalDao implements Searchable, Catagorizable
+public class FreshCoalDao implements Searchable, Categorizable
 {
 	private final FreshCoalClient client;
 
@@ -32,6 +32,7 @@ public class FreshCoalDao implements Searchable, Catagorizable
 			.map(headMapper::transform)
 			.collect(Collectors.toList());
 	}
+// todo test getCategoryHeads
 
 	@Override
 	public List<String> getPredefinedCategoryNames()

@@ -52,7 +52,7 @@
 			<dependency>
 				<groupId>dev.alangomes</groupId>
 				<artifactId>spigot-spring-boot-starter</artifactId>
-				<version>0.18.0</version>
+				<version>0.20.4</version>
 			</dependency>
 
 			<dependency>
