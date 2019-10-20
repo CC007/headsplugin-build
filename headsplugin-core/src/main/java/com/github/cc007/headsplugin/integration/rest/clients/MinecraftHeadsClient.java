@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(name = "MinecraftHeads", url = "https://minecraft-heads.com/")
-public interface MinecraftHeadsClient
-{
+public interface MinecraftHeadsClient {
+    default SkinListDto find(String searchTerm) {
+        return find(searchTerm, true);
+    }
 
-	@RequestMapping(method = RequestMethod.GET, value = "/scripts/api.php?tags=true&cat={searchTerm}")
-	SkinListDto find(@PathVariable("searchTerm") String searchTerm);
+    @RequestMapping(method = RequestMethod.GET, value = "/scripts/api.php?tags={withTags}&cat={searchTerm}")
+    SkinListDto find(@PathVariable("searchTerm") String searchTerm, @PathVariable("withTags") boolean withTags);
 }
