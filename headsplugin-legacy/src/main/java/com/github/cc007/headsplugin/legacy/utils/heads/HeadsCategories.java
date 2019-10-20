@@ -29,218 +29,199 @@ import java.util.List;
 /**
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class HeadsCategories
-{
+public class HeadsCategories {
 
-	private List<HeadsCategory> categories;
+    private List<HeadsCategory> categories;
 
-	public HeadsCategories()
-	{
-		this.categories = new ArrayList<>();
-	}
+    public HeadsCategories() {
+        this.categories = new ArrayList<>();
+    }
 
-	/**
-	 * Get the value of categories
-	 *
-	 * @return the value of categories
-	 */
-	public List<HeadsCategory> getList()
-	{
-		return categories;
-	}
+    /**
+     * Get the value of categories
+     *
+     * @return the value of categories
+     */
+    public List<HeadsCategory> getList() {
+        return categories;
+    }
 
-	/**
-	 * Set the value of categories
-	 *
-	 * @param categories new value of categories
-	 */
-	public void setList(List<HeadsCategory> categories)
-	{
-		this.categories = categories;
-	}
+    /**
+     * Set the value of categories
+     *
+     * @param categories new value of categories
+     */
+    public void setList(List<HeadsCategory> categories) {
+        this.categories = categories;
+    }
 
-	/**
-	 * Set the value of categories
-	 *
-	 * @param categories new value of categories
-	 */
-	public void setCategories(HeadsCategories categories)
-	{
-		if (categories != null) {
-			this.categories = categories.getList();
-		}
-		else {
-			this.categories = null;
-		}
-	}
+    /**
+     * Set the value of categories
+     *
+     * @param categories new value of categories
+     */
+    public void setCategories(HeadsCategories categories) {
+        if (categories != null) {
+            this.categories = categories.getList();
+        } else {
+            this.categories = null;
+        }
+    }
 
-	/**
-	 * Merge two categories
-	 *
-	 * @param categories the added categories
-	 */
-	public void addAllCategories(List<HeadsCategory> categories)
-	{
-		if (categories != null) {
-			this.categories.addAll(categories);
-		}
-	}
+    /**
+     * Merge two categories
+     *
+     * @param categories the added categories
+     */
+    public void addAllCategories(List<HeadsCategory> categories) {
+        if (categories != null) {
+            this.categories.addAll(categories);
+        }
+    }
 
-	/**
-	 * Merge two categories
-	 *
-	 * @param categories the added categories
-	 */
-	public void addAllCategories(HeadsCategories categories)
-	{
-		if (categories != null) {
-			this.categories.addAll(categories.getList());
-		}
-	}
+    /**
+     * Merge two categories
+     *
+     * @param categories the added categories
+     */
+    public void addAllCategories(HeadsCategories categories) {
+        if (categories != null) {
+            this.categories.addAll(categories.getList());
+        }
+    }
 
-	/**
-	 * Check if the category exists by category name
-	 *
-	 * @param categoryName the name of the category
-	 * @return true if the category exists, otherwise false
-	 */
-	public boolean hasCategory(String categoryName)
-	{
-		for (HeadsCategory category : categories) {
-			if (category.getCategoryName().equalsIgnoreCase(categoryName)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * Check if the category exists by category name
+     *
+     * @param categoryName the name of the category
+     * @return true if the category exists, otherwise false
+     */
+    public boolean hasCategory(String categoryName) {
+        for (HeadsCategory category : categories) {
+            if (category.getCategoryName().equalsIgnoreCase(categoryName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Check if the category exists by id
-	 *
-	 * @param id the id of the category
-	 * @return true if the category exists, otherwise false
-	 */
-	public boolean hasCategory(int id)
-	{
-		for (HeadsCategory category : categories) {
-			if (category.getId() == id) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * Check if the category exists by id
+     *
+     * @param id the id of the category
+     * @return true if the category exists, otherwise false
+     */
+    public boolean hasCategory(int id) {
+        for (HeadsCategory category : categories) {
+            if (category.getId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Get a certain category based on categoryName
-	 *
-	 * @param categoryName the name of the category
-	 * @return the category if the category exists, otherwise null
-	 */
-	public HeadsCategory getCategory(String categoryName)
-	{
-		for (HeadsCategory category : categories) {
-			if (category.getCategoryName().equalsIgnoreCase(categoryName)) {
-				return category;
-			}
-		}
-		return null;
-	}
+    /**
+     * Get a certain category based on categoryName
+     *
+     * @param categoryName the name of the category
+     * @return the category if the category exists, otherwise null
+     */
+    public HeadsCategory getCategory(String categoryName) {
+        for (HeadsCategory category : categories) {
+            if (category.getCategoryName().equalsIgnoreCase(categoryName)) {
+                return category;
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * Get a certain category based on id
-	 *
-	 * @param id the id of the category
-	 * @return the category if the category exists, otherwise null
-	 */
-	public HeadsCategory getCategory(int id)
-	{
-		for (HeadsCategory category : categories) {
-			if (category.getId() == id) {
-				return category;
-			}
-		}
-		return null;
-	}
+    /**
+     * Get a certain category based on id
+     *
+     * @param id the id of the category
+     * @return the category if the category exists, otherwise null
+     */
+    public HeadsCategory getCategory(int id) {
+        for (HeadsCategory category : categories) {
+            if (category.getId() == id) {
+                return category;
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * Add a categories to the list
-	 *
-	 * @param category new category to be added
-	 */
-	public void addCategory(HeadsCategory category)
-	{
-		for (HeadsCategory existingCategory : categories) {
-			if (existingCategory.getCategoryName().equalsIgnoreCase(category.getCategoryName())) {
-				existingCategory.setCategory(category);
-				return;
-			}
-		}
-		categories.add(category);
-	}
+    /**
+     * Add a categories to the list
+     *
+     * @param category new category to be added
+     */
+    public void addCategory(HeadsCategory category) {
+        for (HeadsCategory existingCategory : categories) {
+            if (existingCategory.getCategoryName().equalsIgnoreCase(category.getCategoryName())) {
+                existingCategory.setCategory(category);
+                return;
+            }
+        }
+        categories.add(category);
+    }
 
-	/**
-	 * Add a categories to the list
-	 *
-	 * @param categoryName name of new category to be added
-	 * @param id           id of new category to be added
-	 */
-	public void addCategory(String categoryName, int id)
-	{
-		this.addCategory(new HeadsCategory(categoryName, id));
-	}
+    /**
+     * Add a categories to the list
+     *
+     * @param categoryName name of new category to be added
+     * @param id           id of new category to be added
+     */
+    public void addCategory(String categoryName, int id) {
+        this.addCategory(new HeadsCategory(categoryName, id));
+    }
 
-	/**
-	 * Remove a category from the list
-	 *
-	 * @param category the category to be removed
-	 */
-	public void removeCategory(HeadsCategory category)
-	{
-		categories.remove(category);
-	}
+    /**
+     * Remove a category from the list
+     *
+     * @param category the category to be removed
+     */
+    public void removeCategory(HeadsCategory category) {
+        categories.remove(category);
+    }
 
-	/**
-	 * Remove a category from the list by name
-	 *
-	 * @param categoryName the name of the category to be removed
-	 */
-	public void removeCategory(String categoryName)
-	{
-		for (HeadsCategory category : categories) {
-			if (category.getCategoryName().equalsIgnoreCase(categoryName)) {
-				categories.remove(category);
-				break;
-			}
-		}
-	}
+    /**
+     * Remove a category from the list by name
+     *
+     * @param categoryName the name of the category to be removed
+     */
+    public void removeCategory(String categoryName) {
+        for (HeadsCategory category : categories) {
+            if (category.getCategoryName().equalsIgnoreCase(categoryName)) {
+                categories.remove(category);
+                break;
+            }
+        }
+    }
 
-	/**
-	 * Remove a category from the list by id
-	 *
-	 * @param id the id of the category to be removed
-	 */
-	public void removeCategory(int id)
-	{
-		for (HeadsCategory category : categories) {
-			if (category.getId() == id) {
-				categories.remove(category);
-				break;
-			}
-		}
-	}
+    /**
+     * Remove a category from the list by id
+     *
+     * @param id the id of the category to be removed
+     */
+    public void removeCategory(int id) {
+        for (HeadsCategory category : categories) {
+            if (category.getId() == id) {
+                categories.remove(category);
+                break;
+            }
+        }
+    }
 
-	/**
-	 * Clear out this categories object
-	 */
-	public void clear()
-	{
-		categories.clear();
-	}
+    /**
+     * Clear out this categories object
+     */
+    public void clear() {
+        categories.clear();
+    }
 
-	@Override
-	public String toString()
-	{
-		return "HeadsCategories{" + "categories=" + categories + '}';
-	}
+    @Override
+    public String toString() {
+        return "HeadsCategories{" + "categories=" + categories + '}';
+    }
 
 }

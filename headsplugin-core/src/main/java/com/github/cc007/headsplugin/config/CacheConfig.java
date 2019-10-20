@@ -3,8 +3,7 @@ package com.github.cc007.headsplugin.config;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class CacheConfig
-{
+public class CacheConfig {
 //	@Bean
 //	public CacheManager cacheManager(){
 //		PersistentCacheManager persistentCacheManager = CacheManagerBuilder.newCacheManagerBuilder()

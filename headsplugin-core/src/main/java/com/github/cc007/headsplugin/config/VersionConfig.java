@@ -8,16 +8,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class VersionConfig
-{
-	@DynamicValue("${version}")
-	private Instance<String> version;
+public class VersionConfig {
+    @DynamicValue("${version}")
+    private Instance<String> version;
 
-	@Autowired
-	private ChatManager chatManager;
+    @Autowired
+    private ChatManager chatManager;
 
-	@Bean
-	public String pluginVersion(){
-		return version.get();
-	}
+    @Bean
+    public String pluginVersion() {
+        return version.get();
+    }
 }

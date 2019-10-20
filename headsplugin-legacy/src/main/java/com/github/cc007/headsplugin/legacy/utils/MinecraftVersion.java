@@ -28,64 +28,58 @@ import org.bukkit.Bukkit;
 /**
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class MinecraftVersion
-{
+public class MinecraftVersion {
 
-	private final int major;
-	private final int minor;
-	private final int patch;
-	private final String packageName;
+    private final int major;
+    private final int minor;
+    private final int patch;
+    private final String packageName;
 
-	public MinecraftVersion()
-	{
-		Package obcPackage = Bukkit.getServer().getClass().getPackage();
-		String obcPackageName = obcPackage.getName();
-		this.packageName = obcPackageName.substring(obcPackageName.lastIndexOf(".") + 1);
-		String[] splitPackageName = packageName.split("_");
-		this.major = Integer.parseInt(splitPackageName[0].substring(1));
-		this.minor = Integer.parseInt(splitPackageName[1]);
-		this.patch = Integer.parseInt(splitPackageName[2].substring(1));
-	}
+    public MinecraftVersion() {
+        Package obcPackage = Bukkit.getServer().getClass().getPackage();
+        String obcPackageName = obcPackage.getName();
+        this.packageName = obcPackageName.substring(obcPackageName.lastIndexOf(".") + 1);
+        String[] splitPackageName = packageName.split("_");
+        this.major = Integer.parseInt(splitPackageName[0].substring(1));
+        this.minor = Integer.parseInt(splitPackageName[1]);
+        this.patch = Integer.parseInt(splitPackageName[2].substring(1));
+    }
 
-	/**
-	 * Get the value of the major version
-	 *
-	 * @return the value of the major version
-	 */
-	public int getMajor()
-	{
-		return major;
-	}
+    /**
+     * Get the value of the major version
+     *
+     * @return the value of the major version
+     */
+    public int getMajor() {
+        return major;
+    }
 
-	/**
-	 * Get the value of the minor version
-	 *
-	 * @return the value of the minor version
-	 */
-	public int getMinor()
-	{
-		return minor;
-	}
+    /**
+     * Get the value of the minor version
+     *
+     * @return the value of the minor version
+     */
+    public int getMinor() {
+        return minor;
+    }
 
-	/**
-	 * Get the value of the patch version
-	 *
-	 * @return the value of the patch version
-	 */
-	public int getPatch()
-	{
-		return patch;
-	}
+    /**
+     * Get the value of the patch version
+     *
+     * @return the value of the patch version
+     */
+    public int getPatch() {
+        return patch;
+    }
 
-	/**
-	 * Get the package name for this version
-	 *
-	 * @return the package name for this version
-	 */
-	public String getPackageName()
-	{
-		return packageName;
-	}
+    /**
+     * Get the package name for this version
+     *
+     * @return the package name for this version
+     */
+    public String getPackageName() {
+        return packageName;
+    }
 
 
 }

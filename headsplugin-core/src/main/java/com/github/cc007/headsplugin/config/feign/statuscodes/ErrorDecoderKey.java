@@ -5,8 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ErrorDecoderKey
-{
-	private String methodKey;
-	private int statusCode;
+public class ErrorDecoderKey {
+    private String methodKey;
+    private int statusCode;
 }

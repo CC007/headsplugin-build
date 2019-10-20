@@ -1,16 +1,12 @@
 package com.github.cc007.headsplugin.config.aspects.statuscodes;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(StatusCodeHandlers.class)
-public @interface StatusCodeHandler
-{
-	int statusCode();
-	Class returnType();
+public @interface StatusCodeHandler {
+    int statusCode();
+
+    Class returnType();
 }

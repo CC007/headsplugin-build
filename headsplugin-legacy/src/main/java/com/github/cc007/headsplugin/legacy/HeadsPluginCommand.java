@@ -24,37 +24,35 @@
 package com.github.cc007.headsplugin.legacy;
 
 import com.github.cc007.headsplugin.legacy.utils.authentication.KeyAuthenticator;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.util.logging.Level;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.util.logging.Level;
+
 /**
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class HeadsPluginCommand implements CommandExecutor
-{
+public class HeadsPluginCommand implements CommandExecutor {
 
-	private final HeadsPlugin plugin;
+    private final HeadsPlugin plugin;
 
-	public HeadsPluginCommand(HeadsPlugin plugin)
-	{
-		this.plugin = plugin;
-	}
+    public HeadsPluginCommand(HeadsPlugin plugin) {
+        this.plugin = plugin;
+    }
 
-	@Override
-	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args)
-	{
-		if (!sender.hasPermission("headsplugin.register")) {
-			sender.sendMessage("You don't have permission to perform any commands the plugin.");
-			return false;
-		}
-		sender.sendMessage("At the moment this plugin doesn't have any commands");
-		return true;
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
+        if (!sender.hasPermission("headsplugin.register")) {
+            sender.sendMessage("You don't have permission to perform any commands the plugin.");
+            return false;
+        }
+        sender.sendMessage("At the moment this plugin doesn't have any commands");
+        return true;
         
         /*if (args.length <= 0) {
             sender.sendMessage("Incorrect use of the command. Correct usage: \n /headsplugin verify <accountName>\n /headsplugin register <accountName> <serverName> <token>\n /headsplugin authenticate\n /headsplugin setkey <key>\n /headsplugin setworld <worldname>");
@@ -92,90 +90,82 @@ public class HeadsPluginCommand implements CommandExecutor
         sender.sendMessage("Incorrect use of the command. Correct usage: \n /headsplugin verify <accountName>\n /headsplugin register <accountName> <serverName> <token>\n /headsplugin authenticate\n /headsplugin setkey <key>\n /headsplugin setworld <worldname>");
         return false;
         */
-	}
+    }
 
-	private boolean onVerifyCommand(CommandSender sender, Command command, String commandLabel, String[] args)
-	{
-		if (!(sender instanceof Player)) {
-			plugin.getLogger().log(Level.SEVERE, "Only players can perform this command.");
-			return false;
-		}
+    private boolean onVerifyCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
+        if (!(sender instanceof Player)) {
+            plugin.getLogger().log(Level.SEVERE, "Only players can perform this command.");
+            return false;
+        }
 
-		if (args.length < 2) {
-			sender.sendMessage("You didn't provide an account name. Correct usage: /headsplugin verify <accountName>");
-			return false;
-		}
+        if (args.length < 2) {
+            sender.sendMessage("You didn't provide an account name. Correct usage: /headsplugin verify <accountName>");
+            return false;
+        }
 
-		try {
-			if (KeyAuthenticator.verify((Player) sender, args[1])) {
-				plugin.getConfig().set("accountname", args[1]);
-				plugin.saveConfig();
-				sender.sendMessage("The account is verified");
-			}
-			else {
-				sender.sendMessage("The account is not verified or was already verified. Did you provide the right account name?");
-			}
-		}
-		catch (ConnectTimeoutException | SocketTimeoutException | ConnectException ex) {
-			sender.sendMessage("Unable to connect to the heads plugin server");
-		}
-		return true;
-	}
+        try {
+            if (KeyAuthenticator.verify((Player) sender, args[1])) {
+                plugin.getConfig().set("accountname", args[1]);
+                plugin.saveConfig();
+                sender.sendMessage("The account is verified");
+            } else {
+                sender.sendMessage("The account is not verified or was already verified. Did you provide the right account name?");
+            }
+        } catch (ConnectTimeoutException | SocketTimeoutException | ConnectException ex) {
+            sender.sendMessage("Unable to connect to the heads plugin server");
+        }
+        return true;
+    }
 
-	private boolean onRegisterCommand(CommandSender sender, Command command, String commandLabel, String[] args)
-	{
+    private boolean onRegisterCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 
-		if (args.length < 2) {
-			sender.sendMessage("You didn't provide an account name. Correct usage: /headsplugin register <accountName> <serverName> <token>");
-			return false;
-		}
-		if (args.length < 3) {
-			sender.sendMessage("You didn't provide a server name. Correct usage: /headsplugin register <accountName> <serverName> <token>");
-			return false;
-		}
-		if (args.length < 4) {
-			sender.sendMessage("You didn't provide a registration token. Correct usage: /headsplugin register <accountName> <serverName> <token>");
-			return false;
-		}
+        if (args.length < 2) {
+            sender.sendMessage("You didn't provide an account name. Correct usage: /headsplugin register <accountName> <serverName> <token>");
+            return false;
+        }
+        if (args.length < 3) {
+            sender.sendMessage("You didn't provide a server name. Correct usage: /headsplugin register <accountName> <serverName> <token>");
+            return false;
+        }
+        if (args.length < 4) {
+            sender.sendMessage("You didn't provide a registration token. Correct usage: /headsplugin register <accountName> <serverName> <token>");
+            return false;
+        }
 
-		try {
-			if (KeyAuthenticator.register(args[1], args[2], args[3])) {
-				plugin.getConfig().set("accountname", args[1]);
-				plugin.getConfig().set("servername", args[2]);
-				plugin.saveConfig();
-				sender.sendMessage("The server is registered");
-			}
-			else {
-				sender.sendMessage("The server is not registered or was already registered. Did you provide the right user name, server name and token?");
-			}
-		}
-		catch (ConnectTimeoutException | SocketTimeoutException | ConnectException ex) {
-			sender.sendMessage("Unable to connect to the heads plugin server");
-		}
-		return true;
-	}
+        try {
+            if (KeyAuthenticator.register(args[1], args[2], args[3])) {
+                plugin.getConfig().set("accountname", args[1]);
+                plugin.getConfig().set("servername", args[2]);
+                plugin.saveConfig();
+                sender.sendMessage("The server is registered");
+            } else {
+                sender.sendMessage("The server is not registered or was already registered. Did you provide the right user name, server name and token?");
+            }
+        } catch (ConnectTimeoutException | SocketTimeoutException | ConnectException ex) {
+            sender.sendMessage("Unable to connect to the heads plugin server");
+        }
+        return true;
+    }
 
-	private boolean onSetKeyCommand(CommandSender sender, Command command, String commandLabel, String[] args)
-	{
-		if (args.length <= 1) {
-			sender.sendMessage("You didn't specify a key. Correct usage: /headsplugin setkey <key>");
-			return false;
-		}
-		plugin.getConfig().set("authenticationkey", args[1]);
-		plugin.saveConfig();
-		sender.sendMessage("The new key is set");
-		return true;
-	}
+    private boolean onSetKeyCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
+        if (args.length <= 1) {
+            sender.sendMessage("You didn't specify a key. Correct usage: /headsplugin setkey <key>");
+            return false;
+        }
+        plugin.getConfig().set("authenticationkey", args[1]);
+        plugin.saveConfig();
+        sender.sendMessage("The new key is set");
+        return true;
+    }
 
-	private boolean onSetWorldCommand(CommandSender sender, Command command, String commandLabel, String[] args)
-	{
-		if (args.length <= 1) {
-			sender.sendMessage("You didn't specify a world name. Correct usage: /headsplugin setworld <worldname>");
-			return false;
-		}
-		plugin.getConfig().set("world", args[1]);
-		plugin.saveConfig();
-		sender.sendMessage("The new world name is set");
-		return true;
-	}
+    private boolean onSetWorldCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
+        if (args.length <= 1) {
+            sender.sendMessage("You didn't specify a world name. Correct usage: /headsplugin setworld <worldname>");
+            return false;
+        }
+        plugin.getConfig().set("world", args[1]);
+        plugin.saveConfig();
+        sender.sendMessage("The new world name is set");
+        return true;
+    }
 }
