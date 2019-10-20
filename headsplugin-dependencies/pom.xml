@@ -15,9 +15,10 @@
 	<packaging>pom</packaging>
 
 	<properties>
+		<minecraft.version>1.8.8-R0.1-SNAPSHOT</minecraft.version>
 		<spring-boot.version>2.1.5.RELEASE</spring-boot.version>
 		<spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
-		<minecraft.version>1.8.8-R0.1-SNAPSHOT</minecraft.version>
+		<spigot-spring-boot.version>0.20.4</spigot-spring-boot.version>
 	</properties>
 
 	<repositories>
@@ -52,7 +53,7 @@
 			<dependency>
 				<groupId>dev.alangomes</groupId>
 				<artifactId>spigot-spring-boot-starter</artifactId>
-				<version>0.20.4</version>
+				<version>${spigot-spring-boot.version}</version>
 			</dependency>
 
 			<dependency>

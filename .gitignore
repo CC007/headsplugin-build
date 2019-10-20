@@ -19,3 +19,6 @@ hs_err_pid*
 # Intellij files
 .idea/
 *.iml
+
+# Maven files
+dependency-reduced-pom.xml
