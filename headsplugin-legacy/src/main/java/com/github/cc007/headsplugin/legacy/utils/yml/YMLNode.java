@@ -30,43 +30,35 @@ import java.util.Set;
 /**
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class YMLNode
-{
+public class YMLNode {
 
-	Map<String, Object> node;
+    Map<String, Object> node;
 
-	public YMLNode(Map<String, Object> node)
-	{
-		this.node = node;
-	}
+    public YMLNode(Map<String, Object> node) {
+        this.node = node;
+    }
 
-	public YMLNode getNode(String key)
-	{
-		return new YMLNode((Map<String, Object>) node.get(key));
-	}
+    public YMLNode getNode(String key) {
+        return new YMLNode((Map<String, Object>) node.get(key));
+    }
 
-	public YMLNodeList getNodeList(String key)
-	{
-		return new YMLNodeList((List<Object>) node.get(key));
-	}
+    public YMLNodeList getNodeList(String key) {
+        return new YMLNodeList((List<Object>) node.get(key));
+    }
 
-	public String getString(String key)
-	{
-		return node.get(key).toString();
-	}
+    public String getString(String key) {
+        return node.get(key).toString();
+    }
 
-	public int getInt(String key)
-	{
-		return Integer.parseInt(this.getString(key));
-	}
+    public int getInt(String key) {
+        return Integer.parseInt(this.getString(key));
+    }
 
-	public boolean getBoolean(String key)
-	{
-		return Boolean.parseBoolean(this.getString(key));
-	}
+    public boolean getBoolean(String key) {
+        return Boolean.parseBoolean(this.getString(key));
+    }
 
-	public Set<String> getKeys()
-	{
-		return node.keySet();
-	}
+    public Set<String> getKeys() {
+        return node.keySet();
+    }
 }

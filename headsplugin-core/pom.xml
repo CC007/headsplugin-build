@@ -1,214 +1,277 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.github.cc007</groupId>
-		<artifactId>headsplugin-parent</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
-		<relativePath>../headsplugin-parent</relativePath>
-	</parent>
+    <parent>
+        <groupId>com.github.cc007</groupId>
+        <artifactId>headsplugin-parent</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../headsplugin-parent</relativePath>
+    </parent>
 
-	<artifactId>headsplugin-core</artifactId>
+    <artifactId>headsplugin-core</artifactId>
 
-	<packaging>jar</packaging>
+    <packaging>jar</packaging>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
 
-	<licenses>
-		<license>
-			<name>MIT License</name>
-			<url>http://www.opensource.org/licenses/mit-license.php</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-	<developers>
-		<developer>
-			<id>cc007</id>
-			<name>Coolcat007</name>
-			<url>coolcat007.nl</url>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
-			</roles>
-			<timezone>Europe/Amsterdam</timezone>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <id>cc007</id>
+            <name>Coolcat007</name>
+            <url>coolcat007.nl</url>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/Amsterdam</timezone>
+        </developer>
+    </developers>
 
-	<distributionManagement>
-		<repository>
-			<id>repo</id>
-		</repository>
-		<snapshotRepository>
-			<id>snapshot-repo</id>
-		</snapshotRepository>
-	</distributionManagement>
+    <distributionManagement>
+        <repository>
+            <id>repo</id>
+        </repository>
+        <snapshotRepository>
+            <id>snapshot-repo</id>
+        </snapshotRepository>
+    </distributionManagement>
 
-	<repositories>
-		<repository>
-			<id>cc007-lib-releases-repo</id>
-			<url>https://github.com/CC007/maven-repo/raw/master/lib-releases</url>
-		</repository>
+    <repositories>
+        <repository>
+            <id>cc007-lib-releases-repo</id>
+            <url>https://github.com/CC007/maven-repo/raw/master/lib-releases</url>
+        </repository>
 
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
 
-	</repositories>
-	<dependencies>
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-		</dependency>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>dev.alangomes</groupId>
-			<artifactId>spigot-spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>dev.alangomes</groupId>
+            <artifactId>spigot-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <!--		<dependency>-->
+        <!--			<groupId>org.springframework.boot</groupId>-->
+        <!--			<artifactId>spring-boot-starter-cache</artifactId>-->
+        <!--		</dependency>-->
 
-	</dependencies>
+        <!--		<dependency>-->
+        <!--			<groupId>javax.cache</groupId>-->
+        <!--			<artifactId>cache-api</artifactId>-->
+        <!--		</dependency>-->
+        <!--		<dependency>-->
+        <!--			<groupId>org.ehcache</groupId>-->
+        <!--			<artifactId>ehcache</artifactId>-->
+        <!--		</dependency>-->
 
-	<!-- Build settings -->
-	<build>
-		<!-- Resource replacement -->
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+        </dependency>
 
-		<!-- Build plugins -->
-		<plugins>
-			<!-- Include the source jar as well -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
 
-			<!-- Define JDK for compilation -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.2</version>
-				<configuration>
-					<source>${maven.compiler.source}</source>
-					<target>${maven.compiler.target}</target>
-				</configuration>
-			</plugin>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<finalName>HeadsPluginAPI-${project.version}</finalName>
-				</configuration>
-			</plugin>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+        </dependency>
 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>templating-maven-plugin</artifactId>
-				<version>1.0-alpha-3</version>
-				<executions>
-					<execution>
-						<id>filter-src</id>
-						<goals>
-							<goal>filter-sources</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+    </dependencies>
 
-			<!-- keep this if you want to add your spigot version through the install:install-file goal -->
-			<!-- to use this goal set the following property: file=/path/to/file/spigot.jar -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>2.5.2</version>
-			</plugin>
+    <!-- Build settings -->
+    <build>
+        <finalName>HeadsPluginAPI-${project.version}</finalName>
+        <!-- Resource replacement -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
 
-			<!-- build with dependencies -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.3</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<minimizeJar>false</minimizeJar>
-							<artifactSet>
-								<excludes>
-									<exclude>org.spigotmc:*</exclude>
-									<exclude>org.bukkit:*</exclude>
-									<exclude>jline:jline</exclude>
-									<exclude>org.yaml:snakeyaml</exclude>
-									<exclude>com.google.code.gson:gson</exclude>
-									<exclude>com.google.guava:guava</exclude>
-									<exclude>net.md-5:bungeecord-chat</exclude>
-									<exclude>junit:junit</exclude>
-									<exclude>net.sf.jopt-simple:jopt-simple</exclude>
-									<exclude>org.avaje:ebean</exclude>
-									<exclude>commons-lang:commons-lang</exclude>
-									<exclude>com.googlecode.json-simple:json-simple</exclude>
-									<exclude>org.hamcrest:hamcrest-core</exclude>
-									<exclude>org.xerial:sqlite-jdbc</exclude>
-									<exclude>javax.persistence:persistence-api</exclude>
-									<exclude>mysql:mysql-connector-java</exclude>
-								</excludes>
-							</artifactSet>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.4</version>
-				<configuration>
-					<additionalparam>-Xdoclint:none</additionalparam>
-					<sourceFileIncludes>
-						<include>bukkit/*.java</include>
-						<include>utils/HeadsUtils.java</include>
-						<include>utils/heads/*.java</include>
-						<include>utils/loader/DatabaseLoader.java</include>
-						<include>utils/loader/FreshCoalLoader.java</include>
-						<include>utils/loader/MinecraftHeadsLoader.java</include>
-						<include>utils/loader/MineSkinLoader.java</include>
-					</sourceFileIncludes>
-					<sourcepath>${basedir}/src/main/java/com/github/cc007/headsplugin</sourcepath>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+        <!-- Build plugins -->
+        <plugins>
+
+            <!-- Include the source jar as well -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Define JDK for compilation -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.2</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <finalName>HeadsPluginAPI-${project.version}</finalName>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>templating-maven-plugin</artifactId>
+                <version>1.0-alpha-3</version>
+                <configuration>
+
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>filter-src</id>
+                        <goals>
+                            <goal>filter-sources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- keep this if you want to add your spigot version through the install:install-file goal -->
+            <!-- to use this goal set the following property: file=/path/to/file/spigot.jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+            </plugin>
+
+            <!--			<plugin>-->
+            <!--				<groupId>org.springframework.boot</groupId>-->
+            <!--				<artifactId>spring-boot-maven-plugin</artifactId>-->
+            <!--			</plugin>-->
+
+            <!-- build with dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <version>${spring-boot.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <finalName>HeadsPluginAPI-${project.version}</finalName>
+                    <transformers>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                            <resource>META-INF/spring.handlers</resource>
+                        </transformer>
+                        <transformer
+                                implementation="org.springframework.boot.maven.PropertiesMergingResourceTransformer">
+                            <resource>META-INF/spring.factories</resource>
+                        </transformer>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                            <resource>META-INF/spring.schemas</resource>
+                        </transformer>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                    </transformers>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <configuration>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                    <sourceFileIncludes>
+                        <include>bukkit/*.java</include>
+                        <include>utils/HeadsUtils.java</include>
+                        <include>utils/heads/*.java</include>
+                        <include>utils/loader/DatabaseLoader.java</include>
+                        <include>utils/loader/FreshCoalLoader.java</include>
+                        <include>utils/loader/MinecraftHeadsLoader.java</include>
+                        <include>utils/loader/MineSkinLoader.java</include>
+                    </sourceFileIncludes>
+                    <sourcepath>${basedir}/src/main/java/com/github/cc007/headsplugin</sourcepath>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

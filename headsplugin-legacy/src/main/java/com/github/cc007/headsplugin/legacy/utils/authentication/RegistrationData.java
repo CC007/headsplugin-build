@@ -25,32 +25,30 @@ package com.github.cc007.headsplugin.legacy.utils.authentication;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.util.logging.Level;
 import org.bukkit.Bukkit;
+
+import java.util.logging.Level;
 
 /**
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class RegistrationData
-{
+public class RegistrationData {
 
-	private final boolean registration;
+    private final boolean registration;
 
-	public RegistrationData(String dataString)
-	{
-		if ("".equals(dataString)) {
-			Bukkit.getLogger().log(Level.WARNING, "No data was received from the server. Assume that the registration failed.");
-			registration = false;
-			return;
-		}
-		JsonParser parser = new JsonParser();
-		JsonObject serverData = (JsonObject) parser.parse(dataString);
-		registration = serverData.get("registration").getAsBoolean();
-	}
+    public RegistrationData(String dataString) {
+        if ("".equals(dataString)) {
+            Bukkit.getLogger().log(Level.WARNING, "No data was received from the server. Assume that the registration failed.");
+            registration = false;
+            return;
+        }
+        JsonParser parser = new JsonParser();
+        JsonObject serverData = (JsonObject) parser.parse(dataString);
+        registration = serverData.get("registration").getAsBoolean();
+    }
 
-	public boolean isRegistered()
-	{
-		return registration;
-	}
+    public boolean isRegistered() {
+        return registration;
+    }
 
 }

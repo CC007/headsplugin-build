@@ -30,109 +30,97 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import org.apache.commons.io.IOUtils;
+import org.bukkit.Bukkit;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
-import org.apache.commons.io.IOUtils;
-import org.bukkit.Bukkit;
 
 /**
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class HeadsCacher
-{
+public class HeadsCacher {
 
-	public static void cacheCategory(HeadsCategory category, File dataFolder)
-	{
-		String categoryName = category.getCategoryName();
-		if (categoryName.equalsIgnoreCase("everything")) {
-			return;
-		}
+    public static void cacheCategory(HeadsCategory category, File dataFolder) {
+        String categoryName = category.getCategoryName();
+        if (categoryName.equalsIgnoreCase("everything")) {
+            return;
+        }
 
-		if (!dataFolder.exists()) {
-			dataFolder.mkdir();
-		}
-		File dir = new File(dataFolder, "cache");
-		if (!dir.exists()) {
-			dir.mkdir();
-		}
-		File file = new File(dataFolder + "/cache/", categoryName + ".json");
-		if (!file.exists()) {
-			try {
-				file.createNewFile();
-			}
-			catch (IOException e) {
-				Bukkit.getLogger().log(Level.SEVERE, "Couldn''t create {0}.json", categoryName);
-				try {
-					Bukkit.getLogger().log(Level.SEVERE, "File path: {0}", file.getCanonicalPath());
-				}
-				catch (IOException ex) {
-					Bukkit.getLogger().log(Level.SEVERE, null, ex);
-				}
-			}
-		}
-		String jsonString = generateJsonString(category);
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
-			writer.write(jsonString);
-			writer.flush();
-			HeadsPlugin.getHeadsPlugin().getLogger().info("Done updating " + categoryName + ".json");
-		}
-		catch (IOException ex) {
-			Bukkit.getLogger().log(Level.SEVERE, "Couldn''t write to {0}.json", categoryName);
-		}
-	}
+        if (!dataFolder.exists()) {
+            dataFolder.mkdir();
+        }
+        File dir = new File(dataFolder, "cache");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        File file = new File(dataFolder + "/cache/", categoryName + ".json");
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                Bukkit.getLogger().log(Level.SEVERE, "Couldn''t create {0}.json", categoryName);
+                try {
+                    Bukkit.getLogger().log(Level.SEVERE, "File path: {0}", file.getCanonicalPath());
+                } catch (IOException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        String jsonString = generateJsonString(category);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
+            writer.write(jsonString);
+            writer.flush();
+            HeadsPlugin.getHeadsPlugin().getLogger().info("Done updating " + categoryName + ".json");
+        } catch (IOException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Couldn''t write to {0}.json", categoryName);
+        }
+    }
 
-	private static String generateJsonString(HeadsCategory category)
-	{
-		Gson gson = new Gson();
-		JsonArray heads = new JsonArray();
-		for (Head list : category.getList()) {
-			JsonObject head = new JsonObject();
-			head.addProperty("name", list.getName());
-			head.addProperty("value", list.getValue());
-			head.addProperty("skullowner", list.getHeadOwner().toString());
-			heads.add(head);
-		}
-		return gson.toJson(heads);
-	}
+    private static String generateJsonString(HeadsCategory category) {
+        Gson gson = new Gson();
+        JsonArray heads = new JsonArray();
+        for (Head list : category.getList()) {
+            JsonObject head = new JsonObject();
+            head.addProperty("name", list.getName());
+            head.addProperty("value", list.getValue());
+            head.addProperty("skullowner", list.getHeadOwner().toString());
+            heads.add(head);
+        }
+        return gson.toJson(heads);
+    }
 
-	public static boolean isCategoryRecentlyCached(HeadsCategory category, File dataFolder)
-	{
-		long x = 1; //nr of days
-		File file = new File(dataFolder + "/cache/", category.getCategoryName() + ".json");
-		if (file.exists()) {
-			long diff = new Date().getTime() - file.lastModified();
-			return diff < x * 24 * 60 * 60 * 1000;
-		}
-		return false;
-	}
+    public static boolean isCategoryRecentlyCached(HeadsCategory category, File dataFolder) {
+        long x = 1; //nr of days
+        File file = new File(dataFolder + "/cache/", category.getCategoryName() + ".json");
+        if (file.exists()) {
+            long diff = new Date().getTime() - file.lastModified();
+            return diff < x * 24 * 60 * 60 * 1000;
+        }
+        return false;
+    }
 
-	public static List<Head> getHeads(String categoryName, File dataFolder) throws IOException
-	{
-		Bukkit.getLogger().log(Level.WARNING, "Could not get category {0}: unable to connect to the website, using cache instead.", categoryName);
-		File categoryFile = new File(dataFolder + "/cache/", categoryName + ".json");
-		JsonArray json;
-		if (categoryFile.exists()) {
-			json = new JsonParser().parse(IOUtils.toString(new FileInputStream(categoryFile))).getAsJsonArray();
-		}
-		else {
-			Bukkit.getLogger().log(Level.SEVERE, "No cache was found for category {0}!", categoryName);
-			json = new JsonArray();
-		}
-		List<Head> heads = new ArrayList<>();
-		for (int i = 0; i < json.size(); i++) {
-			String name = json.get(i).getAsJsonObject().getAsJsonPrimitive("name").getAsString();
-			UUID skullOwner = UUID.fromString(json.get(i).getAsJsonObject().getAsJsonPrimitive("skullowner").getAsString());
-			String value = json.get(i).getAsJsonObject().getAsJsonPrimitive("value").getAsString();
-			heads.add(new Head(name, value, skullOwner));
-		}
-		return heads;
-	}
+    public static List<Head> getHeads(String categoryName, File dataFolder) throws IOException {
+        Bukkit.getLogger().log(Level.WARNING, "Could not get category {0}: unable to connect to the website, using cache instead.", categoryName);
+        File categoryFile = new File(dataFolder + "/cache/", categoryName + ".json");
+        JsonArray json;
+        if (categoryFile.exists()) {
+            json = new JsonParser().parse(IOUtils.toString(new FileInputStream(categoryFile))).getAsJsonArray();
+        } else {
+            Bukkit.getLogger().log(Level.SEVERE, "No cache was found for category {0}!", categoryName);
+            json = new JsonArray();
+        }
+        List<Head> heads = new ArrayList<>();
+        for (int i = 0; i < json.size(); i++) {
+            String name = json.get(i).getAsJsonObject().getAsJsonPrimitive("name").getAsString();
+            UUID skullOwner = UUID.fromString(json.get(i).getAsJsonObject().getAsJsonPrimitive("skullowner").getAsString());
+            String value = json.get(i).getAsJsonObject().getAsJsonPrimitive("value").getAsString();
+            heads.add(new Head(name, value, skullOwner));
+        }
+        return heads;
+    }
 }

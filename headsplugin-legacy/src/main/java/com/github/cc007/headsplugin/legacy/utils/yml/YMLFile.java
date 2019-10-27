@@ -23,68 +23,59 @@
  */
 package com.github.cc007.headsplugin.legacy.utils.yml;
 
+import org.apache.commons.io.IOUtils;
+import org.yaml.snakeyaml.Yaml;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.io.IOUtils;
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class YMLFile
-{
+public class YMLFile {
 
-	Map<String, Object> root;
+    Map<String, Object> root;
 
-	public YMLFile() throws IOException
-	{
-		this("categories.yml");
-	}
+    public YMLFile() throws IOException {
+        this("categories.yml");
+    }
 
-	public YMLFile(String filename) throws IOException
-	{
-		String result;
-		ClassLoader classLoader = getClass().getClassLoader();
-		InputStream is = classLoader.getResourceAsStream(filename);
-		result = IOUtils.toString(is);
-		is.close();
-		this.root = (Map) (new Yaml().load(result));
-	}
+    public YMLFile(String filename) throws IOException {
+        String result;
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream is = classLoader.getResourceAsStream(filename);
+        result = IOUtils.toString(is);
+        is.close();
+        this.root = (Map) (new Yaml().load(result));
+    }
 
-	public static Map<String, Object> getNode(String key, Map<String, Object> node)
-	{
-		return (Map) node.get(key);
-	}
+    public static Map<String, Object> getNode(String key, Map<String, Object> node) {
+        return (Map) node.get(key);
+    }
 
-	public static List<Object> getList(String key, Map<String, Object> node)
-	{
-		return (List) node.get(key);
-	}
+    public static List<Object> getList(String key, Map<String, Object> node) {
+        return (List) node.get(key);
+    }
 
-	public static String getString(String key, Map<String, Object> node)
-	{
-		return node.get(key).toString();
-	}
+    public static String getString(String key, Map<String, Object> node) {
+        return node.get(key).toString();
+    }
 
-	public static int getInt(String key, Map<String, Object> node)
-	{
-		return Integer.parseInt(getString(key, node));
-	}
+    public static int getInt(String key, Map<String, Object> node) {
+        return Integer.parseInt(getString(key, node));
+    }
 
-	public static boolean getBoolean(String key, Map<String, Object> node)
-	{
-		return Boolean.parseBoolean(getString(key, node));
-	}
+    public static boolean getBoolean(String key, Map<String, Object> node) {
+        return Boolean.parseBoolean(getString(key, node));
+    }
 
-	public YMLNode getRootNode()
-	{
-		return new YMLNode(root);
-	}
+    public YMLNode getRootNode() {
+        return new YMLNode(root);
+    }
 
-	public Map<String, Object> getRootMap()
-	{
-		return root;
-	}
+    public Map<String, Object> getRootMap() {
+        return root;
+    }
 }

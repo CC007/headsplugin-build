@@ -30,6 +30,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import org.apache.commons.codec.binary.Base64;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
@@ -37,104 +39,95 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class MineSkinLoader implements DatabaseLoader
-{
+public class MineSkinLoader implements DatabaseLoader {
 
-	@Override
-	public List<Head> getHeads(String urlString, String searchTerm) throws MalformedURLException, SocketTimeoutException, IOException
-	{
-		List<Head> heads = new ArrayList<>();
+    @Override
+    public List<Head> getHeads(String urlString, String searchTerm) throws MalformedURLException, SocketTimeoutException, IOException {
+        List<Head> heads = new ArrayList<>();
 
-		String jsonString = URLReader.readUrl(urlString + "list?filter=" + searchTerm, "application/json", "GET");
-		if (jsonString == null) {
-			throw new UnknownHostException("The website returns an unknown format. The url has probably been incorrectly set. Url string: " + urlString + "list?filter=" + searchTerm);
-		}
+        String jsonString = URLReader.readUrl(urlString + "list?filter=" + searchTerm, "application/json", "GET");
+        if (jsonString == null) {
+            throw new UnknownHostException("The website returns an unknown format. The url has probably been incorrectly set. Url string: " + urlString + "list?filter=" + searchTerm);
+        }
 
-		int id = -1;
-		try {
-			JsonParser jsonParser = new JsonParser();
-			JsonArray listJson = jsonParser.parse(jsonString).getAsJsonObject().getAsJsonArray("skins");
-			// now turn the JsonArray into a list of heads
-			for (int i = 0; i < listJson.size(); i++) {
-				id = listJson.get(i).getAsJsonObject().getAsJsonPrimitive("id").getAsInt();
-				jsonString = URLReader.readUrl(urlString + "id/" + id, "application/json", "GET");
-				if (jsonString == null) {
-					throw new UnknownHostException("The website returns an unknown format. The url has probably been incorrectly set. Url string: " + urlString + "id/" + searchTerm);
-				}
-				JsonObject headJson = jsonParser.parse(jsonString).getAsJsonObject();
+        int id = -1;
+        try {
+            JsonParser jsonParser = new JsonParser();
+            JsonArray listJson = jsonParser.parse(jsonString).getAsJsonObject().getAsJsonArray("skins");
+            // now turn the JsonArray into a list of heads
+            for (int i = 0; i < listJson.size(); i++) {
+                id = listJson.get(i).getAsJsonObject().getAsJsonPrimitive("id").getAsInt();
+                jsonString = URLReader.readUrl(urlString + "id/" + id, "application/json", "GET");
+                if (jsonString == null) {
+                    throw new UnknownHostException("The website returns an unknown format. The url has probably been incorrectly set. Url string: " + urlString + "id/" + searchTerm);
+                }
+                JsonObject headJson = jsonParser.parse(jsonString).getAsJsonObject();
 
-				String name = headJson.getAsJsonPrimitive("name").getAsString();
-				UUID skullOwner = UUID.fromString(headJson.getAsJsonObject("data").getAsJsonPrimitive("uuid").getAsString());
+                String name = headJson.getAsJsonPrimitive("name").getAsString();
+                UUID skullOwner = UUID.fromString(headJson.getAsJsonObject("data").getAsJsonPrimitive("uuid").getAsString());
 
-				String tempValue = headJson.getAsJsonObject("data").getAsJsonObject("texture").getAsJsonPrimitive("value").getAsString();
-				String decodedValue = new String(Base64.decodeBase64(tempValue), "UTF-8");
-				String strippedDecodedValue = "{\"textures" + decodedValue.split("textures", 2)[1];
-				String value = Base64.encodeBase64String(strippedDecodedValue.getBytes("UTF-8"));
-				heads.add(new Head(name, value, skullOwner));
-			}
+                String tempValue = headJson.getAsJsonObject("data").getAsJsonObject("texture").getAsJsonPrimitive("value").getAsString();
+                String decodedValue = new String(Base64.decodeBase64(tempValue), "UTF-8");
+                String strippedDecodedValue = "{\"textures" + decodedValue.split("textures", 2)[1];
+                String value = Base64.encodeBase64String(strippedDecodedValue.getBytes("UTF-8"));
+                heads.add(new Head(name, value, skullOwner));
+            }
 
-		}
-		catch (JsonSyntaxException ex) {
-			String errorMsg = "The website returns an unknown format. The url has probably been incorrectly set. \n  Url string for search: " + urlString + "list?filter=" + searchTerm;
-			if (id != -1) {
-				errorMsg += "\n  Url string for id fetch: " + urlString + "id/" + id;
-			}
-			throw new UnknownHostException(errorMsg);
-		}
-		return heads;
-	}
+        } catch (JsonSyntaxException ex) {
+            String errorMsg = "The website returns an unknown format. The url has probably been incorrectly set. \n  Url string for search: " + urlString + "list?filter=" + searchTerm;
+            if (id != -1) {
+                errorMsg += "\n  Url string for id fetch: " + urlString + "id/" + id;
+            }
+            throw new UnknownHostException(errorMsg);
+        }
+        return heads;
+    }
 
-	@Override
-	public Head addHead(String urlString, UUID playerUuid, String headName) throws MalformedURLException, SocketTimeoutException, IOException
-	{
-		try {
-			String jsonString = URLReader.readUrl(urlString + playerUuid.toString() + "?name=" + headName, "application/json", "GET");
+    @Override
+    public Head addHead(String urlString, UUID playerUuid, String headName) throws MalformedURLException, SocketTimeoutException, IOException {
+        try {
+            String jsonString = URLReader.readUrl(urlString + playerUuid.toString() + "?name=" + headName, "application/json", "GET");
 
-			if (jsonString == null) {
-				throw new UnknownHostException("The website returns an unknown format. The url has probably been incorrectly set. Url string: " + urlString + playerUuid.toString() + "?name=" + headName);
-			}
-			HeadsPlugin.getHeadsPlugin().getLogger().info("varable jsonString: " + jsonString);
-			JsonParser jsonParser = new JsonParser();
-			JsonObject headJson = jsonParser.parse(jsonString).getAsJsonObject();
+            if (jsonString == null) {
+                throw new UnknownHostException("The website returns an unknown format. The url has probably been incorrectly set. Url string: " + urlString + playerUuid.toString() + "?name=" + headName);
+            }
+            HeadsPlugin.getHeadsPlugin().getLogger().info("varable jsonString: " + jsonString);
+            JsonParser jsonParser = new JsonParser();
+            JsonObject headJson = jsonParser.parse(jsonString).getAsJsonObject();
 
-			if (headJson.has("error")) {
-				throw new IOException(headJson.getAsJsonPrimitive("error").getAsString());
-			}
-			String name = headJson.getAsJsonPrimitive("name").getAsString();
-			UUID skullOwner = UUID.fromString(headJson.getAsJsonObject("data").getAsJsonPrimitive("uuid").getAsString());
+            if (headJson.has("error")) {
+                throw new IOException(headJson.getAsJsonPrimitive("error").getAsString());
+            }
+            String name = headJson.getAsJsonPrimitive("name").getAsString();
+            UUID skullOwner = UUID.fromString(headJson.getAsJsonObject("data").getAsJsonPrimitive("uuid").getAsString());
 
-			String tempValue = headJson.getAsJsonObject("data").getAsJsonObject("texture").getAsJsonPrimitive("value").getAsString();
-			String decodedValue = new String(Base64.decodeBase64(tempValue), "UTF-8");
-			String strippedDecodedValue = "{\"textures" + decodedValue.split("textures", 2)[1];
-			String value = Base64.encodeBase64String(strippedDecodedValue.getBytes("UTF-8"));
-			return new Head(name, value, skullOwner);
-		}
-		catch (JsonSyntaxException ex) {
-			String errorMsg = "The website returns an unknown format. The url has probably been incorrectly set. \n  Url string for search: " + urlString + playerUuid.toString() + "?name=" + headName;
-			throw new IOException(errorMsg);
-		}
-	}
+            String tempValue = headJson.getAsJsonObject("data").getAsJsonObject("texture").getAsJsonPrimitive("value").getAsString();
+            String decodedValue = new String(Base64.decodeBase64(tempValue), "UTF-8");
+            String strippedDecodedValue = "{\"textures" + decodedValue.split("textures", 2)[1];
+            String value = Base64.encodeBase64String(strippedDecodedValue.getBytes("UTF-8"));
+            return new Head(name, value, skullOwner);
+        } catch (JsonSyntaxException ex) {
+            String errorMsg = "The website returns an unknown format. The url has probably been incorrectly set. \n  Url string for search: " + urlString + playerUuid.toString() + "?name=" + headName;
+            throw new IOException(errorMsg);
+        }
+    }
 
-	@Override
-	public String getCategoriesUrl()
-	{
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    public String getCategoriesUrl() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	public String getSearchUrl()
-	{
-		return HeadsPlugin.getHeadsPlugin().getConfig().getString("mineskin.customcategoriesurl");
-	}
+    @Override
+    public String getSearchUrl() {
+        return HeadsPlugin.getHeadsPlugin().getConfig().getString("mineskin.customcategoriesurl");
+    }
 
-	@Override
-	public String getGenerateUrl()
-	{
-		return HeadsPlugin.getHeadsPlugin().getConfig().getString("mineskin.generateurl");
-	}
+    @Override
+    public String getGenerateUrl() {
+        return HeadsPlugin.getHeadsPlugin().getConfig().getString("mineskin.generateurl");
+    }
 }
