@@ -3,7 +3,7 @@ package com.github.cc007.headsplugin.presentation.commands.headsplugin;
 import com.github.cc007.headsplugin.HeadsPlugin;
 import com.github.cc007.headsplugin.business.domain.Head;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
-import com.github.cc007.headsplugin.integration.daos.heads.FreshCoalDao;
+import com.github.cc007.headsplugin.integration.daos.heads.MinecraftHeadsDao;
 import com.github.cc007.headsplugin.presentation.commands.AbstractCommand;
 import dev.alangomes.springspigot.command.Subcommand;
 import lombok.val;
@@ -28,7 +28,7 @@ public class MineSkinApiTestCommand extends AbstractCommand {
     private HeadsPlugin headsPlugin;
 
     @Autowired
-    private FreshCoalDao freshCoalDao;
+    private MinecraftHeadsDao minecraftHeadsDao;
 
     @Parameters(
             index = "0",
@@ -43,7 +43,7 @@ public class MineSkinApiTestCommand extends AbstractCommand {
             context.getSender().sendMessage(chatManager.getConsolePrefix() + "This command is only available for players.");
         }
 
-        val heads = freshCoalDao.getCategoryHeads(freshCoalDao.getCategoryNames().get(0));
+        val heads = minecraftHeadsDao.getCategoryHeads(minecraftHeadsDao.getCategoryNames().get(0));
         context.getPlayer().sendMessage(chatManager.getChatPrefix() + "The following heads are available:");
         for (Head head : heads) {
             context.getPlayer().sendMessage("   - " + head.getName());
