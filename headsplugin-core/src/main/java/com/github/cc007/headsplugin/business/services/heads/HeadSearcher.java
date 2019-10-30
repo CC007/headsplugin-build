@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-public class HeadQueryService {
+public class HeadSearcher {
     @Autowired
     public Map<String, Searchable> searchConnectors;
 
