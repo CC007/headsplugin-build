@@ -2,6 +2,7 @@ package com.github.cc007.headsplugin.presentation.commands.headsplugin;
 
 import com.github.cc007.headsplugin.HeadsPlugin;
 import com.github.cc007.headsplugin.business.domain.Head;
+import com.github.cc007.headsplugin.business.services.heads.HeadCreator;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
 import com.github.cc007.headsplugin.integration.daos.heads.MinecraftHeadsDao;
 import com.github.cc007.headsplugin.presentation.commands.AbstractCommand;
@@ -13,6 +14,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Subcommand
 @Command(
@@ -24,11 +26,12 @@ import java.nio.charset.StandardCharsets;
 
 )
 public class MineSkinApiTestCommand extends AbstractCommand {
-    @Autowired
-    private HeadsPlugin headsPlugin;
 
     @Autowired
     private MinecraftHeadsDao minecraftHeadsDao;
+
+    @Autowired
+    private HeadCreator headCreator;
 
     @Parameters(
             index = "0",
@@ -42,8 +45,14 @@ public class MineSkinApiTestCommand extends AbstractCommand {
         if (context.getPlayer() == null) {
             context.getSender().sendMessage(chatManager.getConsolePrefix() + "This command is only available for players.");
         }
-
         val heads = minecraftHeadsDao.getCategoryHeads(minecraftHeadsDao.getCategoryNames().get(0));
+
+        //showInfo(heads);
+        context.getPlayer().getInventory().addItem(headCreator.getItemStack(heads.get(7)));
+
+    }
+
+    private void showInfo(List<Head> heads) {
         context.getPlayer().sendMessage(chatManager.getChatPrefix() + "The following heads are available:");
         for (Head head : heads) {
             context.getPlayer().sendMessage("   - " + head.getName());
