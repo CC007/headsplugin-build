@@ -125,6 +125,11 @@
             <artifactId>Item-NBT-API</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+        </dependency>
+
     </dependencies>
 
     <!-- Build settings -->
@@ -229,6 +234,12 @@
                 </executions>
                 <configuration>
                     <finalName>HeadsPluginAPI-${project.version}</finalName>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>com.github.cc007.headsplugin.bstats</shadedPattern>
+                        </relocation>
+                    </relocations>
                     <transformers>
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
