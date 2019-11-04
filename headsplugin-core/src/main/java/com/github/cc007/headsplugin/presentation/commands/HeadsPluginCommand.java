@@ -1,8 +1,10 @@
 package com.github.cc007.headsplugin.presentation.commands;
 
+import com.github.cc007.headsplugin.business.services.chat.ChatManager;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
 import com.github.cc007.headsplugin.presentation.commands.headsplugin.MineSkinApiTestCommand;
 import com.github.cc007.headsplugin.presentation.commands.headsplugin.UpdateCategoryCommand;
+import dev.alangomes.springspigot.context.Context;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -18,6 +20,11 @@ import picocli.CommandLine.Help.Ansi;
         subcommands = {UpdateCategoryCommand.class, MineSkinApiTestCommand.class}
 )
 public class HeadsPluginCommand extends AbstractCommand {
+
+    public HeadsPluginCommand(Context context, ChatManager chatManager) {
+        super(context, chatManager);
+    }
+
     @Override
     public void run() {
         CommandLine cmd = commandSpec.commandLine();

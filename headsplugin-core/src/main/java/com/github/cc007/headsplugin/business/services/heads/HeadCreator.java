@@ -74,6 +74,7 @@ public class HeadCreator {
         val headSkullMeta = Optional.ofNullable((SkullMeta) playerHeadItemStack.getItemMeta());
         headSkullMeta.ifPresent((meta) -> {
             meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5")));
+            meta.setDisplayName(head.getName());
             playerHeadItemStack.setItemMeta(meta);
         });
         val nbtItem = new NBTItem(playerHeadItemStack);
@@ -82,6 +83,7 @@ public class HeadCreator {
 
         val skullOwnerCompound = nbtItem.addCompound("SkullOwner");
         skullOwnerCompound.setString("Id", head.getHeadOwner().toString());
+        skullOwnerCompound.setString("Name", head.getName());
         val propertiesCompound = skullOwnerCompound.addCompound("Properties");
         val texturesCompoundList = propertiesCompound.getCompoundList("textures");
         val textureListCompound = texturesCompoundList.addCompound();

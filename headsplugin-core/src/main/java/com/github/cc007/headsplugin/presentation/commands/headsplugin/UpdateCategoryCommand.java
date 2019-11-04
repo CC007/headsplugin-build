@@ -1,9 +1,11 @@
 package com.github.cc007.headsplugin.presentation.commands.headsplugin;
 
 import com.github.cc007.headsplugin.HeadsPlugin;
+import com.github.cc007.headsplugin.business.services.chat.ChatManager;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
 import com.github.cc007.headsplugin.presentation.commands.AbstractCommand;
 import dev.alangomes.springspigot.command.Subcommand;
+import dev.alangomes.springspigot.context.Context;
 import org.bukkit.command.ConsoleCommandSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import picocli.CommandLine.Command;
@@ -19,8 +21,6 @@ import picocli.CommandLine.Parameters;
 
 )
 public class UpdateCategoryCommand extends AbstractCommand {
-    @Autowired
-    private HeadsPlugin headsPlugin;
 
     @Parameters(
             index = "0",
@@ -30,6 +30,10 @@ public class UpdateCategoryCommand extends AbstractCommand {
             paramLabel = "categoryName"
     )
     private String categoryName;
+
+    public UpdateCategoryCommand(Context context, ChatManager chatManager) {
+        super(context, chatManager);
+    }
 
     @Override
     public void run() {
