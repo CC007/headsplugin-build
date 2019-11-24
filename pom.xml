@@ -38,6 +38,7 @@
 
     <modules>
         <module>headsplugin-core</module>
+        <module>headsplugin-dummy</module>
         <module>headsplugin-parent</module>
         <module>headsplugin-dependencies</module>
         <module>headsplugin-files</module>

@@ -29,7 +29,6 @@ import java.util.List;
         mixinStandardHelpOptions = true,
         description = "Command to list the available heads from mineskin in chat (for test purposes)",
         aliases = {"lst"}
-
 )
 @Slf4j
 public class MineSkinApiTestCommand extends AbstractCommand {

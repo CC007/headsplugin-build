@@ -9,6 +9,6 @@ public class PluginVersionProvider implements CommandLine.IVersionProvider {
 
     @Override
     public String[] getVersion() {
-        return new String[]{HeadsPlugin.context.getBean("pluginVersion", String.class)};
+        return new String[]{HeadsPlugin.getSpringContext().getBean("pluginVersion", String.class)};
     }
 }
