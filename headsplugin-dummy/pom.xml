@@ -10,7 +10,7 @@
         <relativePath>../headsplugin-parent</relativePath>
     </parent>
 
-    <artifactId>headsplugin-core</artifactId>
+    <artifactId>headsplugin-dummy</artifactId>
 
     <packaging>jar</packaging>
 
@@ -78,72 +78,21 @@
         <dependency>
             <groupId>dev.alangomes</groupId>
             <artifactId>spigot-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-        <!--		<dependency>-->
-        <!--			<groupId>org.springframework.boot</groupId>-->
-        <!--			<artifactId>spring-boot-starter-cache</artifactId>-->
-        <!--		</dependency>-->
-
-        <!--		<dependency>-->
-        <!--			<groupId>javax.cache</groupId>-->
-        <!--			<artifactId>cache-api</artifactId>-->
-        <!--		</dependency>-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.ehcache</groupId>-->
-        <!--			<artifactId>ehcache</artifactId>-->
-        <!--		</dependency>-->
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.tr7zw</groupId>
-            <artifactId>Item-NBT-API</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.switchyard</groupId>
-            <artifactId>switchyard-common</artifactId>
+            <groupId>com.github.cc007</groupId>
+            <artifactId>headsplugin-core</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
 
     <!-- Build settings -->
     <build>
-        <finalName>HeadsPluginAPI-${project.version}</finalName>
+        <finalName>DummyPlugin-${project.version}</finalName>
         <!-- Resource replacement -->
         <resources>
             <resource>
@@ -186,7 +135,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <finalName>HeadsPluginAPI-${project.version}</finalName>
+                    <finalName>DummyPlugin-${project.version}</finalName>
                 </configuration>
             </plugin>
 
@@ -242,7 +191,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <finalName>HeadsPluginAPI-${project.version}</finalName>
+                    <finalName>DummyPlugin-${project.version}</finalName>
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
@@ -278,24 +227,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.4</version>
-                <configuration>
-                    <additionalparam>-Xdoclint:none</additionalparam>
-                    <sourceFileIncludes>
-                        <include>bukkit/*.java</include>
-                        <include>utils/HeadsUtils.java</include>
-                        <include>utils/heads/*.java</include>
-                        <include>utils/loader/DatabaseLoader.java</include>
-                        <include>utils/loader/FreshCoalLoader.java</include>
-                        <include>utils/loader/MinecraftHeadsLoader.java</include>
-                        <include>utils/loader/MineSkinLoader.java</include>
-                    </sourceFileIncludes>
-                    <sourcepath>${basedir}/src/main/java/com/github/cc007/headsplugin</sourcepath>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 </project>

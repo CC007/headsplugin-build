@@ -2,11 +2,13 @@ package com.github.cc007.headsplugin;
 
 import com.github.cc007.headsplugin.config.Application;
 import dev.alangomes.springspigot.SpringSpigotInitializer;
+import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
+import org.switchyard.common.type.CompoundClassLoader;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -24,13 +26,30 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 public class HeadsPlugin extends JavaPlugin {
 
-    public static ConfigurableApplicationContext context;
+    @Getter
+    private static ConfigurableApplicationContext springContext;
+
+    private static List<ClassLoader> springClassLoaders;
 
     private ClassLoader defaultClassLoader;
+
+
+    public static void addSpringClassLoader(ClassLoader springClassLoader) {
+        springClassLoaders.add(springClassLoader);
+    }
+
+    @Override
+    public void onLoad(){
+        springClassLoaders = new ArrayList<>();
+        getLogger().info("Added class loader to HeadsPlugin springClassLoaders");
+        springClassLoaders.add(getClassLoader());
+    }
 
     @Override
     public void onEnable() {
@@ -41,18 +60,19 @@ public class HeadsPlugin extends JavaPlugin {
 
         // configure the class loader and run the spring application
         defaultClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(getClassLoader());
-        ResourceLoader loader = new DefaultResourceLoader(getClassLoader());
+        ClassLoader classLoader = new CompoundClassLoader(springClassLoaders);
+        Thread.currentThread().setContextClassLoader(classLoader);
+        ResourceLoader loader = new DefaultResourceLoader(classLoader);
         SpringApplication application = new SpringApplication(loader, Application.class);
         application.addInitializers(new SpringSpigotInitializer(this));
-        context = application.run();
+        springContext = application.run();
     }
 
     @Override
     public void onDisable() {
-        if (context != null) {
-            context.close();
-            context = null;
+        if (springContext != null) {
+            springContext.close();
+            springContext = null;
         }
 
         Thread.currentThread().setContextClassLoader(defaultClassLoader);
@@ -76,5 +96,4 @@ public class HeadsPlugin extends JavaPlugin {
             getLogger().log(Level.SEVERE, null, ex);
         }
     }
-
 }
