@@ -2,7 +2,7 @@ package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.business.domain.Head;
 import com.github.cc007.headsplugin.business.services.NBTPrinter;
-import de.tr7zw.nbtapi.NBTCompound;
+
 import de.tr7zw.nbtapi.NBTContainer;
 import de.tr7zw.nbtapi.NBTItem;
 import de.tr7zw.nbtapi.NBTTileEntity;

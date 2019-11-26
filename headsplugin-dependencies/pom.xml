@@ -24,7 +24,7 @@
 
     <repositories>
 
-        <!-- repo for github dependencies-->
+        <!-- repo for github dependencies -->
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
@@ -38,6 +38,7 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Spring boot dependencies import -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -46,6 +47,7 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- Spring cloud dependencies import -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -61,23 +63,11 @@
                 <version>${spigot-spring-boot.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-cache</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-
             <!-- Bukkit API -->
             <dependency>
                 <groupId>org.bukkit</groupId>
                 <artifactId>bukkit</artifactId>
                 <version>${minecraft.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.google.code.gson</groupId>
-                        <artifactId>gson</artifactId>
-                    </exclusion>
-                </exclusions>
                 <scope>provided</scope>
             </dependency>
 
@@ -86,12 +76,6 @@
                 <groupId>org.bukkit</groupId>
                 <artifactId>craftbukkit</artifactId>
                 <version>${minecraft.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.google.code.gson</groupId>
-                        <artifactId>gson</artifactId>
-                    </exclusion>
-                </exclusions>
                 <scope>provided</scope>
             </dependency>
 
@@ -162,6 +146,14 @@
                 <groupId>org.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
                 <version>3.6.2</version>
+            </dependency>
+
+            <!-- Database -->
+            <dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>2.5.0</version>
+                <scope>runtime</scope>
             </dependency>
 
             <!-- Usage statistics -->

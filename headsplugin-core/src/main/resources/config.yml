@@ -27,3 +27,21 @@ minecraftheads:
 
 # maximum response time from the server to respond
 connectiontimeout: 10000
+
+spring:
+  datasource:
+    url: jdbc:hsqldb:file:data/heads
+    username: sa
+    password: ""
+    driverClassName: org.hsqldb.jdbcDriver
+
+  hsql:
+    console:
+      enabled: true
+
+  jpa:
+    database: HSQL
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.HSQLDialect
+    show-sql: true

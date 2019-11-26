@@ -1,6 +1,7 @@
 package com.github.cc007.headsplugin;
 
 import com.github.cc007.headsplugin.config.Application;
+
 import dev.alangomes.springspigot.SpringSpigotInitializer;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;

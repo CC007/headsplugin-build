@@ -6,8 +6,9 @@ import com.github.cc007.headsplugin.business.services.chat.ChatManager;
 import com.github.cc007.headsplugin.business.services.heads.HeadCreator;
 import com.github.cc007.headsplugin.business.services.heads.HeadPlacer;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
-import com.github.cc007.headsplugin.integration.daos.heads.MinecraftHeadsDao;
+import com.github.cc007.headsplugin.integration.rest.daos.heads.MinecraftHeadsDao;
 import com.github.cc007.headsplugin.presentation.commands.AbstractCommand;
+
 import de.tr7zw.nbtapi.NBTTileEntity;
 import dev.alangomes.springspigot.command.Subcommand;
 import dev.alangomes.springspigot.context.Context;
