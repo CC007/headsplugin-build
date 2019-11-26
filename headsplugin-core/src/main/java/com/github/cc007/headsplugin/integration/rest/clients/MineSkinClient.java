@@ -5,6 +5,7 @@ import com.github.cc007.headsplugin.integration.rest.dto.mineskin.SkinDetailsDto
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.create.CreateDto;
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.create.CreateErrorDto;
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.search.SkinListDto;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

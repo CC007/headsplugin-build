@@ -1,13 +1,12 @@
 package com.github.cc007.headsplugin.presentation.commands.headsplugin;
 
-import com.github.cc007.headsplugin.HeadsPlugin;
 import com.github.cc007.headsplugin.business.services.chat.ChatManager;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
 import com.github.cc007.headsplugin.presentation.commands.AbstractCommand;
+
 import dev.alangomes.springspigot.command.Subcommand;
 import dev.alangomes.springspigot.context.Context;
 import org.bukkit.command.ConsoleCommandSender;
-import org.springframework.beans.factory.annotation.Autowired;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 

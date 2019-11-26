@@ -1,11 +1,12 @@
-package com.github.cc007.headsplugin.integration.daos.heads;
+package com.github.cc007.headsplugin.integration.rest.daos.heads;
 
 import com.github.cc007.headsplugin.business.domain.Head;
-import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Creatable;
-import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Searchable;
-import com.github.cc007.headsplugin.integration.mappers.MineSkinHeadMapper;
 import com.github.cc007.headsplugin.integration.rest.clients.MineSkinClient;
+import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Creatable;
+import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Searchable;
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.search.SkinDto;
+import com.github.cc007.headsplugin.integration.rest.mappers.MineSkinHeadMapper;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;

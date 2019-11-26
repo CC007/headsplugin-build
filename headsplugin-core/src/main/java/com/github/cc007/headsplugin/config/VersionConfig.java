@@ -1,6 +1,7 @@
 package com.github.cc007.headsplugin.config;
 
 import com.github.cc007.headsplugin.business.services.chat.ChatManager;
+
 import dev.alangomes.springspigot.configuration.DynamicValue;
 import dev.alangomes.springspigot.configuration.Instance;
 import org.springframework.beans.factory.annotation.Autowired;

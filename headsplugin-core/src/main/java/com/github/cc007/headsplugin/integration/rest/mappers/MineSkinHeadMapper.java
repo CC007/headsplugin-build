@@ -1,7 +1,8 @@
-package com.github.cc007.headsplugin.integration.mappers;
+package com.github.cc007.headsplugin.integration.rest.mappers;
 
 import com.github.cc007.headsplugin.business.domain.Head;
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.SkinDetailsDto;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.Validate;
