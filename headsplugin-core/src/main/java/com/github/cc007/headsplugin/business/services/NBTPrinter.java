@@ -1,6 +1,12 @@
 package com.github.cc007.headsplugin.business.services;
 
-import de.tr7zw.nbtapi.*;
+import de.tr7zw.nbtapi.NBTCompound;
+import de.tr7zw.nbtapi.NBTCompoundList;
+import de.tr7zw.nbtapi.NBTEntity;
+import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBTListCompound;
+import de.tr7zw.nbtapi.NBTTileEntity;
+import de.tr7zw.nbtapi.NBTType;
 import de.tr7zw.nbtapi.utils.nmsmappings.ReflectionMethod;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
