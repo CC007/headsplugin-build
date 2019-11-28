@@ -32,7 +32,7 @@ import java.util.List;
         aliases = {"lst"}
 )
 @Slf4j
-public class MineSkinApiTestCommand extends AbstractCommand {
+public class DbTestCommand extends AbstractCommand {
 
     private final MinecraftHeadsDao minecraftHeadsDao;
     private final HeadCreator headCreator;
@@ -46,12 +46,12 @@ public class MineSkinApiTestCommand extends AbstractCommand {
     )
     private int searchTerm;
 
-    public MineSkinApiTestCommand(Context context,
-                                  ChatManager chatManager,
-                                  MinecraftHeadsDao minecraftHeadsDao,
-                                  HeadCreator headCreator,
-                                  HeadPlacer headPlacer,
-                                  NBTPrinter nbtPrinter) {
+    public DbTestCommand(Context context,
+                         ChatManager chatManager,
+                         MinecraftHeadsDao minecraftHeadsDao,
+                         HeadCreator headCreator,
+                         HeadPlacer headPlacer,
+                         NBTPrinter nbtPrinter) {
         super(context, chatManager);
         this.minecraftHeadsDao = minecraftHeadsDao;
         this.headCreator = headCreator;
