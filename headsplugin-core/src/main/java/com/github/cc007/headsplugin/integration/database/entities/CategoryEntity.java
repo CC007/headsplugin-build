@@ -31,6 +31,7 @@ public class CategoryEntity {
     private long id;
 
     @Version
+    @Column
     private long version;
 
     @Column

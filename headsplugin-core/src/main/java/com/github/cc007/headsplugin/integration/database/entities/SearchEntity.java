@@ -34,6 +34,7 @@ public class SearchEntity {
     private long id;
 
     @Version
+    @Column
     private long version;
 
     @Column

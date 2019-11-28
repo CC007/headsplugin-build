@@ -30,6 +30,7 @@ public class TagEntity {
     private long id;
 
     @Version
+    @Column
     private long version;
 
     @Column

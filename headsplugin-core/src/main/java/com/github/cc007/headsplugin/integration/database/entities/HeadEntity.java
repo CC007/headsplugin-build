@@ -28,6 +28,7 @@ public class HeadEntity {
     private long id;
 
     @Version
+    @Column
     private long version;
 
     @Column
