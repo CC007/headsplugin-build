@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -31,10 +33,16 @@ public class SearchEntity {
     @Setter(AccessLevel.NONE)
     private long id;
 
+    @Version
+    private long version;
+
+    @Column
     private String searchTerm;
 
+    @Column
     private int searchCount;
 
+    @Column
     @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime lastSearched;
 

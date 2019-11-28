@@ -5,12 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import java.util.Set;
 
 @Entity
@@ -25,8 +27,16 @@ public class HeadEntity {
     @Setter(AccessLevel.NONE)
     private long id;
 
+    @Version
+    private long version;
+
+    @Column
     private String headOwner;
+
+    @Column
     private String name;
+
+    @Column
     private String value;
 
     @ManyToMany(mappedBy = "heads")
