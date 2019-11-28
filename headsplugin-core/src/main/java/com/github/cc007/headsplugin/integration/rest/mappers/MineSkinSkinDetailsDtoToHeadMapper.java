@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Component
-public class MineSkinHeadMapper implements Transformer<SkinDetailsDto, Head> {
+public class MineSkinSkinDetailsDtoToHeadMapper implements Transformer<SkinDetailsDto, Head> {
     @Override
     public Head transform(@NonNull SkinDetailsDto skinDetailsDto) {
         Validate.notBlank(skinDetailsDto.getName());
@@ -33,7 +33,7 @@ public class MineSkinHeadMapper implements Transformer<SkinDetailsDto, Head> {
     /**
      * Fix the value property by removing the containing properties before the texture property
      *
-     * @param rawValue
+     * @param rawValue the base64 encoded value that should be modified
      * @return the fixed value
      */
     private String fixValue(String rawValue) {

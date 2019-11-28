@@ -4,7 +4,7 @@ import com.github.cc007.headsplugin.business.domain.Head;
 import com.github.cc007.headsplugin.integration.rest.clients.MinecraftHeadsClient;
 import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Categorizable;
 import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Searchable;
-import com.github.cc007.headsplugin.integration.rest.mappers.MinecraftHeadsHeadMapper;
+import com.github.cc007.headsplugin.integration.rest.mappers.MinecraftHeadsSkinDtoToHeadMapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class MinecraftHeadsDao implements Searchable, Categorizable {
 
     private final MinecraftHeadsClient client;
 
-    private final MinecraftHeadsHeadMapper headMapper;
+    private final MinecraftHeadsSkinDtoToHeadMapper headMapper;
 
     @Override
     public List<Head> getCategoryHeads(String categoryName) {

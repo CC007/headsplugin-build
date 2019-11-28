@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class FreshCoalHeadMapper implements Transformer<SkinDto, Head> {
+public class FreshCoalSkinDtoToHeadMapper implements Transformer<SkinDto, Head> {
     @Override
     public Head transform(@NonNull SkinDto skinDto) {
         Validate.notNull(skinDto.getName());
