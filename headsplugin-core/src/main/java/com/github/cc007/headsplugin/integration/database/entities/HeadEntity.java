@@ -41,11 +41,15 @@ public class HeadEntity {
     private String value;
 
     @ManyToMany(mappedBy = "heads")
+    @Setter(AccessLevel.NONE)
     private Set<DatabaseEntity> databases;
 
     @ManyToMany(mappedBy = "heads")
+    @Setter(AccessLevel.NONE)
     private Set<TagEntity> tags;
 
     @ManyToMany(mappedBy = "heads")
+    @Setter(AccessLevel.NONE)
     private Set<TagEntity> searches;
+
 }

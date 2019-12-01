@@ -1,5 +1,6 @@
 package com.github.cc007.headsplugin.business.domain;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.val;
 
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Data
+@Builder
 public class Head {
     private String name;
     private String value;

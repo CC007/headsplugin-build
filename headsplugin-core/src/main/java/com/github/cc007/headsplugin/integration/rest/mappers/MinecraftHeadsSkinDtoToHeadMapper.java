@@ -19,11 +19,11 @@ public class MinecraftHeadsSkinDtoToHeadMapper implements Transformer<SkinDto, H
         Validate.notBlank(skinDto.getUuid());
         Validate.notBlank(skinDto.getValue());
 
-        Head head = new Head();
-        head.setName(skinDto.getName());
-        head.setHeadDatabase("MinecraftHeads");
-        head.setHeadOwner(UUID.fromString(skinDto.getUuid().trim()));
-        head.setValue(skinDto.getValue());
-        return head;
+        return Head.builder()
+                .name(skinDto.getName())
+                .headDatabase("MinecraftHeads")
+                .headOwner(UUID.fromString(skinDto.getUuid().trim()))
+                .value(skinDto.getValue())
+                .build();
     }
 }

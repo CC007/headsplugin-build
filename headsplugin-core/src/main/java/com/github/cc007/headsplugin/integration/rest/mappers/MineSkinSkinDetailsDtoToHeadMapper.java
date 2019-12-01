@@ -22,12 +22,12 @@ public class MineSkinSkinDetailsDtoToHeadMapper implements Transformer<SkinDetai
         Validate.notNull(skinDetailsDto.getData().getTexture());
         Validate.notBlank(skinDetailsDto.getData().getTexture().getValue());
 
-        Head head = new Head();
-        head.setName(skinDetailsDto.getName());
-        head.setHeadDatabase("MineSkin");
-        head.setHeadOwner(UUID.fromString(skinDetailsDto.getData().getUuid()));
-        head.setValue(fixValue(skinDetailsDto.getData().getTexture().getValue()));
-        return head;
+        return Head.builder()
+                .name(skinDetailsDto.getName())
+                .headDatabase("MineSkin")
+                .headOwner(UUID.fromString(skinDetailsDto.getData().getUuid()))
+                .value(fixValue(skinDetailsDto.getData().getTexture().getValue()))
+                .build();
     }
 
     /**
