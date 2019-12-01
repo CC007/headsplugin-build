@@ -26,6 +26,7 @@ public class NBTPrinter {
         log.info("NBT values:");
         printNBTCompound(nbtItem, 0);
     }
+
     public void printNBTEntity(NBTEntity nbtEntity) {
         log.info("NBT values:");
         printNBTCompound(nbtEntity, 0);
@@ -94,36 +95,37 @@ public class NBTPrinter {
                 NBTType type = getType(nbtListCompound, key);
                 log.info(StringUtils.repeat(" ", depth) + key + " (" + type.name() + ")");
                 depth += 2;
-                    switch (type) {
-                        case NBTTagInt:
-                            log.info(StringUtils.repeat(" ", depth) + nbtListCompound.getInteger(key));
-                            break;
-                        case NBTTagDouble:
-                            log.info(StringUtils.repeat(" ", depth) + nbtListCompound.getDouble(key));
-                            break;
-                        case NBTTagString:
-                            log.info(StringUtils.repeat(" ", depth) + nbtListCompound.getString(key));
-                            break;
-                        case NBTTagCompound:
-                            throw new UnsupportedOperationException("NBTCompounds in Compound lists aren't supported yet");
-                        default:
-                            log.warn(StringUtils.repeat(" ", depth) + "(UNKNOWN)");
-                    }
+                switch (type) {
+                    case NBTTagInt:
+                        log.info(StringUtils.repeat(" ", depth) + nbtListCompound.getInteger(key));
+                        break;
+                    case NBTTagDouble:
+                        log.info(StringUtils.repeat(" ", depth) + nbtListCompound.getDouble(key));
+                        break;
+                    case NBTTagString:
+                        log.info(StringUtils.repeat(" ", depth) + nbtListCompound.getString(key));
+                        break;
+                    case NBTTagCompound:
+                        throw new UnsupportedOperationException("NBTCompounds in Compound lists aren't supported yet");
+                    default:
+                        log.warn(StringUtils.repeat(" ", depth) + "(UNKNOWN)");
+                }
                 depth -= 2;
             }
             depth -= 2;
         }
     }
-    private NBTType getType(NBTListCompound nbtListCompound, String key){
+
+    private NBTType getType(NBTListCompound nbtListCompound, String key) {
         try {
             Field compoundField = nbtListCompound.getClass().getDeclaredField("compound");
             compoundField.setAccessible(true);
             Object nbtTagCompound = Objects.requireNonNull(ReflectionUtils.getField(compoundField, nbtListCompound));
             val typeId = nbtTagCompound.getClass().getMethod(ReflectionMethod.COMPOUND_GET_TYPE.getMethodName(), String.class).invoke(nbtTagCompound, key);
-            if(typeId == null) {
+            if (typeId == null) {
                 throw new RuntimeException("Error while getting type from NBTListCompound: type is null");
             }
-            return NBTType.valueOf((Byte)typeId);
+            return NBTType.valueOf((Byte) typeId);
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | NoSuchFieldException e) {
             throw new RuntimeException("Error while getting type from NBTListCompound key: " + key, e);
         }
