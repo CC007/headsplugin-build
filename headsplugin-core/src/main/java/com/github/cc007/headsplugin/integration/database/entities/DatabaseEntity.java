@@ -5,8 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,7 +27,7 @@ import java.util.Set;
 public class DatabaseEntity {
 
     @Id
-    @Column
+    @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
@@ -34,29 +36,68 @@ public class DatabaseEntity {
     @Column
     private long version;
 
-    @Column
+    @Column(unique = true)
     private String name;
 
-    @ManyToMany
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+    )
     @JoinTable(
             name = "database_heads",
             joinColumns = @JoinColumn(name = "database_id"),
             inverseJoinColumns = @JoinColumn(name = "head_id")
     )
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private Set<HeadEntity> heads;
 
-    @ManyToMany
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+    )
     @JoinTable(
             name = "database_tags",
             joinColumns = @JoinColumn(name = "database_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private Set<TagEntity> tags;
-    @ManyToMany
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+    )
     @JoinTable(
             name = "database_categories",
             joinColumns = @JoinColumn(name = "database_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private Set<TagEntity> categories;
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private Set<CategoryEntity> categories;
+
+    public void addhead(HeadEntity head) {
+        heads.add(head);
+    }
+
+    public void removeHead(HeadEntity head) {
+        heads.remove(head);
+    }
+
+    public void addTag(TagEntity tag) {
+        tags.add(tag);
+    }
+
+    public void removeTag(TagEntity tag) {
+        tags.remove(tag);
+    }
+
+    public void addCategory(CategoryEntity category) {
+        categories.add(category);
+    }
+
+    public void removeCategory(CategoryEntity category) {
+        categories.remove(category);
+    }
 }

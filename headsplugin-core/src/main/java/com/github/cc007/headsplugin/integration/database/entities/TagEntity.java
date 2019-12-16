@@ -5,8 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,6 +27,7 @@ import java.util.Set;
 public class TagEntity {
 
     @Id
+    @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
@@ -33,17 +36,44 @@ public class TagEntity {
     @Column
     private long version;
 
-    @Column
+    @Column(unique = true)
     private String name;
 
-    @ManyToMany
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+    )
     @JoinTable(
             name = "tagged_heads",
             joinColumns = @JoinColumn(name = "tag_id"),
             inverseJoinColumns = @JoinColumn(name = "head_id")
     )
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private Set<HeadEntity> heads;
 
-    @ManyToMany(mappedBy = "tags")
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            mappedBy = "tags"
+    )
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private Set<DatabaseEntity> databases;
+
+    public void addhead(HeadEntity head) {
+        heads.add(head);
+    }
+
+    public void removeHead(HeadEntity head) {
+        heads.remove(head);
+    }
+
+//    public void addDatabase(DatabaseEntity database){
+//        databases.add(database);
+//    }
+//
+//    public void removeDatabase(DatabaseEntity database){
+//        databases.remove(database);
+//    }
 }
