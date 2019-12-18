@@ -46,7 +46,7 @@ public class HeadsPlugin extends JavaPlugin {
     }
 
     @Override
-    public void onLoad(){
+    public void onLoad() {
         springClassLoaders = new ArrayList<>();
         getLogger().info("Added class loader to HeadsPlugin springClassLoaders");
         springClassLoaders.add(getClassLoader());

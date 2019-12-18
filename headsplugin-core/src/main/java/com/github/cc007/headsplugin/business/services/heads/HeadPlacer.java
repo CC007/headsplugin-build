@@ -113,8 +113,8 @@ public class HeadPlacer {
     /**
      * Updates the NBT values for the player head block's state to set the skin for the head.
      *
-     * @param headBlock     the player (wall) head block.
-     * @param head the Head containing the data for the skin
+     * @param headBlock the player (wall) head block.
+     * @param head      the Head containing the data for the skin
      */
     private void updateHeadBlockState(@NonNull Block headBlock, @NonNull Head head) {
         val headBlockState = headBlock.getState();

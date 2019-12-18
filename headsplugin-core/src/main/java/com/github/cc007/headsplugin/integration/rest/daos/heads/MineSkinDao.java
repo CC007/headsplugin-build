@@ -5,7 +5,7 @@ import com.github.cc007.headsplugin.integration.rest.clients.MineSkinClient;
 import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Creatable;
 import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Searchable;
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.search.SkinDto;
-import com.github.cc007.headsplugin.integration.rest.mappers.MineSkinHeadMapper;
+import com.github.cc007.headsplugin.integration.rest.mappers.MineSkinSkinDetailsDtoToHeadMapper;
 
 import org.springframework.stereotype.Component;
 
@@ -18,9 +18,9 @@ public class MineSkinDao implements Searchable, Creatable {
 
     private final MineSkinClient client;
 
-    private final MineSkinHeadMapper headMapper;
+    private final MineSkinSkinDetailsDtoToHeadMapper headMapper;
 
-    public MineSkinDao(MineSkinClient client, MineSkinHeadMapper headMapper) {
+    public MineSkinDao(MineSkinClient client, MineSkinSkinDetailsDtoToHeadMapper headMapper) {
         this.client = client;
         this.headMapper = headMapper;
     }

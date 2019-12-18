@@ -4,7 +4,7 @@ import com.github.cc007.headsplugin.business.domain.Head;
 import com.github.cc007.headsplugin.integration.rest.clients.FreshCoalClient;
 import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Categorizable;
 import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Searchable;
-import com.github.cc007.headsplugin.integration.rest.mappers.FreshCoalHeadMapper;
+import com.github.cc007.headsplugin.integration.rest.mappers.FreshCoalSkinDtoToHeadMapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class FreshCoalDao implements Searchable, Categorizable {
 
     private final FreshCoalClient client;
 
-    private final FreshCoalHeadMapper headMapper;
+    private final FreshCoalSkinDtoToHeadMapper headMapper;
 
     @Override
     public List<Head> getCategoryHeads(String categoryName) {

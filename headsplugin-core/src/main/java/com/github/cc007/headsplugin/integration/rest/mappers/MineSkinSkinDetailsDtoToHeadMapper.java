@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Component
-public class MineSkinHeadMapper implements Transformer<SkinDetailsDto, Head> {
+public class MineSkinSkinDetailsDtoToHeadMapper implements Transformer<SkinDetailsDto, Head> {
     @Override
     public Head transform(@NonNull SkinDetailsDto skinDetailsDto) {
         Validate.notBlank(skinDetailsDto.getName());
@@ -22,18 +22,18 @@ public class MineSkinHeadMapper implements Transformer<SkinDetailsDto, Head> {
         Validate.notNull(skinDetailsDto.getData().getTexture());
         Validate.notBlank(skinDetailsDto.getData().getTexture().getValue());
 
-        Head head = new Head();
-        head.setName(skinDetailsDto.getName());
-        head.setHeadDatabase("MineSkin");
-        head.setHeadOwner(UUID.fromString(skinDetailsDto.getData().getUuid()));
-        head.setValue(fixValue(skinDetailsDto.getData().getTexture().getValue()));
-        return head;
+        return Head.builder()
+                .name(skinDetailsDto.getName())
+                .headDatabase("MineSkin")
+                .headOwner(UUID.fromString(skinDetailsDto.getData().getUuid()))
+                .value(fixValue(skinDetailsDto.getData().getTexture().getValue()))
+                .build();
     }
 
     /**
      * Fix the value property by removing the containing properties before the texture property
      *
-     * @param rawValue
+     * @param rawValue the base64 encoded value that should be modified
      * @return the fixed value
      */
     private String fixValue(String rawValue) {

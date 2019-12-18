@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class FreshCoalHeadMapper implements Transformer<SkinDto, Head> {
+public class FreshCoalSkinDtoToHeadMapper implements Transformer<SkinDto, Head> {
     @Override
     public Head transform(@NonNull SkinDto skinDto) {
         Validate.notNull(skinDto.getName());
         Validate.notBlank(skinDto.getSkullowner());
         Validate.notBlank(skinDto.getValue());
 
-        Head head = new Head();
-        head.setName(skinDto.getName());
-        head.setHeadDatabase("FreshCoal");
-        head.setHeadOwner(UUID.fromString(skinDto.getSkullowner()));
-        head.setValue(skinDto.getValue());
-        return head;
+        return Head.builder()
+                .name(skinDto.getName())
+                .headDatabase("FreshCoal")
+                .headOwner(UUID.fromString(skinDto.getSkullowner()))
+                .value(skinDto.getValue())
+                .build();
     }
 }
