@@ -7,6 +7,7 @@ import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Searc
 import com.github.cc007.headsplugin.integration.rest.mappers.MinecraftHeadsSkinDtoToHeadMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,11 +17,17 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+@ToString
 public class MinecraftHeadsDao implements Searchable, Categorizable {
 
     private final MinecraftHeadsClient client;
 
     private final MinecraftHeadsSkinDtoToHeadMapper headMapper;
+
+    @Override
+    public String getDatabaseName() {
+        return "MinecraftHeads";
+    }
 
     @Override
     public List<Head> getCategoryHeads(String categoryName) {

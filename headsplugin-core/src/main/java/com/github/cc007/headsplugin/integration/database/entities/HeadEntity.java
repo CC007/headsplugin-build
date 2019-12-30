@@ -1,6 +1,7 @@
 package com.github.cc007.headsplugin.integration.database.entities;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -25,22 +29,22 @@ import java.util.Set;
 public class HeadEntity {
 
     @Id
-    @Column(unique = true)
+    @Column(name = "id", unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
 
     @Version
-    @Column
+    @Column(name = "version")
     private long version;
 
-    @Column(unique = true)
+    @Column(name = "headOwner", unique = true)
     private String headOwner;
 
-    @Column
+    @Column(name = "name")
     private String name;
 
-    @Column
+    @Column(name = "value", length = 1023)
     private String value;
 
     @ManyToMany(
@@ -50,7 +54,7 @@ public class HeadEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<DatabaseEntity> databases;
+    private Set<DatabaseEntity> databases = new HashSet<>();
 
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -59,7 +63,7 @@ public class HeadEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<TagEntity> tags;
+    private Set<TagEntity> tags = new HashSet<>();
 
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -68,7 +72,7 @@ public class HeadEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<CategoryEntity> categories;
+    private Set<CategoryEntity> categories = new HashSet<>();
 
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -77,7 +81,23 @@ public class HeadEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<SearchEntity> searches;
+    private Set<SearchEntity> searches = new HashSet<>();
+
+    public Set<DatabaseEntity> getDatabases() {
+        return Collections.unmodifiableSet(databases);
+    }
+
+    public Set<TagEntity> getTags() {
+        return Collections.unmodifiableSet(tags);
+    }
+
+    public Set<CategoryEntity> getCategories() {
+        return Collections.unmodifiableSet(categories);
+    }
+
+    public Set<SearchEntity> getSearches() {
+        return Collections.unmodifiableSet(searches);
+    }
 
 //    public void addDatabase(DatabaseEntity database){
 //        databases.add(database);

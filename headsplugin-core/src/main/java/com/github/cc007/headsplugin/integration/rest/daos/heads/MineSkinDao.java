@@ -7,6 +7,8 @@ import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Searc
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.search.SkinDto;
 import com.github.cc007.headsplugin.integration.rest.mappers.MineSkinSkinDetailsDtoToHeadMapper;
 
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,15 +16,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
+@ToString
 public class MineSkinDao implements Searchable, Creatable {
 
     private final MineSkinClient client;
 
     private final MineSkinSkinDetailsDtoToHeadMapper headMapper;
 
-    public MineSkinDao(MineSkinClient client, MineSkinSkinDetailsDtoToHeadMapper headMapper) {
-        this.client = client;
-        this.headMapper = headMapper;
+    @Override
+    public String getDatabaseName() {
+        return "MineSkin";
     }
 
     @Override

@@ -28,6 +28,10 @@ minecraftheads:
 # maximum response time from the server to respond
 connectiontimeout: 10000
 
+headsplugin:
+  update:
+    interval: 24
+
 spring:
   datasource:
     url: jdbc:hsqldb:file:plugins/HeadsPluginAPI/data/heads

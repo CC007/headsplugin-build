@@ -6,8 +6,8 @@ import com.github.cc007.headsplugin.business.services.chat.ChatManager;
 import com.github.cc007.headsplugin.business.services.heads.HeadCreator;
 import com.github.cc007.headsplugin.business.services.heads.HeadPlacer;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
-import com.github.cc007.headsplugin.integration.database.mappers.domain.HeadToHeadEntityMapper;
-import com.github.cc007.headsplugin.integration.database.mappers.entity.HeadEntityToHeadMapper;
+import com.github.cc007.headsplugin.integration.database.mappers.to_entity.HeadToHeadEntityMapper;
+import com.github.cc007.headsplugin.integration.database.mappers.from_entity.HeadEntityToHeadMapper;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
 import com.github.cc007.headsplugin.integration.rest.daos.heads.MinecraftHeadsDao;
 import com.github.cc007.headsplugin.presentation.commands.AbstractCommand;
@@ -82,6 +82,7 @@ public class DbTestCommand extends AbstractCommand {
                         .forEach((headRepository::save));
                 break;
             case "load":
+                context.getPlayer().sendMessage("Heads:");
                 StreamSupport.stream(headRepository.findAll().spliterator(), false)
                         .map(headEntityToHeadMapper::transform)
                         .forEach(this::showInfo);

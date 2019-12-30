@@ -2,7 +2,7 @@ package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.business.domain.Head;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.bukkit.Bukkit;

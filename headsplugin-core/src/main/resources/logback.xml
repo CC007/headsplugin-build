@@ -14,7 +14,9 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>plugins/HeadsPluginAPI/logs/history/%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="com.github.cc007.headsplugin.config.logback.StartupTimeBasedTriggeringPolicy" />
+            <timeBasedFileNamingAndTriggeringPolicy class="com.github.cc007.headsplugin.config.logback.StartupTimeBasedTriggeringPolicy">
+                <maxFileSize>10GB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
     </appender>
 

@@ -21,6 +21,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -31,22 +33,22 @@ import java.util.Set;
 public class SearchEntity {
 
     @Id
-    @Column(unique = true)
+    @Column(name = "id", unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
 
     @Version
-    @Column
+    @Column(name = "version")
     private long version;
 
-    @Column(unique = true)
+    @Column(name = "searchTerm", unique = true)
     private String searchTerm;
 
-    @Column
+    @Column(name = "searchCount")
     private int searchCount;
 
-    @Column
+    @Column(name = "lastUpdated")
     @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime lastUpdated;
 
@@ -61,7 +63,11 @@ public class SearchEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<HeadEntity> heads;
+    private Set<HeadEntity> heads = new HashSet<>();
+
+    public Set<HeadEntity> getHeads() {
+        return Collections.unmodifiableSet(heads);
+    }
 
     public void addhead(HeadEntity head) {
         heads.add(head);

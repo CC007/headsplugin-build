@@ -17,6 +17,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -27,16 +29,16 @@ import java.util.Set;
 public class DatabaseEntity {
 
     @Id
-    @Column(unique = true)
+    @Column(name = "id", unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
 
     @Version
-    @Column
+    @Column(name = "version")
     private long version;
 
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     private String name;
 
     @ManyToMany(
@@ -50,7 +52,7 @@ public class DatabaseEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<HeadEntity> heads;
+    private Set<HeadEntity> heads = new HashSet<>();
 
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -63,7 +65,8 @@ public class DatabaseEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<TagEntity> tags;
+    private Set<TagEntity> tags = new HashSet<>();
+
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE}
@@ -75,7 +78,19 @@ public class DatabaseEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<CategoryEntity> categories;
+    private Set<CategoryEntity> categories = new HashSet<>();
+
+    public Set<HeadEntity> getHeads() {
+        return Collections.unmodifiableSet(heads);
+    }
+
+    public Set<TagEntity> getTags() {
+        return Collections.unmodifiableSet(tags);
+    }
+
+    public Set<CategoryEntity> getCategories() {
+        return Collections.unmodifiableSet(categories);
+    }
 
     public void addhead(HeadEntity head) {
         heads.add(head);

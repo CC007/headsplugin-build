@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,29 +22,32 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "categories")
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 public class CategoryEntity {
 
     @Id
-    @Column(unique = true)
+    @Column(name = "id", unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
 
     @Version
-    @Column
+    @Column(name = "version")
     private long version;
 
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     private String name;
 
-    @Column
+    @Column(name = "lastUpdated")
     @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime lastUpdated;
 
@@ -58,7 +62,7 @@ public class CategoryEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<HeadEntity> heads;
+    private Set<HeadEntity> heads = new HashSet<>();
 
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -67,7 +71,15 @@ public class CategoryEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<DatabaseEntity> databases;
+    private Set<DatabaseEntity> databases = new HashSet<>();
+
+    public Set<HeadEntity> getHeads() {
+        return Collections.unmodifiableSet(heads);
+    }
+
+    public Set<DatabaseEntity> getDatabases() {
+        return Collections.unmodifiableSet(databases);
+    }
 
     public void addhead(HeadEntity head) {
         heads.add(head);

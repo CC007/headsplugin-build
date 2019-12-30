@@ -7,7 +7,7 @@ import lombok.val;
 import java.util.List;
 import java.util.Optional;
 
-public interface Searchable {
+public interface Searchable extends DatabaseClientDao  {
     default Optional<Head> getFirstHead(String searchTerm) {
         val heads = getHeads(searchTerm);
         if (heads.isEmpty()) {
