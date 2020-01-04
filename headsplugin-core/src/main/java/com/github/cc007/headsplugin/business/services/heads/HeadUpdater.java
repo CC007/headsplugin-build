@@ -8,6 +8,7 @@ import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRe
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +16,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class HeadUpdater {
 
     private final HeadToHeadEntityMapper headToHeadEntityMapper;
@@ -25,32 +28,61 @@ public class HeadUpdater {
     private final DatabaseRepository databaseRepository;
     private final HeadUtils headUtils;
 
-    public void updateHeads(List<Head> foundHeads) {
+    public List<HeadEntity> updateHeads(List<Head> foundHeads) {
         val foundHeadOwnerStrings = headUtils.getHeadOwnerStrings(foundHeads);
-        val storedHeadOwnerStrings = getStoredHeadOwnerStringsFromFound(foundHeadOwnerStrings);
+        val foundHeadOwnerStringSet = new HashSet<String>(foundHeadOwnerStrings);
 
-        val newHeads = foundHeads.stream()
-                .filter(head -> !storedHeadOwnerStrings.contains(head.getHeadOwner().toString()))
-                .collect(Collectors.toList());
-
-        val newHeadEntities = newHeads.stream()
+//        if(foundHeadOwnerStrings.size() != foundHeadOwnerStringSet.size()) {
+//            StringBuilder errorMessage = new StringBuilder().append("Duplicate HeadOwners when updating heads. Heads found:\n");
+//            foundHeads.forEach(head -> {
+//                errorMessage.append(head.getName())
+//                        .append(" (")
+//                        .append(head.getHeadOwner())
+//                        .append(")\n");
+//            });
+//            throw new RuntimeException(errorMessage.toString());
+//        }
+        val headEntities = foundHeadOwnerStringSet.stream()
+                .map(s -> foundHeads.stream()
+                        .filter(head -> head.getHeadOwner()
+                                .toString()
+                                .equals(s))
+                        .findFirst()
+                        .orElseThrow(NullPointerException::new))
                 .map(headToHeadEntityMapper::transform)
                 .collect(Collectors.toList());
+        val savedHeadEntities = headRepository.saveAll(headEntities);
+        return StreamSupport.stream(savedHeadEntities.spliterator(), false).collect(Collectors.toList());
 
-        headRepository.saveAll(newHeadEntities);
+//
+//        val storedHeadOwnerStrings = getStoredHeadOwnerStringsFromFound(foundHeadOwnerStrings);
+//
+//        val newHeads = foundHeads.stream()
+//                .filter(head -> !storedHeadOwnerStrings.contains(head.getHeadOwner().toString()))
+//                //.peek(head -> log.info("Found new head: " + head.getName() + " (" + head.getHeadOwner() + ")."))
+//                .collect(Collectors.toList());
+//
+//        val newHeadEntities = newHeads.stream()
+//                .map(headToHeadEntityMapper::transform)
+//                .collect(Collectors.toList());
+//
+//        return headRepository.saveAll(newHeadEntities);
     }
 
-    public void updateDatabaseHeads(List<Head> foundHeads, DatabaseEntity database) {
-        val foundHeadOwnerStrings = headUtils.getHeadOwnerStrings(foundHeads);
-        val databaseHeadOwnerStrings = getDatabaseHeadOwnerStringsFromFound(
-                database.getName(),
-                foundHeadOwnerStrings
-        );
+    public void updateDatabaseHeads(List<HeadEntity> foundHeadEntities, DatabaseEntity database) {
+        foundHeadEntities.forEach(database::addhead);
 
-        foundHeads.stream()
-                .filter(head -> !databaseHeadOwnerStrings.contains(head.getHeadOwner().toString()))
-                .map(headToHeadEntityMapper::transform)
-                .forEach(database::addhead);
+//        val foundHeadOwnerStrings = headUtils.getHeadOwnerStrings(foundHeadEntities);
+//        val databaseHeadOwnerStrings = getDatabaseHeadOwnerStringsFromFound(
+//                database.getName(),
+//                foundHeadOwnerStrings
+//        );
+//
+//        foundHeadEntities.stream()
+//                .filter(head -> !databaseHeadOwnerStrings.contains(head.getHeadOwner().toString()))
+//                //.peek(head -> log.info("Found database for head: " + head.getName() + " (" + head.getHeadOwner() + "): " + database.getName() + "."))
+//                .map(headToHeadEntityMapper::transform)
+//                .forEach(database::addhead);
         databaseRepository.save(database);
     }
 

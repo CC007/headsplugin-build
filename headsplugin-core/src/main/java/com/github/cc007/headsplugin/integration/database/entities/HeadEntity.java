@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -22,7 +23,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "heads")
+@Table(name = "heads",
+    indexes = {
+        @Index(name = "heads_headowner_index", columnList = "headOwner"),
+        @Index(name = "heads_name_index", columnList = "name")
+    }
+)
 @Getter
 @Setter
 @NoArgsConstructor

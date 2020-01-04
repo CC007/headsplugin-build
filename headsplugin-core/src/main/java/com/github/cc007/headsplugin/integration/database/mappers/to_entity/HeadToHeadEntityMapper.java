@@ -34,6 +34,6 @@ public class HeadToHeadEntityMapper implements Transformer<Head, HeadEntity> {
         } else {
             head = optionalHead.get();
         }
-        return headRepository.save(head);
+        return head;
     }
 }

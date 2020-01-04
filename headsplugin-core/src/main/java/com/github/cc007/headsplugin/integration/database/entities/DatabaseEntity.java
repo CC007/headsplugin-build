@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -22,7 +23,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "databases")
+@Table(name = "databases",
+        indexes = {
+                @Index(name = "databases_name_index", columnList = "name")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor

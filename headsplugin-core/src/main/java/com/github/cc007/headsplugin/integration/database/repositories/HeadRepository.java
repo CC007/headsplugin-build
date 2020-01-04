@@ -22,4 +22,6 @@ public interface HeadRepository extends CrudRepository<HeadEntity, Long> {
     List<HeadEntity> findByCategories_NameAndHeadOwnerIn(String categoryName, List<String> headOwners);
 
     List<HeadEntity> findByDatabases_NameAndHeadOwnerIn(String databaseName, List<String> headOwners);
+
+
 }

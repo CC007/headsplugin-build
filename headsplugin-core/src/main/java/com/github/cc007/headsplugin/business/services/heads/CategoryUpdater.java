@@ -74,6 +74,7 @@ public class CategoryUpdater {
     }
 
     private void updateCategoriesIfNecessary(Map<CategoryEntity, List<Categorizable>> categories) {
+        long start = System.currentTimeMillis();
         val categoriesToBeUpdated = new HashMap<CategoryEntity, List<Categorizable>>();
         categories.entrySet()
                 .stream()
@@ -84,32 +85,47 @@ public class CategoryUpdater {
                 .forEach(categoryEntry -> categoriesToBeUpdated.put(categoryEntry.getKey(), categoryEntry.getValue()));
 
         updateCategories(categoriesToBeUpdated);
+
+        long end = System.currentTimeMillis();
+        log.info(String.format("Updating all categories: %.3f", (end - start) / 1000.0));
     }
 
     private void updateCategories(Map<CategoryEntity, List<Categorizable>> categories) {
         categories.forEach((key, categorizables) -> {
             String categoryName = key.getName();
-            log.info("Updating category:" + categoryName);
+            log.info("Updating category: " + categoryName);
             updateCategory(categoryName, categorizables);
             //new Thread(() -> updateCategory(categoryName, categorizables)).start();
         });
     }
 
     private /*synchronized*/ void updateCategory(String categoryName, List<Categorizable> categorizables) {
+        long start = System.currentTimeMillis();
         val foundHeads = requestCategoryHeads(categorizables, categoryName);
-        val foundHeadOwnerStrings = getHeadOwnerStrings(foundHeads);
 
-        headUpdater.updateHeads(headUtils.flattenHeads(foundHeads.values()));
-        updateCategoryHeads(categoryName, headUtils.flattenHeads(foundHeads.values()));
+        long startUpdateHeads = System.currentTimeMillis();
+        List<HeadEntity> headEntities = headUpdater.updateHeads(headUtils.flattenHeads(foundHeads.values()));
+        long endUpdateHeads = System.currentTimeMillis();
+        log.info(String.format("- head: %.3f", (endUpdateHeads - startUpdateHeads) / 1000.0));
 
+        long startUpdateCategoryHeads = System.currentTimeMillis();
+        updateCategoryHeads(categoryName, headEntities);
+        long endUpdateCategoryHeads = System.currentTimeMillis();
+        log.info(String.format("- categorized_heads: %.3f", (endUpdateCategoryHeads - startUpdateCategoryHeads) / 1000.0));
+
+        long startUpdateDatabaseHeads = System.currentTimeMillis();
         for (Categorizable categorizable : categorizables) {
             val database = databaseNameToDatabaseEntityMapper.transform(categorizable.getDatabaseName());
 
-            val foundHeadsForDatabase = foundHeads.getOrDefault(categorizable, new ArrayList<>());
+           // val foundHeadsForDatabase = foundHeads.getOrDefault(categorizable, new ArrayList<>());
 
-            headUpdater.updateDatabaseHeads(foundHeadsForDatabase, database);
+            headUpdater.updateDatabaseHeads(headEntities, database);
             updateDatabaseCategory(categoryName, database);
         }
+        long endUpdateDatabaseHeads = System.currentTimeMillis();
+        log.info(String.format("- database_heads: %.3f", (endUpdateDatabaseHeads - startUpdateDatabaseHeads) / 1000.0));
+        long end = System.currentTimeMillis();
+        log.info(String.format("Total : %.3f", (end - start) / 1000.0));
     }
 
     private void updateDatabaseCategory(String categoryName, DatabaseEntity database) {
@@ -134,20 +150,31 @@ public class CategoryUpdater {
         ));
     }
 
-    private void updateCategoryHeads(String categoryName, List<Head> foundHeads) {
-        val foundHeadOwnerStrings = headUtils.getHeadOwnerStrings(foundHeads);
-        val categoryHeadOwnerStrings = getCategoryHeadOwnerStringsFromFound(
-                categoryName,
-                foundHeadOwnerStrings
-        );
+    private void updateCategoryHeads(String categoryName, List<HeadEntity> foundHeadEntities) {
+
+
+//        val foundHeadOwnerStrings = headUtils.getHeadOwnerStrings(foundHeads);
+//        long startSelect = System.currentTimeMillis();
+//        val categoryHeadOwnerStrings = getCategoryHeadOwnerStringsFromFound(
+//                categoryName,
+//                foundHeadOwnerStrings
+//        );
+//        long endSelect = System.currentTimeMillis();
+//        log.info(String.format("  - select: %.3f", (endSelect - startSelect) / 1000.0));
 
         val category = categoryNameToCategoryEntityMapper.transform(categoryName);
-        foundHeads.stream()
-                .filter(head -> !categoryHeadOwnerStrings.contains(head.getHeadOwner().toString()))
-                .map(headToHeadEntityMapper::transform)
-                .forEach(category::addhead);
+
+        long startInsert = System.currentTimeMillis();
+        foundHeadEntities.forEach(category::addhead);
+//        foundHeads.stream()
+//                .filter(head -> !categoryHeadOwnerStrings.contains(head.getHeadOwner().toString()))
+//                //.peek(head -> log.info("Found category for head: " + head.getName() + " (" + head.getHeadOwner() + "): " + category.getName() + "."))
+//                .map(headToHeadEntityMapper::transform)
+//                .forEach(category::addhead);
         category.setLastUpdated(LocalDateTime.now());
         categoryRepository.save(category);
+        long endInsert = System.currentTimeMillis();
+        log.info(String.format("  - insert: %.3f", (endInsert - startInsert) / 1000.0));
     }
 
     private List<String> getCategoryHeadOwnerStringsFromFound(String categoryName, List<String> foundHeadOwnerStrings) {

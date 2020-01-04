@@ -1,4 +1,4 @@
-package com.github.cc007.headsplugin.presentation.commands;
+package com.github.cc007.headsplugin.presentation.startup;
 
 import com.github.cc007.headsplugin.business.services.heads.CategoryUpdater;
 
