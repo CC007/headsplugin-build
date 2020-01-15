@@ -12,31 +12,38 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "tags")
+@Table(name = "tags",
+        indexes = {
+                @Index(name = "tags_name_index", columnList = "name")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
 public class TagEntity {
 
     @Id
-    @Column(unique = true)
+    @Column(name = "id", unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
 
     @Version
-    @Column
+    @Column(name = "version")
     private long version;
 
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     private String name;
 
     @ManyToMany(
@@ -50,7 +57,7 @@ public class TagEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<HeadEntity> heads;
+    private Set<HeadEntity> heads = new HashSet<>();
 
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -59,7 +66,15 @@ public class TagEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<DatabaseEntity> databases;
+    private Set<DatabaseEntity> databases = new HashSet<>();
+
+    public Set<HeadEntity> getHeads() {
+        return Collections.unmodifiableSet(heads);
+    }
+
+    public Set<DatabaseEntity> getDatabases() {
+        return Collections.unmodifiableSet(databases);
+    }
 
     public void addhead(HeadEntity head) {
         heads.add(head);

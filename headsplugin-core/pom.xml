@@ -125,8 +125,8 @@
             <artifactId>jsoup</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.tr7zw</groupId>
-            <artifactId>Item-NBT-API</artifactId>
+            <groupId>de.tr7zw</groupId>
+            <artifactId>item-nbt-api</artifactId>
         </dependency>
 
         <dependency>
@@ -256,6 +256,10 @@
                         <relocation>
                             <pattern>org.bstats</pattern>
                             <shadedPattern>com.github.cc007.headsplugin.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>de.tr7zw.changeme.nbtapi</pattern>
+                            <shadedPattern>com.github.cc007.headsplugin.nbtapi</shadedPattern>
                         </relocation>
                     </relocations>
                     <transformers>

@@ -14,6 +14,4 @@ public abstract class AbstractCommand implements Runnable {
 
     protected final Context context;
     protected final ChatManager chatManager;
-
-
 }

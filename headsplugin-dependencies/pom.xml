@@ -24,14 +24,11 @@
 
     <repositories>
 
-        <!-- repo for github dependencies -->
+        <!-- repo for Item-NBT-API dependencies -->
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>CodeMC</id>
-            <url>https://repo.codemc.org/repository/maven-public</url>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+            <layout>default</layout>
         </repository>
 
     </repositories>
@@ -81,9 +78,9 @@
 
             <!-- NBT API -->
             <dependency>
-                <groupId>com.github.tr7zw</groupId>
-                <artifactId>Item-NBT-API</artifactId>
-                <version>master-SNAPSHOT</version>
+                <groupId>de.tr7zw</groupId>
+                <artifactId>item-nbt-api</artifactId>
+                <version>2.1.1</version>
             </dependency>
 
             <!-- Google Gson -->

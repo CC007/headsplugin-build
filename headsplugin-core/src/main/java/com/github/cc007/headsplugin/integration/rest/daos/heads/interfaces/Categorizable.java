@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface Categorizable {
+public interface Categorizable extends DatabaseClientDao {
+
     List<Head> getCategoryHeads(String categoryName);
 
     List<String> getPredefinedCategoryNames();

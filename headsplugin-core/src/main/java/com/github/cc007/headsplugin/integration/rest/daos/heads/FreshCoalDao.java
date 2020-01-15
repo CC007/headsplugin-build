@@ -7,6 +7,7 @@ import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Searc
 import com.github.cc007.headsplugin.integration.rest.mappers.FreshCoalSkinDtoToHeadMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,11 +17,17 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+@ToString
 public class FreshCoalDao implements Searchable, Categorizable {
 
     private final FreshCoalClient client;
 
     private final FreshCoalSkinDtoToHeadMapper headMapper;
+
+    @Override
+    public String getDatabaseName() {
+        return "FreshCoal";
+    }
 
     @Override
     public List<Head> getCategoryHeads(String categoryName) {
@@ -56,6 +63,9 @@ public class FreshCoalDao implements Searchable, Categorizable {
 
     @Override
     public List<Head> getHeads(String searchTerm) {
+        if(searchTerm.length() < 3) {
+            return new ArrayList<>();
+        }
         return client.find(searchTerm)
                 .stream()
                 .map(headMapper::transform)

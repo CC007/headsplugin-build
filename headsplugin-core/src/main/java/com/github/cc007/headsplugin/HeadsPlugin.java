@@ -29,6 +29,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 
 public class HeadsPlugin extends JavaPlugin {
@@ -71,8 +72,12 @@ public class HeadsPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (springContext != null) {
-            springContext.close();
+        if (springContext != null && springContext.isActive()) {
+            try {
+                springContext.close();
+            } catch (IllegalStateException ex) {
+                getLogger().log(Level.SEVERE, "While stopping HeadsPluginAPI: " + ex.getMessage(), ex);
+            }
             springContext = null;
         }
 
@@ -80,7 +85,10 @@ public class HeadsPlugin extends JavaPlugin {
     }
 
     private void addRootCA() {
-        try (InputStream fis = new BufferedInputStream(getResource("letsencrypt.crt"))) {
+        try (InputStream fis = new BufferedInputStream(
+                Optional.ofNullable(getResource("letsencrypt.crt"))
+                        .orElseThrow(() -> new IOException("Unable to find the letsencrypt certificate"))
+        )) {
             Certificate ca = CertificateFactory.getInstance("X.509").generateCertificate(fis);
             KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
             Path ksPath = Paths.get(System.getProperty("java.home"), "lib", "security", "cacerts");

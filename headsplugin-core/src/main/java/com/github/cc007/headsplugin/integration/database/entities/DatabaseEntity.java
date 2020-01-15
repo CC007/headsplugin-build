@@ -12,31 +12,38 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "databases")
+@Table(name = "databases",
+        indexes = {
+                @Index(name = "databases_name_index", columnList = "name")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
 public class DatabaseEntity {
 
     @Id
-    @Column(unique = true)
+    @Column(name = "id", unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
 
     @Version
-    @Column
+    @Column(name = "version")
     private long version;
 
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     private String name;
 
     @ManyToMany(
@@ -50,7 +57,7 @@ public class DatabaseEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<HeadEntity> heads;
+    private Set<HeadEntity> heads = new HashSet<>();
 
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -63,7 +70,8 @@ public class DatabaseEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<TagEntity> tags;
+    private Set<TagEntity> tags = new HashSet<>();
+
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE}
@@ -75,7 +83,19 @@ public class DatabaseEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<CategoryEntity> categories;
+    private Set<CategoryEntity> categories = new HashSet<>();
+
+    public Set<HeadEntity> getHeads() {
+        return Collections.unmodifiableSet(heads);
+    }
+
+    public Set<TagEntity> getTags() {
+        return Collections.unmodifiableSet(tags);
+    }
+
+    public Set<CategoryEntity> getCategories() {
+        return Collections.unmodifiableSet(categories);
+    }
 
     public void addhead(HeadEntity head) {
         heads.add(head);

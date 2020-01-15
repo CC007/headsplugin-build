@@ -15,38 +15,46 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "searches")
+@Table(name = "searches",
+        indexes = {
+                @Index(name = "searches_searchTerm_index", columnList = "searchTerm")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
 public class SearchEntity {
 
     @Id
-    @Column(unique = true)
+    @Column(name = "id", unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
 
     @Version
-    @Column
+    @Column(name = "version")
     private long version;
 
-    @Column(unique = true)
+    @Column(name = "searchTerm", unique = true)
     private String searchTerm;
 
-    @Column
+    @Column(name = "searchCount")
+    @Setter(AccessLevel.NONE)
     private int searchCount;
 
-    @Column
+    @Column(name = "lastUpdated")
     @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime lastUpdated;
 
@@ -61,7 +69,11 @@ public class SearchEntity {
     )
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private Set<HeadEntity> heads;
+    private Set<HeadEntity> heads = new HashSet<>();
+
+    public Set<HeadEntity> getHeads() {
+        return Collections.unmodifiableSet(heads);
+    }
 
     public void addhead(HeadEntity head) {
         heads.add(head);
@@ -69,5 +81,13 @@ public class SearchEntity {
 
     public void removeHead(HeadEntity head) {
         heads.remove(head);
+    }
+
+    public void resetSearchCount() {
+        searchCount = 0;
+    }
+
+    public void incrementSearchCount() {
+        searchCount++;
     }
 }
