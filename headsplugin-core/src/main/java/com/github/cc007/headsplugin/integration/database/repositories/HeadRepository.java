@@ -7,6 +7,7 @@ import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,11 +18,11 @@ public interface HeadRepository extends CrudRepository<HeadEntity, Long> {
 
     Optional<HeadEntity> findByHeadOwner(String headOwner);
 
-    List<HeadEntity> findByHeadOwnerIn(List<String> headOwners);
+    List<HeadEntity> findByHeadOwnerIn(Collection<String> headOwners);
 
-    List<HeadEntity> findByCategories_NameAndHeadOwnerIn(String categoryName, List<String> headOwners);
+    List<HeadEntity> findByCategories_NameAndHeadOwnerIn(String categoryName, Collection<String> headOwners);
 
-    List<HeadEntity> findByDatabases_NameAndHeadOwnerIn(String databaseName, List<String> headOwners);
+    List<HeadEntity> findByDatabases_NameAndHeadOwnerIn(String databaseName, Collection<String> headOwners);
 
 
 }

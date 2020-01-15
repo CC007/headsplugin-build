@@ -51,6 +51,7 @@ public class SearchEntity {
     private String searchTerm;
 
     @Column(name = "searchCount")
+    @Setter(AccessLevel.NONE)
     private int searchCount;
 
     @Column(name = "lastUpdated")
@@ -80,5 +81,13 @@ public class SearchEntity {
 
     public void removeHead(HeadEntity head) {
         heads.remove(head);
+    }
+
+    public void resetSearchCount() {
+        searchCount = 0;
+    }
+
+    public void incrementSearchCount() {
+        searchCount++;
     }
 }

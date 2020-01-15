@@ -29,8 +29,14 @@ minecraftheads:
 connectiontimeout: 10000
 
 headsplugin:
-  update:
-    interval: 24
+  categories:
+    update:
+      # category update interval in hours
+      interval: 24
+  search:
+    update:
+      # search update interval in minutes
+      interval: 5
 
 spring:
   datasource:

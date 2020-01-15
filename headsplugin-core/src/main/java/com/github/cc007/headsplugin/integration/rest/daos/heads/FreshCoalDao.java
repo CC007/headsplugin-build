@@ -63,6 +63,9 @@ public class FreshCoalDao implements Searchable, Categorizable {
 
     @Override
     public List<Head> getHeads(String searchTerm) {
+        if(searchTerm.length() < 3) {
+            return new ArrayList<>();
+        }
         return client.find(searchTerm)
                 .stream()
                 .map(headMapper::transform)

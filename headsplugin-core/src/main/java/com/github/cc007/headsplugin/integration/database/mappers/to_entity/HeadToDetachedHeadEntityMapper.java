@@ -11,29 +11,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class HeadToHeadEntityMapper implements Transformer<Head, HeadEntity> {
+public class HeadToDetachedHeadEntityMapper implements Transformer<Head, HeadEntity> {
 
     private final HeadRepository headRepository;
 
     @Override
     public HeadEntity transform(Head head) {
-        val headEntity = getHeadEntity(head.getHeadOwner().toString());
+        val headEntity = new HeadEntity();
+        headEntity.setHeadOwner(head.getHeadOwner().toString());
         headEntity.setName(head.getName());
         headEntity.setValue(head.getValue());
 
         return headEntity;
-    }
-
-    private HeadEntity getHeadEntity(String headOwner) {
-        val optionalHead = headRepository.findByHeadOwner(headOwner);
-
-        HeadEntity head;
-        if (!optionalHead.isPresent()) {
-            head = new HeadEntity();
-            head.setHeadOwner(headOwner);
-        } else {
-            head = optionalHead.get();
-        }
-        return head;
     }
 }

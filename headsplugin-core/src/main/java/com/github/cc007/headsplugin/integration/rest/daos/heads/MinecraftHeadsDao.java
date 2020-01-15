@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @ToString
-public class MinecraftHeadsDao implements Searchable, Categorizable {
+public class MinecraftHeadsDao implements Categorizable {
 
     private final MinecraftHeadsClient client;
 
@@ -58,13 +58,5 @@ public class MinecraftHeadsDao implements Searchable, Categorizable {
     public List<String> getCustomCategoryNames() {
         //TODO base it on the config
         return new ArrayList<>();
-    }
-
-    @Override
-    public List<Head> getHeads(String searchTerm) {
-        return client.find(searchTerm)
-                .stream()
-                .map(headMapper::transform)
-                .collect(Collectors.toList());
     }
 }
