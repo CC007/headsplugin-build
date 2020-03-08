@@ -85,7 +85,7 @@ public class CategoryUpdater {
         updateCategories(categoriesToBeUpdated);
 
         long end = System.currentTimeMillis();
-        log.info(String.format("Updating all categories: %.3f", (end - start) / 1000.0));
+        log.info(String.format("Done updating all categories (in %.3fs).", (end - start) / 1000.0));
     }
 
     private void updateCategories(Map<CategoryEntity, List<Categorizable>> categories) {
@@ -99,7 +99,7 @@ public class CategoryUpdater {
     private void updateCategory(String categoryName, List<Categorizable> categorizables) {
         val foundHeads = requestCategoryHeads(categorizables, categoryName);
 
-        List<HeadEntity> headEntities = headUpdater.updateHeads(headUtils.flattenHeads(foundHeads.values()));
+        val headEntities = headUpdater.updateHeads(headUtils.flattenHeads(foundHeads.values()));
 
         updateCategoryHeads(categoryName, headEntities);
 
