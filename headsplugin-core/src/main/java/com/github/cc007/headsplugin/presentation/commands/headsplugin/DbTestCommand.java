@@ -20,7 +20,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Subcommand
 @Command(
@@ -73,10 +74,15 @@ public class DbTestCommand extends AbstractCommand {
             context.getSender().sendMessage(chatManager.getConsolePrefix() + "This command is only available for players.");
         }
 
-        List<Head> heads = headSearcher.getHeads(searchTerm);
+        Optional<Head> head = headSearcher.getHeads(UUID.fromString(searchTerm));
+        if(head.isPresent()){
+            showInfo(head.get());
+        } else {
+            context.getPlayer().sendMessage("Head for UUID " + searchTerm + " not found");
+        }
         //heads.forEach(this::showInfo);
 
-        context.getPlayer().sendMessage("Total number of heads: " + heads.size());
+        //context.getPlayer().sendMessage("Total number of heads: " + heads.size());
     }
 
     private void showInfo(Head head) {
