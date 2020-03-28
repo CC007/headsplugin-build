@@ -62,6 +62,7 @@ public class HeadsPlugin extends JavaPlugin {
 
         // configure the class loader and run the spring application
         defaultClassLoader = Thread.currentThread().getContextClassLoader();
+        springClassLoaders.add(defaultClassLoader);
         ClassLoader classLoader = new CompoundClassLoader(springClassLoaders);
         Thread.currentThread().setContextClassLoader(classLoader);
         ResourceLoader loader = new DefaultResourceLoader(classLoader);
