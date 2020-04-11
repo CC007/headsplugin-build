@@ -1,8 +1,6 @@
 package com.github.cc007.headsplugin.integration.database.mappers.to_entity;
 
-import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
 import com.github.cc007.headsplugin.integration.database.entities.SearchEntity;
-import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.SearchRepository;
 
 import lombok.RequiredArgsConstructor;

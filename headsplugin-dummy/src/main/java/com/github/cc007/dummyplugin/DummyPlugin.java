@@ -1,13 +1,14 @@
 package com.github.cc007.dummyplugin;
 
 import com.github.cc007.headsplugin.HeadsPlugin;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class DummyPlugin extends JavaPlugin {
 
 
     @Override
-    public void onLoad(){
+    public void onLoad() {
         getLogger().info("Added class loader to HeadsPlugin springClassLoaders");
         HeadsPlugin.addSpringClassLoader(getClassLoader());
     }

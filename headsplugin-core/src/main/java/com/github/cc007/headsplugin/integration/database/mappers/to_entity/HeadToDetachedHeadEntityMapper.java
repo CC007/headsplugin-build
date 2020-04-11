@@ -1,6 +1,6 @@
 package com.github.cc007.headsplugin.integration.database.mappers.to_entity;
 
-import com.github.cc007.headsplugin.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
 

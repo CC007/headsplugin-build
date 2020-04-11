@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>headsplugin-build</artifactId>
         <groupId>com.github.cc007</groupId>
+        <artifactId>headsplugin-build</artifactId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
@@ -31,10 +31,29 @@
             <layout>default</layout>
         </repository>
 
+        <!-- repo for Bukkit, CraftBukkit and Spigot -->
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
     </repositories>
 
     <dependencyManagement>
         <dependencies>
+            <!-- HeadsPlugin API dependency -->
+            <dependency>
+                <groupId>com.github.cc007</groupId>
+                <artifactId>headsplugin-api</artifactId>
+                <version>2.0.0-SNAPSHOT</version>
+            </dependency>
+
             <!-- Spring boot dependencies import -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>

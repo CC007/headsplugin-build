@@ -1,7 +1,5 @@
 package com.github.cc007.headsplugin.integration.database.repositories;
 
-import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
-import com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 
 import org.springframework.data.repository.CrudRepository;

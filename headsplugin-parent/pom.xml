@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>headsplugin-dependencies</artifactId>
         <groupId>com.github.cc007</groupId>
+        <artifactId>headsplugin-dependencies</artifactId>
         <version>2.0.0-SNAPSHOT</version>
         <relativePath>../headsplugin-dependencies</relativePath>
     </parent>

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ExistanceConfig {
     @Bean
-    public boolean doIExist(){
+    public boolean doIExist() {
         return true;
     }
 }

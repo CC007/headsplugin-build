@@ -1,15 +1,14 @@
 package com.github.cc007.headsplugin.presentation.commands.headsplugin;
 
-import com.github.cc007.headsplugin.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadCreator;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadPlacer;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadSearcher;
 import com.github.cc007.headsplugin.business.services.NBTPrinter;
 import com.github.cc007.headsplugin.business.services.chat.ChatManager;
-import com.github.cc007.headsplugin.business.services.heads.HeadCreator;
-import com.github.cc007.headsplugin.business.services.heads.HeadPlacer;
-import com.github.cc007.headsplugin.business.services.heads.HeadSearcher;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
 import com.github.cc007.headsplugin.integration.database.mappers.from_entity.HeadEntityToHeadMapper;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
-import com.github.cc007.headsplugin.integration.rest.daos.heads.MinecraftHeadsDao;
 import com.github.cc007.headsplugin.presentation.commands.AbstractCommand;
 
 import dev.alangomes.springspigot.command.Subcommand;
@@ -33,7 +32,6 @@ import java.util.UUID;
 @Slf4j
 public class DbTestCommand extends AbstractCommand {
 
-    private final MinecraftHeadsDao minecraftHeadsDao;
     private final HeadCreator headCreator;
     private final HeadPlacer headPlacer;
     private final NBTPrinter nbtPrinter;
@@ -50,7 +48,6 @@ public class DbTestCommand extends AbstractCommand {
 
     public DbTestCommand(Context context,
                          ChatManager chatManager,
-                         MinecraftHeadsDao minecraftHeadsDao,
                          HeadCreator headCreator,
                          HeadPlacer headPlacer,
                          NBTPrinter nbtPrinter,
@@ -58,7 +55,6 @@ public class DbTestCommand extends AbstractCommand {
                          HeadEntityToHeadMapper headEntityToHeadMapper,
                          HeadSearcher headSearcher) {
         super(context, chatManager);
-        this.minecraftHeadsDao = minecraftHeadsDao;
         this.headCreator = headCreator;
         this.headPlacer = headPlacer;
         this.nbtPrinter = nbtPrinter;
@@ -75,7 +71,7 @@ public class DbTestCommand extends AbstractCommand {
         }
 
         Optional<Head> head = headSearcher.getHeads(UUID.fromString(searchTerm));
-        if(head.isPresent()){
+        if (head.isPresent()) {
             showInfo(head.get());
         } else {
             context.getPlayer().sendMessage("Head for UUID " + searchTerm + " not found");

@@ -2,7 +2,6 @@ package com.github.cc007.headsplugin.integration.database.mappers.to_entity;
 
 import com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
-import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Categorizable;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;

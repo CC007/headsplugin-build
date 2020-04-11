@@ -1,6 +1,6 @@
 package com.github.cc007.headsplugin.business.services.heads;
 
-import com.github.cc007.headsplugin.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.business.services.chat.PrettyPrinter;
 import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
 import com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class CategoryUpdater {
+public class CategoryUpdaterImpl implements com.github.cc007.headsplugin.api.business.services.heads.CategoryUpdater {
 
     private final List<Categorizable> categorizables;
     private final HeadUpdater headUpdater;
@@ -45,11 +45,13 @@ public class CategoryUpdater {
     private int updateInterval;
 
 
+    @Override
     @Transactional
     public void updateCategories() {
         updateCategories(getCategoryMap());
     }
 
+    @Override
     @Transactional
     public void updateCategoriesIfNecessary() {
         updateCategoriesIfNecessary(getCategoryMap());
