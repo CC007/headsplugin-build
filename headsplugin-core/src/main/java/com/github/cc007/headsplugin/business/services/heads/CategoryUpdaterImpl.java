@@ -47,6 +47,15 @@ public class CategoryUpdaterImpl implements com.github.cc007.headsplugin.api.bus
 
     @Override
     @Transactional
+    public void updateCategory(String categoryName) {
+        Map<CategoryEntity, List<Categorizable>> categoryMap = getCategoryMap().entrySet().stream()
+                .filter(c -> categoryName.equals(c.getKey().getName()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        updateCategories(categoryMap);
+    }
+
+    @Override
+    @Transactional
     public void updateCategories() {
         updateCategories(getCategoryMap());
     }

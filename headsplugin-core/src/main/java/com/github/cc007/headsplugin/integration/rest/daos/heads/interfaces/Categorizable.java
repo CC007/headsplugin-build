@@ -21,6 +21,8 @@ public interface Categorizable extends DatabaseClientDao {
     }
 
     default List<Head> getAllCategoryHeads() {
-        return getCategoryNames().stream().flatMap(categoryName -> getCategoryHeads(categoryName).stream()).collect(Collectors.toList());
+        return getCategoryNames().stream()
+                .flatMap(categoryName -> getCategoryHeads(categoryName).stream())
+                .collect(Collectors.toList());
     }
 }
