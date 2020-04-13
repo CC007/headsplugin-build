@@ -56,7 +56,7 @@ public class HeadSearcherImpl implements HeadSearcher {
 
     @Override
     @Transactional
-    public Optional<Head> getHeads(UUID headOwner) {
+    public Optional<Head> getHead(UUID headOwner) {
         return headRepository.findByHeadOwner(headOwner.toString()).map(headEntityToHeadMapper::transform);
     }
 

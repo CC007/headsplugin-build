@@ -70,7 +70,7 @@ public class DbTestCommand extends AbstractCommand {
             context.getSender().sendMessage(chatManager.getConsolePrefix() + "This command is only available for players.");
         }
 
-        Optional<Head> head = headSearcher.getHeads(UUID.fromString(searchTerm));
+        Optional<Head> head = headSearcher.getHead(UUID.fromString(searchTerm));
         if (head.isPresent()) {
             showInfo(head.get());
         } else {
