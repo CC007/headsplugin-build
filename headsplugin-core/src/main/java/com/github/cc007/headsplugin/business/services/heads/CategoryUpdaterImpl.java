@@ -47,10 +47,13 @@ public class CategoryUpdaterImpl implements com.github.cc007.headsplugin.api.bus
 
     @Override
     @Transactional
-    public void updateCategory(String categoryName) {
-        Map<CategoryEntity, List<Categorizable>> categoryMap = getCategoryMap().entrySet().stream()
+    public void updateCategory(String categoryName) throws IllegalArgumentException {
+        val categoryMap = getCategoryMap().entrySet().stream()
                 .filter(c -> categoryName.equals(c.getKey().getName()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if (categoryMap.size() == 0) {
+            throw new IllegalArgumentException("Invalid category name supplied. Use one of the categories from CategorySearcher.getCategories()");
+        }
         updateCategories(categoryMap);
     }
 
