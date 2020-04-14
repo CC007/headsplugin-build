@@ -40,7 +40,7 @@ public class HeadSearcherImpl implements HeadSearcher {
     public final SearchRepository searchRepository;
     public final HeadEntityToHeadMapper headEntityToHeadMapper;
 
-    @Value("${headsplugin.search.update.interval:24}")
+    @Value("${headsplugin.search.update.interval:5}")
     private int searchUpdateInterval;
 
     @Override
