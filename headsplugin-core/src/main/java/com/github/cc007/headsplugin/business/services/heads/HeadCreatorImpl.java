@@ -1,6 +1,7 @@
 package com.github.cc007.headsplugin.business.services.heads;
 
-import com.github.cc007.headsplugin.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadCreator;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-public class HeadCreator {
+public class HeadCreatorImpl implements HeadCreator {
 
     /**
      * Get a List of bukkit <code>ItemStack</code> objects based on the provided
@@ -28,6 +29,7 @@ public class HeadCreator {
      * @return The List of bukkit <code>ItemStack</code> objects based on the
      * provided List of <code>Head</code> objects
      */
+    @Override
     public List<ItemStack> getItemStacks(List<Head> heads) {
         return getItemStacks(heads, 1);
     }
@@ -41,6 +43,7 @@ public class HeadCreator {
      * @return The List of bukkit <code>ItemStack</code> objects based on the
      * provided List of <code>Head</code> objects
      */
+    @Override
     public List<ItemStack> getItemStacks(List<Head> heads, int quantity) {
         return heads.stream().map((head -> getItemStack(head, quantity))).collect(Collectors.toList());
     }
@@ -53,6 +56,7 @@ public class HeadCreator {
      * @return The <code>ItemStack</code> based on the provided
      * <code>Head</code>
      */
+    @Override
     public ItemStack getItemStack(Head head) {
         return getItemStack(head, 1);
     }
@@ -66,6 +70,7 @@ public class HeadCreator {
      * @return The <code>ItemStack</code> based on the provided
      * <code>Head</code>
      */
+    @Override
     public ItemStack getItemStack(Head head, int quantity) {
         val playerHeadItemStack = new ItemStack(Material.PLAYER_HEAD, quantity);
         val headSkullMeta = Optional.ofNullable((SkullMeta) playerHeadItemStack.getItemMeta());

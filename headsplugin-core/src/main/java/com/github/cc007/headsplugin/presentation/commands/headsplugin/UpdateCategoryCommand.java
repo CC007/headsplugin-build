@@ -1,12 +1,12 @@
 package com.github.cc007.headsplugin.presentation.commands.headsplugin;
 
+import com.github.cc007.headsplugin.api.business.services.heads.CategoryUpdater;
 import com.github.cc007.headsplugin.business.services.chat.ChatManager;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
 import com.github.cc007.headsplugin.presentation.commands.AbstractCommand;
 
 import dev.alangomes.springspigot.command.Subcommand;
 import dev.alangomes.springspigot.context.Context;
-import org.bukkit.command.ConsoleCommandSender;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
@@ -21,25 +21,45 @@ import picocli.CommandLine.Parameters;
 )
 public class UpdateCategoryCommand extends AbstractCommand {
 
+    private final CategoryUpdater categoryUpdater;
+
     @Parameters(
             index = "0",
             defaultValue = "all",
             //completionCandidates = ..., TODO complete from category names
-            description = "The category to update. If this parameter is not specified, all categories will be updated",
+            description = "The category to update. If this parameter is not specified or if the parameter specifies 'all', all categories will be updated",
             paramLabel = "categoryName"
     )
     private String categoryName;
 
-    public UpdateCategoryCommand(Context context, ChatManager chatManager) {
+    public UpdateCategoryCommand(
+            CategoryUpdater categoryUpdater,
+            Context context,
+            ChatManager chatManager) {
         super(context, chatManager);
+        this.categoryUpdater = categoryUpdater;
     }
 
     @Override
     public void run() {
-        if (context.getPlayer() != null) {
-            context.getPlayer().sendMessage(chatManager.getChatPrefix() + "This might actually do stuff to " + categoryName + " in the future");
-        } else if (context.getSender() instanceof ConsoleCommandSender) {
-            context.getSender().sendMessage(chatManager.getConsolePrefix() + "This might actually do stuff to " + categoryName + " in the future");
+        //TODO perms for updating categories
+        if(categoryName == null || categoryName.equals("all")) {
+            updateAllCategories();
+        } else {
+            updateCategory(categoryName);
         }
+    }
+
+    private void updateCategory(String categoryName) {
+        context.getSender().sendMessage(chatManager.getPrefix() + "Updating " + categoryName + " category...");
+        //TODO handle unknown category
+        categoryUpdater.updateCategory(categoryName);
+        context.getSender().sendMessage(chatManager.getPrefix() + categoryName + " category is now updated.");
+    }
+
+    private void updateAllCategories() {
+        context.getSender().sendMessage(chatManager.getPrefix() + "Updating all categories...");
+        categoryUpdater.updateCategories();
+        context.getSender().sendMessage(chatManager.getPrefix() + "All categories are now updated.");
     }
 }

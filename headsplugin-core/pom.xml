@@ -50,25 +50,12 @@
         </snapshotRepository>
     </distributionManagement>
 
-    <repositories>
-        <repository>
-            <id>cc007-lib-releases-repo</id>
-            <url>https://github.com/CC007/maven-repo/raw/master/lib-releases</url>
-        </repository>
-
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-    </repositories>
     <dependencies>
+        <dependency>
+            <groupId>com.github.cc007</groupId>
+            <artifactId>headsplugin-api</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
@@ -146,6 +133,10 @@
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.cc007</groupId>
+            <artifactId>headsplugin-api</artifactId>
         </dependency>
 
     </dependencies>

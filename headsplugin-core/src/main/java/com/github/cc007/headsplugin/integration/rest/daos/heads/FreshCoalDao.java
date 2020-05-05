@@ -1,6 +1,6 @@
 package com.github.cc007.headsplugin.integration.rest.daos.heads;
 
-import com.github.cc007.headsplugin.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.integration.rest.clients.FreshCoalClient;
 import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Categorizable;
 import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Searchable;
@@ -63,7 +63,7 @@ public class FreshCoalDao implements Searchable, Categorizable {
 
     @Override
     public List<Head> getHeads(String searchTerm) {
-        if(searchTerm.length() < 3) {
+        if (searchTerm.length() < 3) {
             return new ArrayList<>();
         }
         return client.find(searchTerm)

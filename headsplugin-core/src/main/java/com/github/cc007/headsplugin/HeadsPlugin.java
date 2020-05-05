@@ -1,10 +1,12 @@
 package com.github.cc007.headsplugin;
 
+import com.github.cc007.headsplugin.api.HeadsPluginApi;
 import com.github.cc007.headsplugin.config.Application;
 
 import dev.alangomes.springspigot.SpringSpigotInitializer;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -29,6 +31,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -44,6 +47,13 @@ public class HeadsPlugin extends JavaPlugin {
 
     public static void addSpringClassLoader(ClassLoader springClassLoader) {
         springClassLoaders.add(springClassLoader);
+    }
+
+    public static HeadsPluginApi getApi(){
+        BeanFactory beanFactory = Optional.ofNullable(springContext)
+                .orElseThrow(() -> new IllegalStateException(
+                        "HeadsPlugin has not been fully initialized yet! Make sure that the HeadsPluginAPI plugin is enabled."));
+        return HeadsPluginApi.getInstance(springContext);
     }
 
     @Override

@@ -1,27 +1,34 @@
 package com.github.cc007.headsplugin.presentation.commands.headsplugin;
 
-import com.github.cc007.headsplugin.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.domain.Category;
+import com.github.cc007.headsplugin.api.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.services.heads.CategorySearcher;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadCreator;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadPlacer;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadSearcher;
 import com.github.cc007.headsplugin.business.services.NBTPrinter;
 import com.github.cc007.headsplugin.business.services.chat.ChatManager;
-import com.github.cc007.headsplugin.business.services.heads.HeadCreator;
-import com.github.cc007.headsplugin.business.services.heads.HeadPlacer;
-import com.github.cc007.headsplugin.business.services.heads.HeadSearcher;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
 import com.github.cc007.headsplugin.integration.database.mappers.from_entity.HeadEntityToHeadMapper;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
-import com.github.cc007.headsplugin.integration.rest.daos.heads.MinecraftHeadsDao;
 import com.github.cc007.headsplugin.presentation.commands.AbstractCommand;
 
 import dev.alangomes.springspigot.command.Subcommand;
 import dev.alangomes.springspigot.context.Context;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
+import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
+import org.bukkit.inventory.ItemStack;
+import org.springframework.transaction.annotation.Transactional;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Subcommand
 @Command(
@@ -33,13 +40,11 @@ import java.util.UUID;
 @Slf4j
 public class DbTestCommand extends AbstractCommand {
 
-    private final MinecraftHeadsDao minecraftHeadsDao;
     private final HeadCreator headCreator;
     private final HeadPlacer headPlacer;
     private final NBTPrinter nbtPrinter;
-    private final HeadRepository headRepository;
-    private final HeadEntityToHeadMapper headEntityToHeadMapper;
     private final HeadSearcher headSearcher;
+    private final CategorySearcher categorySearcher;
 
     @Parameters(
             index = "0",
@@ -50,21 +55,19 @@ public class DbTestCommand extends AbstractCommand {
 
     public DbTestCommand(Context context,
                          ChatManager chatManager,
-                         MinecraftHeadsDao minecraftHeadsDao,
                          HeadCreator headCreator,
                          HeadPlacer headPlacer,
                          NBTPrinter nbtPrinter,
                          HeadRepository headRepository,
                          HeadEntityToHeadMapper headEntityToHeadMapper,
-                         HeadSearcher headSearcher) {
+                         HeadSearcher headSearcher,
+                         CategorySearcher categorySearcher) {
         super(context, chatManager);
-        this.minecraftHeadsDao = minecraftHeadsDao;
         this.headCreator = headCreator;
         this.headPlacer = headPlacer;
         this.nbtPrinter = nbtPrinter;
-        this.headRepository = headRepository;
-        this.headEntityToHeadMapper = headEntityToHeadMapper;
         this.headSearcher = headSearcher;
+        this.categorySearcher = categorySearcher;
     }
 
 
@@ -74,12 +77,24 @@ public class DbTestCommand extends AbstractCommand {
             context.getSender().sendMessage(chatManager.getConsolePrefix() + "This command is only available for players.");
         }
 
-        Optional<Head> head = headSearcher.getHeads(UUID.fromString(searchTerm));
-        if(head.isPresent()){
-            showInfo(head.get());
-        } else {
-            context.getPlayer().sendMessage("Head for UUID " + searchTerm + " not found");
+        Set<Category> categories = categorySearcher.getCategories();
+        context.getSender().sendMessage(chatManager.getChatPrefix() + "Available categories: " + categories.stream().map(Category::getName).collect(Collectors.joining(", ")));
+
+        Location location = context.getPlayer().getLocation();
+        for (Category category : categories) {
+            Optional<Head> optionalHead = categorySearcher.getCategoryHeads(category).stream().findFirst();
+            if(optionalHead.isPresent()){
+                Head head = optionalHead.get();
+                showInfo(head);
+                ItemStack headIS = headCreator.getItemStack(head);
+                context.getPlayer().getInventory().addItem(headIS);
+                headPlacer.placeHead(headIS, location, BlockFace.NORTH);
+            } else {
+                context.getPlayer().sendMessage("First head for category " + category.getName() + " not found");
+            }
+            location = location.add(1, 0, 0);
         }
+
         //heads.forEach(this::showInfo);
 
         //context.getPlayer().sendMessage("Total number of heads: " + heads.size());

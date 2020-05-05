@@ -1,6 +1,6 @@
 package com.github.cc007.headsplugin.integration.rest.daos.heads;
 
-import com.github.cc007.headsplugin.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.integration.rest.clients.MineSkinClient;
 import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Creatable;
 import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Searchable;

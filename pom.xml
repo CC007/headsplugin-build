@@ -37,11 +37,12 @@
     </developers>
 
     <modules>
+        <module>headsplugin-api</module>
         <module>headsplugin-core</module>
-        <module>headsplugin-dummy</module>
-        <module>headsplugin-parent</module>
         <module>headsplugin-dependencies</module>
+        <module>headsplugin-dummy</module>
         <module>headsplugin-files</module>
+        <module>headsplugin-parent</module>
     </modules>
 
     <build>

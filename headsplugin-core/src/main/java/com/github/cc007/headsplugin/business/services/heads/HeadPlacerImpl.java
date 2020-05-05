@@ -1,12 +1,12 @@
 package com.github.cc007.headsplugin.business.services.heads;
 
-import com.github.cc007.headsplugin.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadPlacer;
 import com.github.cc007.headsplugin.business.services.NBTPrinter;
 
 import de.tr7zw.changeme.nbtapi.NBTContainer;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import de.tr7zw.changeme.nbtapi.NBTTileEntity;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +25,11 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class HeadPlacer {
+public class HeadPlacerImpl implements HeadPlacer {
 
     private final NBTPrinter nbtPrinter;
 
+    @Override
     public void placeHead(@NonNull ItemStack headItemStack, @NonNull Location location, @NonNull BlockFace rotation) {
         Validate.isTrue(headItemStack.getType().equals(Material.PLAYER_HEAD));
 
@@ -39,6 +40,7 @@ public class HeadPlacer {
         updateHeadBlockState(headBlock, headItemStack);
     }
 
+    @Override
     public void placeHead(@NonNull Head head, @NonNull Location location, @NonNull BlockFace rotation) {
         val headBlock = location.getBlock();
         headBlock.setType(Material.PLAYER_HEAD);
@@ -47,6 +49,7 @@ public class HeadPlacer {
         updateHeadBlockState(headBlock, head);
     }
 
+    @Override
     public void placeWallHead(@NonNull ItemStack wallHeadItemStack, @NonNull Location location, @NonNull BlockFace facing) {
         Validate.isTrue(wallHeadItemStack.getType().equals(Material.PLAYER_HEAD));
 
@@ -57,6 +60,7 @@ public class HeadPlacer {
         updateHeadBlockState(wallHeadBlock, wallHeadItemStack);
     }
 
+    @Override
     public void placeWallHead(@NonNull Head head, @NonNull Location location, @NonNull BlockFace facing) {
         val wallHeadBlock = location.getBlock();
         wallHeadBlock.setType(Material.PLAYER_WALL_HEAD);

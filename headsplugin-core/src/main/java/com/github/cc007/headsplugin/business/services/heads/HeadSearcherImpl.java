@@ -1,6 +1,7 @@
 package com.github.cc007.headsplugin.business.services.heads;
 
-import com.github.cc007.headsplugin.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadSearcher;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.mappers.from_entity.HeadEntityToHeadMapper;
 import com.github.cc007.headsplugin.integration.database.mappers.to_entity.DatabaseNameToDatabaseEntityMapper;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class HeadSearcher {
+public class HeadSearcherImpl implements HeadSearcher {
 
     public final Map<String, Searchable> searchables;
     public final HeadUpdater headUpdater;
@@ -39,9 +40,10 @@ public class HeadSearcher {
     public final SearchRepository searchRepository;
     public final HeadEntityToHeadMapper headEntityToHeadMapper;
 
-    @Value("${headsplugin.search.update.interval:24}")
+    @Value("${headsplugin.search.update.interval:5}")
     private int searchUpdateInterval;
 
+    @Override
     public int getSearchCount(String searchTerm) {
         val optionalSearchEntity = searchRepository.findBySearchTerm(searchTerm);
         if (!optionalSearchEntity.isPresent()) {
@@ -51,12 +53,14 @@ public class HeadSearcher {
         val searchEntity = optionalSearchEntity.get();
         return searchEntity.getSearchCount();
     }
-    
+
+    @Override
     @Transactional
-    public Optional<Head> getHeads(UUID headOwner) {
+    public Optional<Head> getHead(UUID headOwner) {
         return headRepository.findByHeadOwner(headOwner.toString()).map(headEntityToHeadMapper::transform);
     }
 
+    @Override
     @Transactional
     public List<Head> getHeads(String searchTerm) {
         long start = System.currentTimeMillis();

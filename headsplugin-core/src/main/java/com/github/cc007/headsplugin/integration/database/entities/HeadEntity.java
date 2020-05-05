@@ -1,7 +1,6 @@
 package com.github.cc007.headsplugin.integration.database.entities;
 
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,17 +16,16 @@ import javax.persistence.Index;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "heads",
-    indexes = {
-        @Index(name = "heads_headowner_index", columnList = "headOwner"),
-        @Index(name = "heads_name_index", columnList = "name")
-    }
+        indexes = {
+                @Index(name = "heads_headowner_index", columnList = "headOwner"),
+                @Index(name = "heads_name_index", columnList = "name")
+        }
 )
 @Getter
 @Setter
