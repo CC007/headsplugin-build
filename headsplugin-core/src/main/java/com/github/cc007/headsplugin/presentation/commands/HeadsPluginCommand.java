@@ -16,9 +16,12 @@ import picocli.CommandLine.Help.Ansi;
         name = "headspluginapi",
         versionProvider = PluginVersionProvider.class,
         description = "Provides the commands for HeadsPlugin",
-        aliases = {"headsplugin", "hpa", "hp"},
+        aliases = {"headsplugin", "hdspluginapi", "hdsplugin", "hpa", "hp"},
         mixinStandardHelpOptions = true,
-        subcommands = {UpdateCategoryCommand.class, DbTestCommand.class}
+        subcommands = {
+                UpdateCategoryCommand.class,
+                DbTestCommand.class
+        }
 )
 public class HeadsPluginCommand extends AbstractCommand {
 

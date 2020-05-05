@@ -42,14 +42,24 @@ public class UpdateCategoryCommand extends AbstractCommand {
 
     @Override
     public void run() {
+        //TODO perms for updating categories
         if(categoryName == null || categoryName.equals("all")) {
-            context.getSender().sendMessage(chatManager.getPrefix() + "Updating all categories...");
-            categoryUpdater.updateCategories();
-            context.getSender().sendMessage(chatManager.getPrefix() + "All categories are now updated.");
+            updateAllCategories();
         } else {
-            context.getSender().sendMessage(chatManager.getPrefix() + "Updating " + categoryName + " category...");
-            categoryUpdater.updateCategory(categoryName);
-            context.getSender().sendMessage(chatManager.getPrefix() + categoryName + " category is now updated.");
+            updateCategory(categoryName);
         }
+    }
+
+    private void updateCategory(String categoryName) {
+        context.getSender().sendMessage(chatManager.getPrefix() + "Updating " + categoryName + " category...");
+        //TODO handle unknown category
+        categoryUpdater.updateCategory(categoryName);
+        context.getSender().sendMessage(chatManager.getPrefix() + categoryName + " category is now updated.");
+    }
+
+    private void updateAllCategories() {
+        context.getSender().sendMessage(chatManager.getPrefix() + "Updating all categories...");
+        categoryUpdater.updateCategories();
+        context.getSender().sendMessage(chatManager.getPrefix() + "All categories are now updated.");
     }
 }
