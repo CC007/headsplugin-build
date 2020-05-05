@@ -38,6 +38,9 @@ headsplugin:
       # search update interval in minutes
       interval: 5
 
+hibernate:
+  enable_lazy_load_no_trans: true
+
 spring:
   datasource:
     url: jdbc:hsqldb:file:plugins/HeadsPluginAPI/data/heads
@@ -59,3 +62,4 @@ spring:
       hibernate.jdbc.batch_size: 1000
       hibernate.order_inserts: true
       hibernate.jdbc.batch_versioned_data: true
+      hibernate.enable_lazy_load_no_trans: true

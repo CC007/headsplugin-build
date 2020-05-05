@@ -72,7 +72,6 @@ public class DbTestCommand extends AbstractCommand {
 
 
     @Override
-    @Transactional
     public void run() {
         if (context.getPlayer() == null) {
             context.getSender().sendMessage(chatManager.getConsolePrefix() + "This command is only available for players.");
