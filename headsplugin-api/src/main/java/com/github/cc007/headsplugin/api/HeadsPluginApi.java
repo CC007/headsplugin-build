@@ -3,6 +3,7 @@ package com.github.cc007.headsplugin.api;
 import com.github.cc007.headsplugin.api.business.services.heads.CategorySearcher;
 import com.github.cc007.headsplugin.api.business.services.heads.CategoryUpdater;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadCreator;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadToItemstackMapper;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadPlacer;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadSearcher;
 
@@ -55,6 +56,10 @@ public class HeadsPluginApi {
         return INSTANCE;
     }
 
+
+    public HeadToItemstackMapper getHeadToItemstackMapper() {
+        return beanFactory.getBean(HeadToItemstackMapper.class);
+    }
 
     public HeadCreator getHeadCreator() {
         return beanFactory.getBean(HeadCreator.class);

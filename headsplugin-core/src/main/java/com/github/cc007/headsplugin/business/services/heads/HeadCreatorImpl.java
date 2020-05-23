@@ -2,95 +2,47 @@ package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadCreator;
+import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
+import com.github.cc007.headsplugin.integration.database.mappers.to_entity.DatabaseNameToDatabaseEntityMapper;
+import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Creatable;
 
-import de.tr7zw.changeme.nbtapi.NBTItem;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.entity.Player;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Component
-@Slf4j
+@RequiredArgsConstructor
 public class HeadCreatorImpl implements HeadCreator {
 
-    /**
-     * Get a List of bukkit <code>ItemStack</code> objects based on the provided
-     * List of <code>Head</code> objects
-     *
-     * @param heads the provided List of <code>Head</code> objects
-     * @return The List of bukkit <code>ItemStack</code> objects based on the
-     * provided List of <code>Head</code> objects
-     */
+    private final List<Creatable> creatables;
+    private final HeadUpdater headUpdater;
+    public final DatabaseNameToDatabaseEntityMapper databaseNameToDatabaseEntityMapper;
+
     @Override
-    public List<ItemStack> getItemStacks(List<Head> heads) {
-        return getItemStacks(heads, 1);
+    @Transactional
+    public Map<String, Head> createHead(Player player, String newHeadName) {
+        val newHeadsMap = new HashMap<String, Head>();
+        for (Creatable creatable : creatables) {
+            val optionalNewHead = creatable.addHead(player.getUniqueId(), newHeadName);
+            if (optionalNewHead.isPresent()) {
+                val newHead = optionalNewHead.get();
+                val headEntities = headUpdater.updateHeads(Collections.singletonList(newHead));
+                updateDatabaseHeads(creatable, headEntities);
+                newHeadsMap.put(creatable.getDatabaseName(), newHead);
+            }
+        }
+        return newHeadsMap;
     }
 
-    /**
-     * Get a List of bukkit <code>ItemStack</code> objects based on the provided
-     * List of <code>Head</code> objects
-     *
-     * @param heads    the provided List of <code>Head</code> objects
-     * @param quantity the number of heads in the <code>ItemStack</code> objects
-     * @return The List of bukkit <code>ItemStack</code> objects based on the
-     * provided List of <code>Head</code> objects
-     */
-    @Override
-    public List<ItemStack> getItemStacks(List<Head> heads, int quantity) {
-        return heads.stream().map((head -> getItemStack(head, quantity))).collect(Collectors.toList());
-    }
-
-    /**
-     * Get a bukkit <code>ItemStack</code> based on the provided
-     * <code>Head</code>
-     *
-     * @param head the provided <code>Head</code>
-     * @return The <code>ItemStack</code> based on the provided
-     * <code>Head</code>
-     */
-    @Override
-    public ItemStack getItemStack(Head head) {
-        return getItemStack(head, 1);
-    }
-
-    /**
-     * Get a bukkit <code>ItemStack</code> based on the provided
-     * <code>Head</code>
-     *
-     * @param head     the provided <code>Head</code>
-     * @param quantity the number of heads in the <code>ItemStack</code>
-     * @return The <code>ItemStack</code> based on the provided
-     * <code>Head</code>
-     */
-    @Override
-    public ItemStack getItemStack(Head head, int quantity) {
-        val playerHeadItemStack = new ItemStack(Material.PLAYER_HEAD, quantity);
-        val headSkullMeta = Optional.ofNullable((SkullMeta) playerHeadItemStack.getItemMeta());
-        headSkullMeta.ifPresent((meta) -> {
-            meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5")));
-            meta.setDisplayName(head.getName());
-            playerHeadItemStack.setItemMeta(meta);
-        });
-        val nbtItem = new NBTItem(playerHeadItemStack);
-        val displayCompound = nbtItem.addCompound("display");
-        displayCompound.setString("Name", "\"" + head.getName() + "\"");
-
-        val skullOwnerCompound = nbtItem.addCompound("SkullOwner");
-        skullOwnerCompound.setString("Id", head.getHeadOwner().toString());
-        skullOwnerCompound.setString("Name", head.getName());
-        val propertiesCompound = skullOwnerCompound.addCompound("Properties");
-        val texturesCompoundList = propertiesCompound.getCompoundList("textures");
-        val textureListCompound = texturesCompoundList.addCompound();
-        textureListCompound.setString("Value", head.getValue());
-
-        return nbtItem.getItem();
+    private void updateDatabaseHeads(Creatable creatable, List<HeadEntity> headEntities) {
+        val database = databaseNameToDatabaseEntityMapper.transform(creatable.getDatabaseName());
+        headUpdater.updateDatabaseHeads(headEntities, database);
     }
 }

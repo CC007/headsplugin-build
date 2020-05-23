@@ -2,44 +2,19 @@ package com.github.cc007.headsplugin.api.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.entity.Player;
 
-import java.util.List;
+import java.util.Map;
 
 public interface HeadCreator {
     /**
-     * Get a list of {@link ItemStack}s, based on the provided list of {@link Head}s.
-     * The number of items per stack is set to 1.
+     * Create a head based on a skin from a given Player and head name.
+     * The head will also be stored in the local database.
+     * This method returns a map, because different head databases could give the head a different UUID
      *
-     * @param heads the list of heads
-     * @return the list of itemstacks
+     * @param player      the player who's skin will be used to create the head
+     * @param newHeadName the name of the newly created head
+     * @return the map of newly created heads (with database name as key)
      */
-    List<ItemStack> getItemStacks(List<Head> heads);
-
-    /**
-     * Get a list of {@link ItemStack}s, based on the provided list of {@link Head}s.
-     *
-     * @param heads the list of heads
-     * @param quantity the number of items per stack
-     * @return the list of itemstacks
-     */
-    List<ItemStack> getItemStacks(List<Head> heads, int quantity);
-
-    /**
-     * Get an {@link ItemStack}, based on the provided {@link Head}.
-     * The number of items per stack is set to 1.
-     *
-     * @param head the head
-     * @return the itemstack
-     */
-    ItemStack getItemStack(Head head);
-
-    /**
-     * Get an {@link ItemStack}, based on the provided {@link Head}.
-     *
-     * @param head the head
-     * @param quantity the number of items per stack
-     * @return the itemstack
-     */
-    ItemStack getItemStack(Head head, int quantity);
+    Map<String, Head> createHead(Player player, String newHeadName);
 }

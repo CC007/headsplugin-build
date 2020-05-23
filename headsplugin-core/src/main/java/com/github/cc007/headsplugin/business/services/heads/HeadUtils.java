@@ -18,7 +18,7 @@ public class HeadUtils {
                 .collect(Collectors.toList());
     }
 
-    public List<String> getHeadOwnerStrings(List<Head> heads) {
+    public List<String> getHeadOwnerStrings(Collection<Head> heads) {
         return heads.stream()
                 .map(Head::getHeadOwner)
                 .map(UUID::toString)
