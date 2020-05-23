@@ -13,6 +13,7 @@ import lombok.val;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +30,7 @@ public class HeadUpdater {
     private final DatabaseRepository databaseRepository;
     private final HeadUtils headUtils;
 
-    public List<HeadEntity> updateHeads(List<Head> foundHeads) {
+    public List<HeadEntity> updateHeads(Collection<Head> foundHeads) {
         val foundHeadOwnerStrings = headUtils.getHeadOwnerStrings(foundHeads);
         val storedHeads = headRepository.findByHeadOwnerIn(foundHeadOwnerStrings);
 

@@ -1,53 +1,85 @@
 package com.github.cc007.headsplugin.config.feign.statuscodes;
 
+import com.github.cc007.headsplugin.config.feign.decoder.HtmlAwareDecoder;
+
+import feign.FeignException;
 import feign.Response;
-import feign.codec.Decoder;
 import feign.codec.ErrorDecoder;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Optional;
 
 @Component
+@Slf4j
+@RequiredArgsConstructor
 public class StatusCodeHandlingErrorDecoder implements ErrorDecoder {
-    private final Decoder decoder;
-
+    private final HtmlAwareDecoder htmlAwareDecoder;
     private final ErrorDecoder defaultErrorDecoder = new ErrorDecoder.Default();
+    private final Map<ErrorDecoderKey, Class<?>> errorDecoderActions = new HashMap<>();
 
-    private final Map<ErrorDecoderKey, Class> decoderKeyActions = new HashMap<>();
-
-    public StatusCodeHandlingErrorDecoder(Decoder decoder) {
-        this.decoder = decoder;
+    public void addKey(ErrorDecoderKey key, Class<?> aClass) {
+        if (!errorDecoderActions.containsKey(key)) {
+            errorDecoderActions.put(key, aClass);
+        }
     }
 
     @Override
     public Exception decode(String methodKey, Response response) {
-        AtomicReference<Exception> result = new AtomicReference<>();
-        result.set(defaultErrorDecoder.decode(methodKey, response));
+        Exception result;
 
-        decoderKeyActions.entrySet().stream()
-                .filter((entry) -> {
-                    ErrorDecoderKey errorDecoderKey = entry.getKey();
-                    return methodKey.equals(errorDecoderKey.getMethodKey()) && response.status() == errorDecoderKey.getStatusCode();
-                })
-                .findFirst()
-                .ifPresent((entry) -> {
-                    try {
-                        Object obj = decoder.decode(response, entry.getValue());
-                        result.set(new ErrorDecoderException(obj, obj.getClass()));
-                    } catch (IOException e) {
-                        result.set(e);
-                    }
-                });
+        val optionalDecoderActionEntry = getDecoderActionEntry(methodKey, response);
 
-        return result.get();
+        if (optionalDecoderActionEntry.isPresent()) {
+            val decoderActionEntry = optionalDecoderActionEntry.get();
+            try {
+                val resultObject = htmlAwareDecoder.decode(response, decoderActionEntry.getValue());
+                result = new ErrorDecoderException(resultObject, resultObject.getClass());
+            } catch (IOException | FeignException e) {
+                result = e;
+            }
+        } else {
+            logDecoderError(response);
+            result = defaultErrorDecoder.decode(methodKey, response);
+        }
+
+        return result;
     }
 
-    public void addKey(ErrorDecoderKey key, Class aClass) {
-        if (!decoderKeyActions.containsKey(key)) {
-            decoderKeyActions.put(key, aClass);
-        }
+    private Optional<Map.Entry<ErrorDecoderKey, Class<?>>> getDecoderActionEntry(String methodKey, Response response) {
+        return errorDecoderActions.entrySet().stream()
+                .filter((entry) -> {
+                    val errorDecoderKey = entry.getKey();
+                    return methodKey.equals(errorDecoderKey.getMethodKey())
+                        && response.status() == errorDecoderKey.getStatusCode();
+                })
+                .findFirst();
+    }
+
+    private void logDecoderError(Response response) {
+        log.error("Got response with status code: " + response.status() + " (" + response.reason() + ")");
+        log.error("For request: " + response.request().url());
+        log.error("Request headers:" + getHeaderBuilder(response.request().headers()));
+        log.error("Response headers:" + getHeaderBuilder(response.headers()));
+        log.error("Body:\n" + response.body().toString());
+    }
+
+    private String getHeaderBuilder(Map<String, Collection<String>> headers) {
+        val requestHeaderStringBuilder = new StringBuilder();
+        headers.forEach((headerKey, headerValues) -> {
+            requestHeaderStringBuilder.append("\n - " + headerKey + ": ");
+            if (headerValues.size() > 1) {
+                requestHeaderStringBuilder.append("[" + String.join(", ", headerValues) + "]");
+            } else {
+                requestHeaderStringBuilder.append(headerValues.stream().findFirst().get());
+            }
+        });
+        return requestHeaderStringBuilder.toString();
     }
 }

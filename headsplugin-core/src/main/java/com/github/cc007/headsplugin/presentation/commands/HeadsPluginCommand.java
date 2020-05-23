@@ -2,7 +2,8 @@ package com.github.cc007.headsplugin.presentation.commands;
 
 import com.github.cc007.headsplugin.business.services.chat.ChatManager;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
-import com.github.cc007.headsplugin.presentation.commands.headsplugin.DbTestCommand;
+import com.github.cc007.headsplugin.presentation.commands.headsplugin.ListCategoriesCommand;
+import com.github.cc007.headsplugin.presentation.commands.headsplugin.ShowCategoriesCommand;
 import com.github.cc007.headsplugin.presentation.commands.headsplugin.UpdateCategoryCommand;
 
 import dev.alangomes.springspigot.context.Context;
@@ -19,8 +20,9 @@ import picocli.CommandLine.Help.Ansi;
         aliases = {"headsplugin", "hdspluginapi", "hdsplugin", "hpa", "hp"},
         mixinStandardHelpOptions = true,
         subcommands = {
-                UpdateCategoryCommand.class,
-                DbTestCommand.class
+                ListCategoriesCommand.class,
+                ShowCategoriesCommand.class,
+                UpdateCategoryCommand.class
         }
 )
 public class HeadsPluginCommand extends AbstractCommand {

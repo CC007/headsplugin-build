@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 public @interface StatusCodeHandler {
     int statusCode();
 
-    Class returnType();
+    Class<?> returnType();
 }

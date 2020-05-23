@@ -1,9 +1,9 @@
 package com.github.cc007.headsplugin.business.services.chat;
 
+import dev.alangomes.springspigot.context.Context;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
-import dev.alangomes.springspigot.context.Context;
 import org.springframework.stereotype.Component;
 
 @Component

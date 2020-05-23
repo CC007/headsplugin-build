@@ -44,6 +44,7 @@ public class HeadSearcherImpl implements HeadSearcher {
     private int searchUpdateInterval;
 
     @Override
+    @Transactional(readOnly = true)
     public int getSearchCount(String searchTerm) {
         val optionalSearchEntity = searchRepository.findBySearchTerm(searchTerm);
         if (!optionalSearchEntity.isPresent()) {
@@ -55,7 +56,7 @@ public class HeadSearcherImpl implements HeadSearcher {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<Head> getHead(UUID headOwner) {
         return headRepository.findByHeadOwner(headOwner.toString()).map(headEntityToHeadMapper::transform);
     }
@@ -66,12 +67,10 @@ public class HeadSearcherImpl implements HeadSearcher {
         long start = System.currentTimeMillis();
         if (needsUpdate(searchTerm)) {
             log.info("Updating heads for:" + searchTerm);
-            List<Head> heads = updateSearch(searchTerm);
-            long end = System.currentTimeMillis();
-            log.info(String.format("getHeads time: %.3fs", (end - start) / 1000.0));
-            return heads;
+            updateSearch(searchTerm);
+        } else {
+            log.info("Use cached heads for: " + searchTerm);
         }
-        log.info("Use cached heads for:" + searchTerm);
         List<Head> storedHeads = getStoredHeads(searchTerm);
         long end = System.currentTimeMillis();
         log.info(String.format("getHeads time: %.3fs", (end - start) / 1000.0));
@@ -99,25 +98,21 @@ public class HeadSearcherImpl implements HeadSearcher {
                 .collect(Collectors.toList());
     }
 
-    private List<Head> updateSearch(String searchTerm) {
-        val foundHeads = requestHeads(searchables.values(), searchTerm);
-        val foundHeadsList = headUtils.flattenHeads(foundHeads.values());
+    private void updateSearch(String searchTerm) {
+        // get heads based on searchables
+        val foundHeadsMap = requestHeads(searchables.values(), searchTerm);
+        for (Map.Entry<Searchable, List<Head>> foundHeadsEntries : foundHeadsMap.entrySet()) {
+            val searchable = foundHeadsEntries.getKey();
+            val foundHeads = foundHeadsEntries.getValue();
 
-        val headEntities = headUpdater.updateHeads(foundHeadsList);
-        updateAllDatabaseHeads(headEntities);
-        updateSearchHeads(searchTerm, headEntities);
+            val headEntities = headUpdater.updateHeads(foundHeads);
+            updateDatabaseHeads(searchable, headEntities);
+            updateSearchHeads(searchTerm, headEntities);
+        }
 
-        List<HeadEntity> storedHeadEntities = headRepository.findByNameContaining(searchTerm);
+        // get heads that are already stored in the database
+        val storedHeadEntities = headRepository.findByNameContaining(searchTerm);
         updateSearchHeads(searchTerm, storedHeadEntities);
-
-        val storedHeads = storedHeadEntities.stream()
-                .map(headEntityToHeadMapper::transform)
-                .filter(head -> !headUtils.getHeadOwnerStrings(foundHeadsList)
-                        .contains(head.getHeadOwner().toString()))
-                .collect(Collectors.toList());
-        foundHeadsList.addAll(storedHeads);
-
-        return foundHeadsList;
     }
 
     private void updateSearchHeads(String searchTerm, List<HeadEntity> headEntities) {
@@ -129,10 +124,9 @@ public class HeadSearcherImpl implements HeadSearcher {
         searchRepository.save(searchEntity);
     }
 
-    private void updateAllDatabaseHeads(List<HeadEntity> headEntities) {
-        searchables.values().stream()
-                .map(searchable -> databaseNameToDatabaseEntityMapper.transform(searchable.getDatabaseName()))
-                .forEach(database -> headUpdater.updateDatabaseHeads(headEntities, database));
+    private void updateDatabaseHeads(Searchable searchable, List<HeadEntity> headEntities) {
+        val database = databaseNameToDatabaseEntityMapper.transform(searchable.getDatabaseName());
+        headUpdater.updateDatabaseHeads(headEntities, database);
     }
 
     private Map<Searchable, List<Head>> requestHeads(Collection<Searchable> searchables, String searchTerm) {
