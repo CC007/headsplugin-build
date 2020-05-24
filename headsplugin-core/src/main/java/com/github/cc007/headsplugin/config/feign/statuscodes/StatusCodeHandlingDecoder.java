@@ -40,7 +40,6 @@ public class StatusCodeHandlingDecoder implements Decoder {
 
         if (optionalDecoderActionEntry.isPresent()) {
             val decoderActionEntry = optionalDecoderActionEntry.get();
-            decoderActions.remove(decoderActionEntry.getKey());
             return htmlAwareDecoder.decode(response, decoderActionEntry.getValue());
         } else {
             result = htmlAwareDecoder.decode(response, type);
