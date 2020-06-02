@@ -13,6 +13,7 @@ import picocli.CommandLine.Parameters;
 @Subcommand
 @Command(
         name = "categoriesconfig",
+        aliases = {"cc"},
         versionProvider = PluginVersionProvider.class,
         mixinStandardHelpOptions = true,
         description = "Command to list the available heads from mineskin in chat (for test purposes)"
@@ -43,7 +44,8 @@ public class CategoriesPropertiesTestCommand extends AbstractCommand {
                     context.getSender().sendMessage(chatManager.getChatBanner());
                     context.getSender().sendMessage("Custom category names:");
                     for (CategoriesProperties.CustomCategory customCategory : categoriesProperties.getCustom()) {
-                        context.getSender().sendMessage(" - " + customCategory.getName());
+                        context.getSender().sendMessage(" - " + customCategory.getName()
+                                + " (" + String.join(", ", customCategory.getSearchTerms()) + ")");
                     }
                     return;
             }

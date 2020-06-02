@@ -1,11 +1,20 @@
 # used for new version detection
 version: ${project.version}
 
-# maximum response time from the server to respond
-connectiontimeout: 10000
-
 headsplugin:
   categories:
+    custom:
+      - name: pokemon-starters
+        searchTerms:
+          - pikachu
+          - bulbasaur
+          - squirtle
+          - uuid:cd9fd81b-cc17-4d5c-8765-04e5069b026c #charmander
+      - name: cats-and-dogs
+        searchTerms:
+          - cat
+          - dog
+
     update:
       # category update interval in hours
       interval: 24
