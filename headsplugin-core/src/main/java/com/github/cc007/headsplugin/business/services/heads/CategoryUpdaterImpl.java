@@ -10,7 +10,7 @@ import com.github.cc007.headsplugin.integration.database.mappers.to_entity.Datab
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
-import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Categorizable;
+import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Categorizable;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

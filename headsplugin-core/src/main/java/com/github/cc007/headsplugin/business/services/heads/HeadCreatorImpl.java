@@ -4,7 +4,7 @@ import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadCreator;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.mappers.to_entity.DatabaseNameToDatabaseEntityMapper;
-import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Creatable;
+import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Creatable;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;

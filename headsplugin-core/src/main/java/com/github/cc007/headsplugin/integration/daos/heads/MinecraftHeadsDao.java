@@ -1,15 +1,14 @@
-package com.github.cc007.headsplugin.integration.rest.daos.heads;
+package com.github.cc007.headsplugin.integration.daos.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.integration.rest.clients.MinecraftHeadsClient;
-import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Categorizable;
+import com.github.cc007.headsplugin.integration.daos.heads.interfaces.PredefinedCategorizable;
 import com.github.cc007.headsplugin.integration.rest.mappers.MinecraftHeadsSkinDtoToHeadMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @ToString
-public class MinecraftHeadsDao implements Categorizable {
+public class MinecraftHeadsDao implements PredefinedCategorizable {
 
     private final MinecraftHeadsClient client;
 
@@ -38,7 +37,6 @@ public class MinecraftHeadsDao implements Categorizable {
 
     @Override
     public List<String> getPredefinedCategoryNames() {
-        //TODO base it on the config
         return Arrays.asList(
                 "alphabet",
                 "animals",
@@ -51,11 +49,5 @@ public class MinecraftHeadsDao implements Categorizable {
                 "monsters",
                 "plants"
         );
-    }
-
-    @Override
-    public List<String> getCustomCategoryNames() {
-        //TODO base it on the config
-        return new ArrayList<>();
     }
 }

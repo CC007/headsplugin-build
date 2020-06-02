@@ -1,4 +1,4 @@
-package com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces;
+package com.github.cc007.headsplugin.integration.daos.heads.interfaces;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 

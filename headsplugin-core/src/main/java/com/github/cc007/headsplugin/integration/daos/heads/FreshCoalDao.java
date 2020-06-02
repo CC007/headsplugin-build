@@ -1,9 +1,9 @@
-package com.github.cc007.headsplugin.integration.rest.daos.heads;
+package com.github.cc007.headsplugin.integration.daos.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.integration.rest.clients.FreshCoalClient;
-import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Categorizable;
-import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Searchable;
+import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Categorizable;
+import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Searchable;
 import com.github.cc007.headsplugin.integration.rest.mappers.FreshCoalSkinDtoToHeadMapper;
 
 import lombok.RequiredArgsConstructor;
