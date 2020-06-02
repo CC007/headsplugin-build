@@ -1,16 +1,22 @@
 package com.github.cc007.headsplugin.presentation.commands;
 
-import com.github.cc007.headsplugin.business.services.chat.ChatManager;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
+import com.github.cc007.headsplugin.presentation.commands.headsplugin.CategoriesPropertiesTestCommand;
 import com.github.cc007.headsplugin.presentation.commands.headsplugin.ListCategoriesCommand;
 import com.github.cc007.headsplugin.presentation.commands.headsplugin.ShowCategoriesCommand;
 import com.github.cc007.headsplugin.presentation.commands.headsplugin.UpdateCategoryCommand;
 
-import dev.alangomes.springspigot.context.Context;
+import dev.alangomes.springspigot.command.CommandExecutor;
+import lombok.Setter;
+import org.bukkit.ChatColor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Help.Ansi;
+
+import javax.annotation.PostConstruct;
 
 @Component
 @Command(
@@ -22,26 +28,18 @@ import picocli.CommandLine.Help.Ansi;
         subcommands = {
                 ListCategoriesCommand.class,
                 ShowCategoriesCommand.class,
-                UpdateCategoryCommand.class
+                UpdateCategoryCommand.class,
+                CategoriesPropertiesTestCommand.class
         }
 )
 public class HeadsPluginCommand extends AbstractCommand {
 
-    public HeadsPluginCommand(Context context, ChatManager chatManager) {
-        super(context, chatManager);
-    }
+    @Autowired
+    private CommandExecutor commandExecutor;
 
     @Override
-    public void run() {
-        CommandLine cmd = commandSpec.commandLine();
-        if (cmd.isUsageHelpRequested() || cmd.isVersionHelpRequested()) {
-            context.getPlayer().sendMessage(chatManager.getChatBanner());
-            if (cmd.isVersionHelpRequested()) {
-                context.getPlayer().sendMessage(commandSpec.version());
-            }
-            if (cmd.isUsageHelpRequested()) {
-                context.getPlayer().sendMessage(cmd.getUsageMessage(Ansi.OFF) + "\n ");
-            }
-        }
+    protected final void handleCommand() {
+        context.getSender().sendMessage(chatManager.getPrefix() + ChatColor.RED + "Missing parameter!");
+        commandExecutor.execute("hpa", "-h");
     }
 }
