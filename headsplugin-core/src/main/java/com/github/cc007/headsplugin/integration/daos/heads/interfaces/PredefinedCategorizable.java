@@ -1,17 +1,28 @@
 package com.github.cc007.headsplugin.integration.daos.heads.interfaces;
 
-import java.util.ArrayList;
+import com.github.cc007.headsplugin.api.business.domain.Category;
+
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public interface PredefinedCategorizable extends Categorizable {
+public interface PredefinedCategorizable extends Categorizable<Category>, DatabaseClientDao {
 
-    /**
-     * Return an empty list, because the heads database doesn't have custom search capabilities in its api.
-     *
-     * @return an empty ArrayList
-     */
+    List<String> getPredefinedCategoryNames();
+
     @Override
-    default List<String> getCustomCategoryNames() {
-        return new ArrayList<>();
+    default String getSource() {
+        return getDatabaseName();
+    }
+
+    @Override
+    default List<Category> getCategories() {
+        return getPredefinedCategoryNames().stream()
+                .map(categoryName ->
+                        Category.builder()
+                                .name(categoryName)
+                                .sources(Collections.singletonList(getDatabaseName()))
+                                .build())
+                .collect(Collectors.toList());
     }
 }

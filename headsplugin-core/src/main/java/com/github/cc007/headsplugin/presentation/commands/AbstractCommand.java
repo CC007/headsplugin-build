@@ -39,7 +39,7 @@ public abstract class AbstractCommand implements Runnable {
     }
 
     @Override
-    public final void run() {
+    public void run() {
         if (handleHelpAndVersion()) {
             return;
         }

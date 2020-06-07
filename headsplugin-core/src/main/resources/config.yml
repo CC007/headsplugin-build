@@ -17,14 +17,11 @@ headsplugin:
 
     update:
       # category update interval in hours
-      interval: 24
+      interval: 168 # 1 week
   search:
     update:
       # search update interval in minutes
-      interval: 5
-
-hibernate:
-  enable_lazy_load_no_trans: true
+      interval: 1440 # 1 day
 
 spring:
   datasource:

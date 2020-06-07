@@ -24,19 +24,19 @@ public class CategoriesProperties {
      *
      * @return the list of CustomCategory objects
      */
-    public List<CustomCategory> getCustom() {
-        return custom.stream().map(CustomCategory::new).collect(Collectors.toList());
+    public List<CustomCategoryProperties> getCustom() {
+        return custom.stream().map(CustomCategoryProperties::new).collect(Collectors.toList());
     }
 
     @Data
-    public static class CustomCategory {
+    public static class CustomCategoryProperties {
 
         /**
          * A custom constructor is made to accomodate the shortcomings of the object converters for lists of objects
          *
          * @param customCategoryMap the map that is actually stored as a field in {@link CategoriesProperties}.
          */
-        public CustomCategory(LinkedHashMap<String, ?> customCategoryMap) {
+        public CustomCategoryProperties(LinkedHashMap<String, ?> customCategoryMap) {
             this.name = (String) customCategoryMap.get("name");
             this.searchTerms = (List<String>) customCategoryMap.get("searchTerms");
         }

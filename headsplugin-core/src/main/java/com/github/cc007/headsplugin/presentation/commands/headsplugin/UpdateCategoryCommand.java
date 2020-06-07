@@ -6,6 +6,8 @@ import com.github.cc007.headsplugin.presentation.commands.AbstractCommand;
 
 import dev.alangomes.springspigot.command.CommandExecutor;
 import dev.alangomes.springspigot.command.Subcommand;
+import dev.alangomes.springspigot.security.Authorize;
+import dev.alangomes.springspigot.security.HasPermission;
 import org.bukkit.ChatColor;
 import org.springframework.beans.factory.annotation.Autowired;
 import picocli.CommandLine;
@@ -37,6 +39,15 @@ public class UpdateCategoryCommand extends AbstractCommand {
             paramLabel = "categoryName"
     )
     private String categoryName;
+
+    @Override
+    @HasPermission(value = "headspluginapi.update", message = "You don't have the permission to update categories!")
+    public void run() {
+        if (handleHelpAndVersion()) {
+            return;
+        }
+        handleCommand();
+    }
 
     @Override
     protected final void handleCommand() {

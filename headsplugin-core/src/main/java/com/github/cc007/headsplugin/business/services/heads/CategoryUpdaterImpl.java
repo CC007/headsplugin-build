@@ -1,8 +1,10 @@
 package com.github.cc007.headsplugin.business.services.heads;
 
+import com.github.cc007.headsplugin.api.business.domain.Category;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.business.services.chat.PrettyPrinter;
-import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
+import com.github.cc007.headsplugin.config.aspects.profiler.Profiler;
+import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Categorizable;
 import com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.mappers.to_entity.CategoryNameToCategoryEntityMapper;
@@ -10,11 +12,12 @@ import com.github.cc007.headsplugin.integration.database.mappers.to_entity.Datab
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
-import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Categorizable;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.slf4j.event.Level;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +34,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CategoryUpdaterImpl implements com.github.cc007.headsplugin.api.business.services.heads.CategoryUpdater {
 
-    private final List<Categorizable> categorizables;
+    private List<Categorizable<Category>> categorizables;
     private final HeadUpdater headUpdater;
     private final HeadUtils headUtils;
     private final CategoryRepository categoryRepository;
@@ -44,107 +47,94 @@ public class CategoryUpdaterImpl implements com.github.cc007.headsplugin.api.bus
     @Value("${headsplugin.categories.update.interval:24}")
     private int updateInterval;
 
+    @Autowired
+    public void setCategorizables(List<Categorizable<? extends Category>> categorizables) {
+        this.categorizables = new ArrayList<>();
+        for (Categorizable<? extends Category> categorizable : categorizables) {
+            this.categorizables.add((Categorizable<Category>) categorizable);
+        }
+    }
 
     @Override
     @Transactional
     public void updateCategory(String categoryName) throws IllegalArgumentException {
-        val categoryMap = getCategoryMap().entrySet().stream()
-                .filter(c -> categoryName.equals(c.getKey().getName()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        if (categoryMap.size() == 0) {
-            throw new IllegalArgumentException("Invalid category name supplied. Use one of the categories from CategorySearcher.getCategories()");
-        }
-        updateCategories(categoryMap);
+        val categorizableMap = getCategoryMap(categorizables).get(categoryName);
+        updateCategory(categoryName, categorizableMap);
     }
 
     @Override
     @Transactional
+    @Profiler(message = "Done updating all categories:", logLevel = Level.INFO)
     public void updateCategories() {
-        updateCategories(getCategoryMap());
+        updateCategories(getCategoryMap(categorizables));
     }
 
     @Override
     @Transactional
+    @Profiler(message = "Done updating necessary categories:", logLevel = Level.INFO)
     public void updateCategoriesIfNecessary() {
-        updateCategoriesIfNecessary(getCategoryMap());
+        val categoriesToBeUpdated = getCategoriesToBeUpdated(getCategoryMap(categorizables));
+        updateCategories(categoriesToBeUpdated);
     }
 
-    private Map<CategoryEntity, List<Categorizable>> getCategoryMap() {
-        val categories = new HashMap<CategoryEntity, List<Categorizable>>();
-        for (val categorizable : categorizables) {
-            for (String categoryName : categorizable.getCategoryNames()) {
-                val category = categories.keySet()
-                        .stream()
-                        .filter(c -> categoryName.equals(c.getName()))
-                        .findAny()
-                        .orElseGet(() -> categoryNameToCategoryEntityMapper.transform(categoryName));
-                categories.computeIfAbsent(category, k -> new ArrayList<>())
-                        .add(categorizable);
+    private <C extends Category> Map<String, Map<C, Categorizable<C>>> getCategoryMap(List<Categorizable<C>> categorizables) {
+        val categoryMap = new HashMap<String, Map<C, Categorizable<C>>>();
+        for (Categorizable<C> categorizable : categorizables) {
+            for (val category : categorizable.getCategories()) {
+                val headsSupplierMap = categoryMap.computeIfAbsent(category.getName(), (key) -> new HashMap<>());
+                headsSupplierMap.put(category, categorizable);
             }
         }
-        return categories;
+        return categoryMap;
     }
 
-    private void updateCategoriesIfNecessary(Map<CategoryEntity, List<Categorizable>> categories) {
+    private <C extends Category> Map<String, Map<C, Categorizable<C>>> getCategoriesToBeUpdated(Map<String, Map<C, Categorizable<C>>> categoryMap) {
         long start = System.currentTimeMillis();
-        val categoriesToBeUpdated = new HashMap<CategoryEntity, List<Categorizable>>();
-        categories.entrySet()
+        Map<String, Map<C, Categorizable<C>>> categoriesToBeUpdated = categoryMap.entrySet()
                 .stream()
-                .filter(categoryEntry -> categoryEntry.getKey()
+                .filter(categoryEntry -> categoryNameToCategoryEntityMapper
+                        .transform(categoryEntry.getKey())
                         .getLastUpdated()
                         .plusHours(updateInterval)
                         .isBefore(LocalDateTime.now()))
-                .forEach(categoryEntry -> categoriesToBeUpdated.put(categoryEntry.getKey(), categoryEntry.getValue()));
-
-        updateCategories(categoriesToBeUpdated);
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         long end = System.currentTimeMillis();
-        log.info(String.format("Done updating all categories (in %.3fs).", (end - start) / 1000.0));
+        log.debug(String.format("Done filtering categories to be updated (in %.3fs).", (end - start) / 1000.0));
+        return categoriesToBeUpdated;
     }
 
-    private void updateCategories(Map<CategoryEntity, List<Categorizable>> categories) {
-        categories.forEach((key, categorizables) -> {
-            String categoryName = key.getName();
+    private <C extends Category> void updateCategories(Map<String, Map<C, Categorizable<C>>> categoryMap) {
+        categoryMap.forEach((categoryName, categorizableMap) -> {
             log.info("Updating category: " + categoryName);
-            updateCategory(categoryName, categorizables);
+            updateCategory(categoryName, categorizableMap);
         });
     }
 
-    private void updateCategory(String categoryName, List<Categorizable> categorizables) {
-        val foundHeads = requestCategoryHeads(categorizables, categoryName);
+    private <C extends Category> void updateCategory(String categoryName, Map<C, Categorizable<C>> categorizableMap) {
+        val foundHeads = requestCategoryHeads(categorizableMap);
 
-        val headEntities = headUpdater.updateHeads(headUtils.flattenHeads(foundHeads.values()));
+        val headEntities = headUpdater.updateHeads(foundHeads);
 
         updateCategoryHeads(categoryName, headEntities);
 
-        for (Categorizable categorizable : categorizables) {
-            val database = databaseNameToDatabaseEntityMapper.transform(categorizable.getDatabaseName());
+        for (Categorizable<C> categorizable : categorizableMap.values()) {
+            val database = databaseNameToDatabaseEntityMapper.transform(categorizable.getSource());
 
             headUpdater.updateDatabaseHeads(headEntities, database);
             updateDatabaseCategory(categoryName, database);
         }
     }
 
-    private void updateDatabaseCategory(String categoryName, DatabaseEntity database) {
-        val category = categoryNameToCategoryEntityMapper.transform(categoryName);
-        database.addCategory(category);
-        databaseRepository.save(database);
-    }
-
-    private Map<Categorizable, List<Head>> requestCategoryHeads(List<Categorizable> categorizables, String categoryName) {
-        return categorizables
-                .stream()
-                .collect(Collectors.toMap(
-                        categorizable -> categorizable,
-                        categorizable -> categorizable.getCategoryHeads(categoryName)
-                ));
-    }
-
-    private Map<Categorizable, List<String>> getHeadOwnerStrings(Map<Categorizable, List<Head>> heads) {
-        return heads.entrySet().stream().collect(Collectors.toMap(
-                Map.Entry::getKey,
-                categorizableListEntry -> headUtils.getHeadOwnerStrings(categorizableListEntry.getValue())
-        ));
+    private <C extends Category> List<Head> requestCategoryHeads(
+            Map<C, Categorizable<C>> categorizableMap) {
+        return categorizableMap.entrySet().stream()
+                .flatMap(categorizableEntry -> {
+                    val key = categorizableEntry.getKey();
+                    val value = categorizableEntry.getValue();
+                    return value.getCategoryHeads(key).stream();
+                })
+                .collect(Collectors.toList());
     }
 
     private void updateCategoryHeads(String categoryName, List<HeadEntity> foundHeadEntities) {
@@ -155,10 +145,9 @@ public class CategoryUpdaterImpl implements com.github.cc007.headsplugin.api.bus
         categoryRepository.save(category);
     }
 
-    private List<String> getCategoryHeadOwnerStringsFromFound(String categoryName, List<String> foundHeadOwnerStrings) {
-        return headRepository.findByCategories_NameAndHeadOwnerIn(categoryName, foundHeadOwnerStrings)
-                .stream()
-                .map(HeadEntity::getHeadOwner)
-                .collect(Collectors.toList());
+    private void updateDatabaseCategory(String categoryName, DatabaseEntity database) {
+        val category = categoryNameToCategoryEntityMapper.transform(categoryName);
+        database.addCategory(category);
+        databaseRepository.save(database);
     }
 }

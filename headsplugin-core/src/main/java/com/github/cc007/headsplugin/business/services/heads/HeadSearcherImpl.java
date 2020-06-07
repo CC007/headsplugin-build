@@ -66,7 +66,7 @@ public class HeadSearcherImpl implements HeadSearcher {
     public List<Head> getHeads(String searchTerm) {
         long start = System.currentTimeMillis();
         if (needsUpdate(searchTerm)) {
-            log.info("Updating heads for:" + searchTerm);
+            log.info("Updating heads for: " + searchTerm);
             updateSearch(searchTerm);
         } else {
             log.info("Use cached heads for: " + searchTerm);

@@ -1,22 +1,21 @@
 package com.github.cc007.headsplugin.integration.daos.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
-import com.github.cc007.headsplugin.integration.rest.clients.MineSkinClient;
 import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Creatable;
-import com.github.cc007.headsplugin.integration.daos.heads.interfaces.CustomCategorizable;
 import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Searchable;
+import com.github.cc007.headsplugin.integration.rest.clients.MineSkinClient;
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.create.CreateErrorDto;
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.create.CreateSkinDetailsDto;
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.search.SkinDto;
 import com.github.cc007.headsplugin.integration.rest.mappers.MineSkinSkinDetailsDtoToHeadMapper;
 
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,8 +24,9 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @ToString
+@EqualsAndHashCode
 @Slf4j
-public class MineSkinDao implements Searchable, Creatable, CustomCategorizable {
+public class MineSkinDao implements Searchable, Creatable {
 
     private final MineSkinClient client;
 
@@ -63,14 +63,4 @@ public class MineSkinDao implements Searchable, Creatable, CustomCategorizable {
                 .map(headMapper::transform)
                 .collect(Collectors.toList());
     }
-
-    @Override
-    public List<Head> getCategoryHeads(String categoryName) {
-        return new ArrayList<>();
-    } //TODO implement
-
-    @Override
-    public List<String> getCustomCategoryNames() {
-        return new ArrayList<>();
-    } //TODO implement
 }

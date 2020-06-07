@@ -2,12 +2,13 @@ package com.github.cc007.headsplugin.api.business.domain;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Data
-@Builder
+@SuperBuilder
 public class Category {
     private String name;
-    private List<String> databaseNames;
+    private List<String> sources;
 }

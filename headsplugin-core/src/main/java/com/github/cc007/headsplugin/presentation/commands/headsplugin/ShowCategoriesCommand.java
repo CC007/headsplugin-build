@@ -27,7 +27,7 @@ public class ShowCategoriesCommand extends AbstractCommand {
     protected final void handleCommand() {
         StringBuilder sb = new StringBuilder("List of all categories:\n");
         for (Category category : categorySearcher.getCategories()) {
-            String categoryString = " - " + category.getName() + " (" + String.join(", ", category.getDatabaseNames()) + ")\n";
+            String categoryString = " - " + category.getName() + " (" + String.join(", ", category.getSources()) + ")\n";
             sb.append(categoryString);
         }
         context.getSender().sendMessage(chatManager.getPrefix() + sb.toString());
