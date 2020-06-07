@@ -14,9 +14,9 @@ public class ChatManager {
 
     public String getPrefix() {
         if (context.getPlayer() != null) {
-            getChatPrefix();
+            return getChatPrefix();
         } else if (context.getSender() instanceof ConsoleCommandSender) {
-            getConsolePrefix();
+            return getConsolePrefix();
         }
         return "";
     }

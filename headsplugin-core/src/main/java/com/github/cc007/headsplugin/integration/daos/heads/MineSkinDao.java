@@ -1,14 +1,15 @@
-package com.github.cc007.headsplugin.integration.rest.daos.heads;
+package com.github.cc007.headsplugin.integration.daos.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
+import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Creatable;
+import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Searchable;
 import com.github.cc007.headsplugin.integration.rest.clients.MineSkinClient;
-import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Creatable;
-import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Searchable;
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.create.CreateErrorDto;
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.create.CreateSkinDetailsDto;
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.search.SkinDto;
 import com.github.cc007.headsplugin.integration.rest.mappers.MineSkinSkinDetailsDtoToHeadMapper;
 
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @ToString
+@EqualsAndHashCode
 @Slf4j
 public class MineSkinDao implements Searchable, Creatable {
 

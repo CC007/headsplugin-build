@@ -1,45 +1,27 @@
 # used for new version detection
 version: ${project.version}
 
-# config for the freshcoal api
-freshcoal:
-  # server to look for the category heads
-  predefinedcategoriesurl: https://freshcoal.com/mainapi.php?query=
-
-  # server to look for the custom heads
-  customcategoriesurl: https://freshcoal.com/api.php?query=
-
-# config for the mineskin api
-mineskin:
-  # server to look for the custom heads using the mineskin api
-  customcategoriesurl: http://api.mineskin.org/get/
-
-  # server to save new custom heads to using the mineskin api
-  generateurl: http://api.mineskin.org/generate/user/
-
-# config for the minecraft-heads api
-minecraftheads:
-  # server to look for the category heads using the minecraft-heads website
-  predefinedcategoriesurl: https://minecraft-heads.com/scripts/api.php?tags=true&cat=
-
-  ## server to look for the custom heads using the minecraft-heads website (not available yet
-  # customcategoriesurl:
-
-# maximum response time from the server to respond
-connectiontimeout: 10000
-
 headsplugin:
   categories:
+    custom:
+      - name: pokemon-starters
+        searchTerms:
+          - pikachu
+          - bulbasaur
+          - squirtle
+          - uuid:cd9fd81b-cc17-4d5c-8765-04e5069b026c #charmander
+      - name: cats-and-dogs
+        searchTerms:
+          - cat
+          - dog
+
     update:
       # category update interval in hours
-      interval: 24
+      interval: 168 # 1 week
   search:
     update:
       # search update interval in minutes
-      interval: 5
-
-hibernate:
-  enable_lazy_load_no_trans: true
+      interval: 1440 # 1 day
 
 spring:
   datasource:
@@ -50,14 +32,14 @@ spring:
 
   hsql:
     console:
-      enabled: true
+      enabled: false
 
   jpa:
     database: HSQL
     hibernate:
       ddl-auto: update
       dialect: org.hibernate.dialect.HSQLDialect
-    show-sql: true
+    show-sql: false
     properties:
       hibernate.jdbc.batch_size: 1000
       hibernate.order_inserts: true

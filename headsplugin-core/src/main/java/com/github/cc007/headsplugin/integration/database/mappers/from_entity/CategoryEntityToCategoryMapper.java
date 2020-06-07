@@ -15,7 +15,7 @@ public class CategoryEntityToCategoryMapper implements Transformer<CategoryEntit
     public Category transform(CategoryEntity categoryEntity) {
         return Category.builder()
                 .name(categoryEntity.getName())
-                .databaseNames(categoryEntity.getDatabases()
+                .sources(categoryEntity.getDatabases()
                         .stream()
                         .map(DatabaseEntity::getName)
                         .collect(Collectors.toList())

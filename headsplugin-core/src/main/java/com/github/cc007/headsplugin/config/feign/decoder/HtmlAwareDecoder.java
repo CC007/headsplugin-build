@@ -50,6 +50,10 @@ public class HtmlAwareDecoder implements Decoder {
 
     private String getBodyFromHtml(InputStream inputStream) throws IOException {
         Document document = Jsoup.parse(inputStream, StandardCharsets.UTF_8.name(), "");
-        return document.select("body").text().trim();
+        String body = document.select("body").text().trim();
+        if (body.startsWith("No results")) {
+            return "[]";
+        }
+        return body;
     }
 }

@@ -1,12 +1,15 @@
 package com.github.cc007.headsplugin.presentation.commands.headsplugin;
 
 import com.github.cc007.headsplugin.api.business.services.heads.CategoryUpdater;
-import com.github.cc007.headsplugin.business.services.chat.ChatManager;
 import com.github.cc007.headsplugin.config.PluginVersionProvider;
 import com.github.cc007.headsplugin.presentation.commands.AbstractCommand;
 
+import dev.alangomes.springspigot.command.CommandExecutor;
 import dev.alangomes.springspigot.command.Subcommand;
-import dev.alangomes.springspigot.context.Context;
+import dev.alangomes.springspigot.security.Authorize;
+import dev.alangomes.springspigot.security.HasPermission;
+import org.bukkit.ChatColor;
+import org.springframework.beans.factory.annotation.Autowired;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
@@ -22,8 +25,11 @@ import picocli.CommandLine.Parameters;
 )
 public class UpdateCategoryCommand extends AbstractCommand {
 
-    private final CategoryUpdater categoryUpdater;
-    private final ShowCategoriesCommand showCategoriesCommand;
+    @Autowired
+    private CategoryUpdater categoryUpdater;
+
+    @Autowired
+    private CommandExecutor commandExecutor;
 
     @Parameters(
             index = "0",
@@ -34,20 +40,19 @@ public class UpdateCategoryCommand extends AbstractCommand {
     )
     private String categoryName;
 
-    public UpdateCategoryCommand(
-            CategoryUpdater categoryUpdater,
-            ShowCategoriesCommand showCategoriesCommand,
-            Context context,
-            ChatManager chatManager) {
-        super(context, chatManager);
-        this.categoryUpdater = categoryUpdater;
-        this.showCategoriesCommand = showCategoriesCommand;
+    @Override
+    @HasPermission(value = "headspluginapi.update", message = "You don't have the permission to update categories!")
+    public void run() {
+        if (handleHelpAndVersion()) {
+            return;
+        }
+        handleCommand();
     }
 
     @Override
-    public void run() {
+    protected final void handleCommand() {
         //TODO perms for updating categories
-        if(categoryName == null || categoryName.equals("all") || categoryName.equals("*")) {
+        if (categoryName == null || categoryName.equals("all") || categoryName.equals("*")) {
             updateAllCategories();
         } else {
             updateCategory(categoryName);
@@ -60,9 +65,8 @@ public class UpdateCategoryCommand extends AbstractCommand {
             categoryUpdater.updateCategory(categoryName);
             context.getSender().sendMessage(chatManager.getPrefix() + categoryName + " category is now updated.");
         } catch (IllegalArgumentException ex) {
-            context.getSender().sendMessage(chatManager.getPrefix() + categoryName + " category doesn't exist.");
-            Runnable showCategoriesCmd = new CommandLine(showCategoriesCommand).getCommand();
-            showCategoriesCmd.run();
+            context.getSender().sendMessage(chatManager.getPrefix() + ChatColor.RED + categoryName + " category doesn't exist.");
+            commandExecutor.execute("hpa", "show");
         }
     }
 

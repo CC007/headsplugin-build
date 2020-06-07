@@ -1,15 +1,17 @@
-package com.github.cc007.headsplugin.integration.rest.daos.heads;
+package com.github.cc007.headsplugin.integration.daos.heads;
 
+import com.github.cc007.headsplugin.api.business.domain.Category;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.integration.rest.clients.MinecraftHeadsClient;
-import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Categorizable;
+import com.github.cc007.headsplugin.integration.daos.heads.interfaces.PredefinedCategorizable;
 import com.github.cc007.headsplugin.integration.rest.mappers.MinecraftHeadsSkinDtoToHeadMapper;
 
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +19,8 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @ToString
-public class MinecraftHeadsDao implements Categorizable {
+@EqualsAndHashCode
+public class MinecraftHeadsDao implements PredefinedCategorizable {
 
     private final MinecraftHeadsClient client;
 
@@ -29,8 +32,8 @@ public class MinecraftHeadsDao implements Categorizable {
     }
 
     @Override
-    public List<Head> getCategoryHeads(String categoryName) {
-        return client.getCategory(categoryName)
+    public List<Head> getCategoryHeads(@NonNull Category category) {
+        return client.getCategory(category.getName())
                 .stream()
                 .map(headMapper::transform)
                 .collect(Collectors.toList());
@@ -38,7 +41,6 @@ public class MinecraftHeadsDao implements Categorizable {
 
     @Override
     public List<String> getPredefinedCategoryNames() {
-        //TODO base it on the config
         return Arrays.asList(
                 "alphabet",
                 "animals",
@@ -51,11 +53,5 @@ public class MinecraftHeadsDao implements Categorizable {
                 "monsters",
                 "plants"
         );
-    }
-
-    @Override
-    public List<String> getCustomCategoryNames() {
-        //TODO base it on the config
-        return new ArrayList<>();
     }
 }

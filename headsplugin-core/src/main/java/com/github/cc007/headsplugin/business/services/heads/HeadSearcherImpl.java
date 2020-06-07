@@ -8,7 +8,7 @@ import com.github.cc007.headsplugin.integration.database.mappers.to_entity.Datab
 import com.github.cc007.headsplugin.integration.database.mappers.to_entity.SearchTermToSearchEntityMapper;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.SearchRepository;
-import com.github.cc007.headsplugin.integration.rest.daos.heads.interfaces.Searchable;
+import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Searchable;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +66,7 @@ public class HeadSearcherImpl implements HeadSearcher {
     public List<Head> getHeads(String searchTerm) {
         long start = System.currentTimeMillis();
         if (needsUpdate(searchTerm)) {
-            log.info("Updating heads for:" + searchTerm);
+            log.info("Updating heads for: " + searchTerm);
             updateSearch(searchTerm);
         } else {
             log.info("Use cached heads for: " + searchTerm);
