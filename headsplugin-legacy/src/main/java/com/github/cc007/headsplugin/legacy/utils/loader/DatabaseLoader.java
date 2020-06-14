@@ -24,6 +24,7 @@
 package com.github.cc007.headsplugin.legacy.utils.loader;
 
 import com.github.cc007.headsplugin.legacy.utils.heads.Head;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
@@ -33,17 +34,16 @@ import java.util.UUID;
 /**
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public interface DatabaseLoader
-{
+public interface DatabaseLoader {
 
-	public abstract List<Head> getHeads(String urlString, String searchTerm) throws MalformedURLException, SocketTimeoutException, IOException;
+    public abstract List<Head> getHeads(String urlString, String searchTerm) throws MalformedURLException, SocketTimeoutException, IOException;
 
-	public abstract Head addHead(String urlString, UUID playerUuid, String headName) throws MalformedURLException, SocketTimeoutException, IOException;
+    public abstract Head addHead(String urlString, UUID playerUuid, String headName) throws MalformedURLException, SocketTimeoutException, IOException;
 
-	public abstract String getCategoriesUrl() throws UnsupportedOperationException;
+    public abstract String getCategoriesUrl() throws UnsupportedOperationException;
 
-	public abstract String getSearchUrl() throws UnsupportedOperationException;
+    public abstract String getSearchUrl() throws UnsupportedOperationException;
 
-	public abstract String getGenerateUrl() throws UnsupportedOperationException;
+    public abstract String getGenerateUrl() throws UnsupportedOperationException;
 
 }

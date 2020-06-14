@@ -1,104 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xmlns="http://maven.apache.org/POM/4.0.0"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<artifactId>headsplugin-build</artifactId>
-		<groupId>com.github.cc007</groupId>
-		<version>2.0.0-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>com.github.cc007</groupId>
+        <artifactId>headsplugin-build</artifactId>
+        <version>2.0.0</version>
+    </parent>
 
-	<artifactId>headsplugin-dependencies</artifactId>
+    <artifactId>headsplugin-dependencies</artifactId>
 
-	<packaging>pom</packaging>
+    <packaging>pom</packaging>
 
-	<repositories>
+    <properties>
+        <minecraft.version>1.13.2-R0.1-SNAPSHOT</minecraft.version>
+        <spring-boot.version>2.2.7.RELEASE</spring-boot.version>
+        <spring-cloud.version>Hoxton.SR5</spring-cloud.version>
+        <spigot-spring-boot.version>0.20.4</spigot-spring-boot.version>
+        <switchyard.version>2.1.0.Final</switchyard.version>
+    </properties>
 
-		<!-- repo for github dependencies-->
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
+    <repositories>
 
-	</repositories>
+        <!-- repo for Item-NBT-API and BStats dependencies -->
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+            <layout>default</layout>
+        </repository>
 
-	<dependencyManagement>
-		<dependencies>
+        <!-- repo for Bukkit, CraftBukkit and Spigot -->
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
 
-			<!-- Spigot Spring Boot starter -->
-			<dependency>
-				<groupId>dev.alangomes</groupId>
-				<artifactId>spigot-spring-boot-starter</artifactId>
-				<version>0.11.0</version>
-			</dependency>
+    </repositories>
 
-			<!-- Bukkit API -->
-			<dependency>
-				<groupId>org.bukkit</groupId>
-				<artifactId>bukkit</artifactId>
-				<version>1.8.8-R0.1-SNAPSHOT</version>
-				<exclusions>
-					<exclusion>
-						<groupId>com.google.code.gson</groupId>
-						<artifactId>gson</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
+    <dependencyManagement>
+        <dependencies>
 
-			<!-- Craftbukkit API -->
-			<dependency>
-				<groupId>org.bukkit</groupId>
-				<artifactId>craftbukkit</artifactId>
-				<version>1.8.8-R0.1-SNAPSHOT</version>
-				<exclusions>
-					<exclusion>
-						<groupId>com.google.code.gson</groupId>
-						<artifactId>gson</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
+            <!-- Spring boot dependencies import -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
-			<!-- NBT API -->
-			<dependency>
-				<groupId>com.github.tr7zw</groupId>
-				<artifactId>Item-NBT-API</artifactId>
-				<version>master-SNAPSHOT</version>
-			</dependency>
+            <!-- Spring cloud dependencies import -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
-			<!-- Google Gson -->
-			<dependency>
-				<groupId>com.google.code.gson</groupId>
-				<artifactId>gson</artifactId>
-				<version>2.3.1</version>
-			</dependency>
+            <!-- Spigot Spring Boot starter -->
+            <dependency>
+                <groupId>dev.alangomes</groupId>
+                <artifactId>spigot-spring-boot-starter</artifactId>
+                <version>${spigot-spring-boot.version}</version>
+            </dependency>
 
-			<!-- Commons I/O -->
-			<dependency>
-				<groupId>commons-io</groupId>
-				<artifactId>commons-io</artifactId>
-				<version>2.6</version>
-			</dependency>
+            <!-- HeadsPlugin API dependency -->
+            <dependency>
+                <groupId>com.github.cc007</groupId>
+                <artifactId>headsplugin-api</artifactId>
+                <version>2.0.0</version>
+            </dependency>
 
-			<!-- Apache HTTP Components -->
-			<dependency>
-				<groupId>org.apache.httpcomponents</groupId>
-				<artifactId>httpclient</artifactId>
-				<version>4.4.1</version>
-			</dependency>
+            <!-- Bukkit API -->
+            <dependency>
+                <groupId>org.bukkit</groupId>
+                <artifactId>bukkit</artifactId>
+                <version>${minecraft.version}</version>
+                <scope>provided</scope>
+            </dependency>
 
-			<!-- Lombok -->
-			<dependency>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok</artifactId>
-				<version>1.18.6</version>
-			</dependency>
+            <!-- Craftbukkit API -->
+            <dependency>
+                <groupId>org.bukkit</groupId>
+                <artifactId>craftbukkit</artifactId>
+                <version>${minecraft.version}</version>
+                <scope>provided</scope>
+            </dependency>
 
+            <!-- NBT API -->
+            <dependency>
+                <groupId>de.tr7zw</groupId>
+                <artifactId>item-nbt-api</artifactId>
+                <version>2.1.1</version>
+            </dependency>
 
-		</dependencies>
+            <!-- Google Gson -->
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.3.1</version>
+                <scope>provided</scope>
+            </dependency>
 
-	</dependencyManagement>
+            <!-- Commons I/O -->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.6</version>
+            </dependency>
+
+            <!-- Commons collections -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.3</version>
+            </dependency>
+
+            <!-- Commons text -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>1.8</version>
+            </dependency>
+
+            <!-- Apache HTTP Components -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.8</version>
+            </dependency>
+
+            <!-- Lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.6</version>
+            </dependency>
+
+            <!-- JSoup -->
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>1.12.1</version>
+            </dependency>
+
+            <!-- Caching -->
+            <dependency>
+                <groupId>javax.cache</groupId>
+                <artifactId>cache-api</artifactId>
+                <version>1.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>3.6.2</version>
+            </dependency>
+
+            <!-- Database -->
+            <dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>2.5.0</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <!-- Usage statistics -->
+            <dependency>
+                <groupId>org.bstats</groupId>
+                <artifactId>bstats-bukkit</artifactId>
+                <version>1.7</version>
+            </dependency>
+
+            <!-- SwitchYard -->
+            <dependency>
+                <groupId>org.switchyard</groupId>
+                <artifactId>switchyard-common</artifactId>
+                <version>${switchyard.version}</version>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
 
 
 </project>

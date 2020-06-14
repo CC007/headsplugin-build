@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.github.cc007</groupId>
+        <artifactId>headsplugin-parent</artifactId>
+        <version>2.0.0</version>
+        <relativePath>../headsplugin-parent</relativePath>
+    </parent>
+
+    <artifactId>headsplugin-dummy</artifactId>
+
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>cc007</id>
+            <name>Coolcat007</name>
+            <url>coolcat007.nl</url>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/Amsterdam</timezone>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>repo</id>
+        </repository>
+        <snapshotRepository>
+            <id>snapshot-repo</id>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>cc007-lib-releases-repo</id>
+            <url>https://github.com/CC007/maven-repo/raw/master/lib-releases</url>
+        </repository>
+
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.cc007</groupId>
+            <artifactId>headsplugin-api</artifactId>
+            <version>2.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+    <!-- Build settings -->
+    <build>
+        <finalName>DummyPlugin-${project.version}</finalName>
+        <!-- Resource replacement -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <!-- Build plugins -->
+        <plugins>
+
+            <!-- Include the source jar as well -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Define JDK for compilation -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.2</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <finalName>DummyPlugin-${project.version}</finalName>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>templating-maven-plugin</artifactId>
+                <version>1.0-alpha-3</version>
+                <configuration>
+
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>filter-src</id>
+                        <goals>
+                            <goal>filter-sources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- keep this if you want to add your spigot version through the install:install-file goal -->
+            <!-- to use this goal set the following property: file=/path/to/file/spigot.jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+            </plugin>
+
+            <!--			<plugin>-->
+            <!--				<groupId>org.springframework.boot</groupId>-->
+            <!--				<artifactId>spring-boot-maven-plugin</artifactId>-->
+            <!--			</plugin>-->
+
+            <!-- build with dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <version>${spring-boot.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <finalName>DummyPlugin-${project.version}</finalName>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>com.github.cc007.headsplugin.bstats</shadedPattern>
+                        </relocation>
+                    </relocations>
+                    <transformers>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                            <resource>META-INF/spring.handlers</resource>
+                        </transformer>
+                        <transformer
+                                implementation="org.springframework.boot.maven.PropertiesMergingResourceTransformer">
+                            <resource>META-INF/spring.factories</resource>
+                        </transformer>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                            <resource>META-INF/spring.schemas</resource>
+                        </transformer>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                    </transformers>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

@@ -28,91 +28,82 @@ import java.util.UUID;
 /**
  * @author Rik Schaaf aka CC007 (http://coolcat007.nl/)
  */
-public class Head
-{
+public class Head {
 
-	private String name;
-	private String value;
-	private UUID headOwner;
+    private String name;
+    private String value;
+    private UUID headOwner;
 
-	/**
-	 * Create a new head based on a name, headOwner and base64 encoded texture url
-	 *
-	 * @param name      the value of name
-	 * @param value     the base64 encoded value with the head texture url
-	 * @param headOwner the value of headOwner
-	 */
-	public Head(String name, String value, UUID headOwner)
-	{
-		this.name = name;
-		this.value = value;
-		this.headOwner = headOwner;
-	}
+    /**
+     * Create a new head based on a name, headOwner and base64 encoded texture url
+     *
+     * @param name      the value of name
+     * @param value     the base64 encoded value with the head texture url
+     * @param headOwner the value of headOwner
+     */
+    public Head(String name, String value, UUID headOwner) {
+        this.name = name;
+        this.value = value;
+        this.headOwner = headOwner;
+    }
 
-	/**
-	 * Get the value of name
-	 *
-	 * @return the value of name
-	 */
-	public String getName()
-	{
-		return name;
-	}
+    /**
+     * Get the value of name
+     *
+     * @return the value of name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Set the value of name
-	 *
-	 * @param name new value of name
-	 */
-	public void setName(String name)
-	{
-		this.name = name;
-	}
+    /**
+     * Set the value of name
+     *
+     * @param name new value of name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * Get the value of value
-	 *
-	 * @return the base64 encoded value with the head texture url
-	 */
-	public String getValue()
-	{
-		return value;
-	}
+    /**
+     * Get the value of value
+     *
+     * @return the base64 encoded value with the head texture url
+     */
+    public String getValue() {
+        return value;
+    }
 
-	/**
-	 * Set the value of value
-	 *
-	 * @param value new base64 encoded value with the head texture url
-	 */
-	public void setValue(String value)
-	{
-		this.value = value;
-	}
+    /**
+     * Set the value of value
+     *
+     * @param value new base64 encoded value with the head texture url
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	/**
-	 * Get the value of headOwner
-	 *
-	 * @return the value of headOwner
-	 */
-	public UUID getHeadOwner()
-	{
-		return headOwner;
-	}
+    /**
+     * Get the value of headOwner
+     *
+     * @return the value of headOwner
+     */
+    public UUID getHeadOwner() {
+        return headOwner;
+    }
 
-	/**
-	 * Set the value of headOwner
-	 *
-	 * @param headOwner new value of headOwner
-	 */
-	public void setHeadOwner(UUID headOwner)
-	{
-		this.headOwner = headOwner;
-	}
+    /**
+     * Set the value of headOwner
+     *
+     * @param headOwner new value of headOwner
+     */
+    public void setHeadOwner(UUID headOwner) {
+        this.headOwner = headOwner;
+    }
 
-	@Override
-	public String toString()
-	{
-		return "Head{" + "name=" + name + ", value=" + value + ", headOwner=" + headOwner + '}';
-	}
+    @Override
+    public String toString() {
+        return "Head{" + "name=" + name + ", value=" + value + ", headOwner=" + headOwner + '}';
+    }
 
 }
