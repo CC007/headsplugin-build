@@ -15,7 +15,6 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 @Subcommand
 @Command(
@@ -47,7 +46,7 @@ public class UpdateCategoryCommand extends AbstractCommand {
     @Parameters(
             index = "0",
             defaultValue = "all",
-            //completionCandidates = ..., TODO complete from category names
+            completionCandidates = UpdateCategoryCompletionCandidates.class,
             description = "The category to update. If this parameter is not specified or if the parameter specifies 'all', all categories will be updated",
             paramLabel = "categoryName"
     )

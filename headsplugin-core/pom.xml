@@ -63,13 +63,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
             <groupId>dev.alangomes</groupId>
             <artifactId>spigot-spring-boot-starter</artifactId>
             <exclusions>
