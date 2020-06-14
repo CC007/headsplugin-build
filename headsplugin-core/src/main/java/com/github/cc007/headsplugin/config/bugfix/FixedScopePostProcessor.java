@@ -5,11 +5,10 @@ import lombok.val;
 import org.bukkit.event.Listener;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 import java.util.Arrays;
-
-import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
 class FixedScopePostProcessor implements BeanFactoryPostProcessor {
 

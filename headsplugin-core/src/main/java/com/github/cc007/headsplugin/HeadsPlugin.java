@@ -2,9 +2,11 @@ package com.github.cc007.headsplugin;
 
 import com.github.cc007.headsplugin.api.HeadsPluginApi;
 import com.github.cc007.headsplugin.config.Application;
+import com.github.cc007.headsplugin.config.LoggingFixApplicationListener;
 
 import dev.alangomes.springspigot.SpringSpigotInitializer;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.SpringApplication;
@@ -34,6 +36,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 
+@Log4j2
 public class HeadsPlugin extends JavaPlugin {
 
     @Getter
@@ -48,7 +51,7 @@ public class HeadsPlugin extends JavaPlugin {
         springClassLoaders.add(springClassLoader);
     }
 
-    public static HeadsPluginApi getApi(){
+    public static HeadsPluginApi getApi() {
         BeanFactory beanFactory = Optional.ofNullable(springContext)
                 .orElseThrow(() -> new IllegalStateException(
                         "HeadsPlugin has not been fully initialized yet! Make sure that the HeadsPluginAPI plugin is enabled."));
@@ -76,6 +79,7 @@ public class HeadsPlugin extends JavaPlugin {
         Thread.currentThread().setContextClassLoader(classLoader);
         ResourceLoader loader = new DefaultResourceLoader(classLoader);
         SpringApplication application = new SpringApplication(loader, Application.class);
+        application.addListeners(new LoggingFixApplicationListener());
         application.addInitializers(new SpringSpigotInitializer(this));
         springContext = application.run();
     }

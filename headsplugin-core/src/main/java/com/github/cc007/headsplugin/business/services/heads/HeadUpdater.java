@@ -8,7 +8,7 @@ import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRe
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ import java.util.stream.StreamSupport;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
+@Log4j2
 public class HeadUpdater {
 
     private final HeadToDetachedHeadEntityMapper headToDetachedHeadEntityMapper;

@@ -4,7 +4,7 @@ import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.apache.commons.collections4.Transformer;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import java.time.ZoneOffset;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
+@Log4j2
 public class CategoryNameToCategoryEntityMapper implements Transformer<String, CategoryEntity> {
 
     private final CategoryRepository categoryRepository;

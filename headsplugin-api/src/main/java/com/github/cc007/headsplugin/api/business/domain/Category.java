@@ -1,6 +1,5 @@
 package com.github.cc007.headsplugin.api.business.domain;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 

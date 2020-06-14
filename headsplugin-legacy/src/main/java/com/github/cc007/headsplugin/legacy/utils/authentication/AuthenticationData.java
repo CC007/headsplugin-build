@@ -24,6 +24,7 @@
 package com.github.cc007.headsplugin.legacy.utils.authentication;
 
 import com.github.cc007.headsplugin.legacy.HeadsPlugin;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 

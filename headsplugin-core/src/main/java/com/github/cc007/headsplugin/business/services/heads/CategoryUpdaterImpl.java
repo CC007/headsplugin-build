@@ -13,8 +13,9 @@ import com.github.cc007.headsplugin.integration.database.repositories.CategoryRe
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
 
+import dev.alangomes.springspigot.util.scheduler.SchedulerService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.slf4j.event.Level;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
+@Log4j2
 public class CategoryUpdaterImpl implements com.github.cc007.headsplugin.api.business.services.heads.CategoryUpdater {
 
     private List<Categorizable<Category>> categorizables;
@@ -73,8 +75,17 @@ public class CategoryUpdaterImpl implements com.github.cc007.headsplugin.api.bus
     @Transactional
     @Profiler(message = "Done updating necessary categories:", logLevel = Level.INFO)
     public void updateCategoriesIfNecessary() {
-        val categoriesToBeUpdated = getCategoriesToBeUpdated(getCategoryMap(categorizables));
+        val categoriesToBeUpdated = getCategoriesToBeUpdatedMap(getCategoryMap(categorizables));
         updateCategories(categoriesToBeUpdated);
+    }
+
+    @Override
+    public Collection<String> getUpdatableCategoryNames(boolean necessaryOnly) {
+        if(necessaryOnly) {
+            return getCategoriesToBeUpdatedMap(getCategoryMap(categorizables)).keySet();
+        } else {
+            return getCategoryMap(categorizables).keySet();
+        }
     }
 
     private <C extends Category> Map<String, Map<C, Categorizable<C>>> getCategoryMap(List<Categorizable<C>> categorizables) {
@@ -88,7 +99,7 @@ public class CategoryUpdaterImpl implements com.github.cc007.headsplugin.api.bus
         return categoryMap;
     }
 
-    private <C extends Category> Map<String, Map<C, Categorizable<C>>> getCategoriesToBeUpdated(Map<String, Map<C, Categorizable<C>>> categoryMap) {
+    private <C extends Category> Map<String, Map<C, Categorizable<C>>> getCategoriesToBeUpdatedMap(Map<String, Map<C, Categorizable<C>>> categoryMap) {
         long start = System.currentTimeMillis();
         Map<String, Map<C, Categorizable<C>>> categoriesToBeUpdated = categoryMap.entrySet()
                 .stream()

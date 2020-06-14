@@ -24,11 +24,11 @@
 package com.github.cc007.headsplugin.legacy.utils;
 
 import com.github.cc007.headsplugin.legacy.HeadsPlugin;
+
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 
 import java.io.IOException;
-import java.net.*;
 import java.util.logging.Level;
 
 /**

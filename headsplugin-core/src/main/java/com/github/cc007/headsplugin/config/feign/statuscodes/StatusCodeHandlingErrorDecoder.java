@@ -6,7 +6,7 @@ import feign.FeignException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-@Slf4j
+@Log4j2
 @RequiredArgsConstructor
 public class StatusCodeHandlingErrorDecoder implements ErrorDecoder {
     private final HtmlAwareDecoder htmlAwareDecoder;

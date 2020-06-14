@@ -25,6 +25,7 @@ package com.github.cc007.headsplugin.legacy.bukkit;
 
 import com.github.cc007.headsplugin.legacy.utils.MinecraftVersion;
 import com.github.cc007.headsplugin.legacy.utils.heads.Head;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.SkullType;

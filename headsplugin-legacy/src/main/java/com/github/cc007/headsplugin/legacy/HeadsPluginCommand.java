@@ -24,6 +24,7 @@
 package com.github.cc007.headsplugin.legacy;
 
 import com.github.cc007.headsplugin.legacy.utils.authentication.KeyAuthenticator;
+
 import org.apache.http.conn.ConnectTimeoutException;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

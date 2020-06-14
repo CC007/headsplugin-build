@@ -9,8 +9,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
+import static org.apache.commons.lang3.BooleanUtils.toBoolean;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
@@ -22,13 +23,16 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import static org.apache.commons.lang3.BooleanUtils.toBoolean;
-
-@Slf4j
+@Log4j2
 @Primary
 @Component
 @ConditionalOnBean(annotation = CommandLine.Command.class)
