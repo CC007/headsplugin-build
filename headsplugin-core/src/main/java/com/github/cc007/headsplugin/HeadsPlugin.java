@@ -7,6 +7,7 @@ import com.github.cc007.headsplugin.config.LoggingFixApplicationListener;
 import dev.alangomes.springspigot.SpringSpigotInitializer;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.SpringApplication;
@@ -71,6 +72,9 @@ public class HeadsPlugin extends JavaPlugin {
         addRootCA();
 
         saveDefaultConfig();
+
+        // Configure BStats metrics
+        Metrics metrics = new Metrics(this, 5874);
 
         // configure the class loader and run the spring application
         defaultClassLoader = Thread.currentThread().getContextClassLoader();
