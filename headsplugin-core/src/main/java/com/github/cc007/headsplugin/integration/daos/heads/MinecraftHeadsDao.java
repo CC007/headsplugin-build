@@ -2,8 +2,8 @@ package com.github.cc007.headsplugin.integration.daos.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Category;
 import com.github.cc007.headsplugin.api.business.domain.Head;
-import com.github.cc007.headsplugin.integration.rest.clients.MinecraftHeadsClient;
 import com.github.cc007.headsplugin.integration.daos.heads.interfaces.PredefinedCategorizable;
+import com.github.cc007.headsplugin.integration.rest.clients.MinecraftHeadsClient;
 import com.github.cc007.headsplugin.integration.rest.mappers.MinecraftHeadsSkinDtoToHeadMapper;
 
 import lombok.EqualsAndHashCode;

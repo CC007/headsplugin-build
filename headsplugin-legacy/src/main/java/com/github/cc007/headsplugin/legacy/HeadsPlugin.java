@@ -30,6 +30,7 @@ import com.github.cc007.headsplugin.legacy.utils.authentication.KeyAuthenticator
 import com.github.cc007.headsplugin.legacy.utils.heads.HeadsCategory;
 import com.github.cc007.headsplugin.legacy.utils.loader.DatabaseLoader;
 import com.github.cc007.headsplugin.legacy.utils.loader.FreshCoalLoader;
+
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,7 +42,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.*;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.nio.file.Files;

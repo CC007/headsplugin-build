@@ -15,6 +15,7 @@ import picocli.CommandLine.Command;
 @Command(
         name = "headspluginapi",
         versionProvider = PluginVersionProvider.class,
+        usageHelpWidth = 60,
         description = "Provides the commands for HeadsPlugin",
         aliases = {"headsplugin", "hdspluginapi", "hdsplugin", "hpa", "hp"},
         mixinStandardHelpOptions = true,

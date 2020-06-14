@@ -25,6 +25,7 @@ package com.github.cc007.headsplugin.legacy.utils.authentication;
 
 import com.github.cc007.headsplugin.legacy.HeadsPlugin;
 import com.github.cc007.headsplugin.legacy.utils.REST;
+
 import org.apache.http.conn.ConnectTimeoutException;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

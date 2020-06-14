@@ -4,7 +4,7 @@ import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadToItemstackMapper;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
-@Slf4j
+@Log4j2
 public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
 
     /**

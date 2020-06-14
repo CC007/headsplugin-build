@@ -3,12 +3,15 @@ version: ${project.version}
 
 headsplugin:
   categories:
+    # define your custom categories here
     custom:
       - name: pokemon-starters
+        # the contents of a category is based on search terms
         searchTerms:
           - pikachu
           - bulbasaur
           - squirtle
+          # you can also use a UUID to add a head to the category
           - uuid:cd9fd81b-cc17-4d5c-8765-04e5069b026c #charmander
       - name: cats-and-dogs
         searchTerms:
@@ -18,12 +21,16 @@ headsplugin:
     update:
       # category update interval in hours
       interval: 168 # 1 week
+      # the delay between category updates when updating all categories
+      delay: 10
   search:
     update:
       # search update interval in minutes
       interval: 1440 # 1 day
 
+# spring framework related config
 spring:
+  # if you want to run a dedicated database, instead of an embedded database, you can configure this here
   datasource:
     url: jdbc:hsqldb:file:plugins/HeadsPluginAPI/data/heads
     username: sa

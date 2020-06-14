@@ -24,6 +24,7 @@
 package com.github.cc007.headsplugin.legacy.bukkit;
 
 import com.github.cc007.headsplugin.legacy.utils.MinecraftVersion;
+
 import com.mojang.authlib.GameProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

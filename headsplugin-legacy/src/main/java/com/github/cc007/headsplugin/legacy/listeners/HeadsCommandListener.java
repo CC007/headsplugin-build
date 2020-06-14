@@ -24,6 +24,7 @@
 package com.github.cc007.headsplugin.legacy.listeners;
 
 import com.github.cc007.headsplugin.legacy.HeadsPlugin;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

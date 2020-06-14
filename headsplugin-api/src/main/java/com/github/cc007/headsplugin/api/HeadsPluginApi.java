@@ -3,19 +3,19 @@ package com.github.cc007.headsplugin.api;
 import com.github.cc007.headsplugin.api.business.services.heads.CategorySearcher;
 import com.github.cc007.headsplugin.api.business.services.heads.CategoryUpdater;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadCreator;
-import com.github.cc007.headsplugin.api.business.services.heads.HeadToItemstackMapper;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadPlacer;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadSearcher;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadToItemstackMapper;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.BeanFactory;
 
 import java.lang.reflect.InvocationTargetException;
 
 @RequiredArgsConstructor
-@Log
+@Log4j2
 public class HeadsPluginApi {
     private static HeadsPluginApi INSTANCE = null;
 

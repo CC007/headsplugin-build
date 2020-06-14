@@ -3,12 +3,12 @@ package com.github.cc007.headsplugin.presentation.startup;
 import com.github.cc007.headsplugin.api.business.services.heads.CategoryUpdater;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
-@Slf4j
+@Log4j2
 @RequiredArgsConstructor
 public class StartupCategoryUpdater implements CommandLineRunner {
 

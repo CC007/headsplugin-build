@@ -39,7 +39,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.bukkit.Bukkit;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.*;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.URL;

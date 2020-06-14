@@ -8,7 +8,7 @@ import de.tr7zw.changeme.nbtapi.NBTListCompound;
 import de.tr7zw.changeme.nbtapi.NBTTileEntity;
 import de.tr7zw.changeme.nbtapi.NBTType;
 import de.tr7zw.changeme.nbtapi.utils.nmsmappings.ReflectionMethod;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 @Component
-@Slf4j
+@Log4j2
 public class NBTPrinter {
 
     public void printNBTItem(NBTItem nbtItem) {

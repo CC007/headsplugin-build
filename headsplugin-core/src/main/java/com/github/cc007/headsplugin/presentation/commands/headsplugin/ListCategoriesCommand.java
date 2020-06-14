@@ -14,6 +14,7 @@ import picocli.CommandLine.Command;
         name = "listcategories",
         versionProvider = PluginVersionProvider.class,
         mixinStandardHelpOptions = true,
+        usageHelpWidth = 60,
         description = "Show a list of all categories",
         aliases = {"listcat", "lstcat", "list", "lst"}
 

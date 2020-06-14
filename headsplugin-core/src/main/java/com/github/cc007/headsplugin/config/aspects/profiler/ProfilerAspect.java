@@ -1,18 +1,18 @@
 package com.github.cc007.headsplugin.config.aspects.profiler;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.core.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.lang.reflect.Method;
 
 @Aspect
 @Component
-@Slf4j
+@Log4j2
 public class ProfilerAspect {
     @Around("@annotation(com.github.cc007.headsplugin.config.aspects.profiler.Profiler)")
     public Object handleStatusCodes(ProceedingJoinPoint joinPoint) throws Throwable {

@@ -2,16 +2,16 @@ package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadSearcher;
+import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Searchable;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.mappers.from_entity.HeadEntityToHeadMapper;
 import com.github.cc007.headsplugin.integration.database.mappers.to_entity.DatabaseNameToDatabaseEntityMapper;
 import com.github.cc007.headsplugin.integration.database.mappers.to_entity.SearchTermToSearchEntityMapper;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.SearchRepository;
-import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Searchable;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Slf4j
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class HeadSearcherImpl implements HeadSearcher {
