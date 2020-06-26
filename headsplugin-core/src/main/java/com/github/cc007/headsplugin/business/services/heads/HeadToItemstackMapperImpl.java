@@ -4,6 +4,8 @@ import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadToItemstackMapper;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.bukkit.Bukkit;
@@ -19,7 +21,10 @@ import java.util.stream.Collectors;
 
 @Component
 @Log4j2
+@RequiredArgsConstructor
 public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
+
+    private final HeadUtils headUtils;
 
     /**
      * Get a List of bukkit <code>ItemStack</code> objects based on the provided
@@ -72,6 +77,7 @@ public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
      */
     @Override
     public ItemStack getItemStack(Head head, int quantity) {
+        val minecraftVersion = MinecraftVersion.getVersion();
         val playerHeadItemStack = new ItemStack(Material.PLAYER_HEAD, quantity);
         val headSkullMeta = Optional.ofNullable((SkullMeta) playerHeadItemStack.getItemMeta());
         headSkullMeta.ifPresent((meta) -> {
@@ -84,7 +90,15 @@ public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
         displayCompound.setString("Name", "\"" + head.getName() + "\"");
 
         val skullOwnerCompound = nbtItem.addCompound("SkullOwner");
-        skullOwnerCompound.setString("Id", head.getHeadOwner().toString());
+
+        // Fix for 1.16 and newer, because UUIDs are now stored as an integer array with 4 integers
+        if (minecraftVersion.getVersionId() >= MinecraftVersion.MC1_16_R1.getVersionId()){
+            val idIntArray = headUtils.getIntArrayFromUuid(head.getHeadOwner());
+            skullOwnerCompound.setIntArray("Id", idIntArray);
+        } else {
+            skullOwnerCompound.setString("Id", head.getHeadOwner().toString());
+        }
+
         skullOwnerCompound.setString("Name", head.getName());
         val propertiesCompound = skullOwnerCompound.addCompound("Properties");
         val texturesCompoundList = propertiesCompound.getCompoundList("textures");
