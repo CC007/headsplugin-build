@@ -7,6 +7,7 @@ import com.github.cc007.headsplugin.business.services.NBTPrinter;
 import de.tr7zw.changeme.nbtapi.NBTContainer;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import de.tr7zw.changeme.nbtapi.NBTTileEntity;
+import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,12 +23,17 @@ import org.bukkit.block.data.Rotatable;
 import org.bukkit.inventory.ItemStack;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Component
 @RequiredArgsConstructor
 @Log4j2
 public class HeadPlacerImpl implements HeadPlacer {
 
     private final NBTPrinter nbtPrinter;
+    private final HeadUtils headUtils;
 
     @Override
     public void placeHead(@NonNull ItemStack headItemStack, @NonNull Location location, @NonNull BlockFace rotation) {
@@ -125,10 +131,25 @@ public class HeadPlacerImpl implements HeadPlacer {
         val headBlockState = headBlock.getState();
         val nbtTileEntity = new NBTTileEntity(headBlockState);
 
-        String nbtStringTemplate = "{Owner:{Id:\"${headOwner}\",Properties:{textures:[{Value:\"${value}\"}]},Name:\"${name}\"}}";
-        String nbtString = StringSubstitutor.replace(nbtStringTemplate, head.getAsMap());
+        val  nbtStringTemplate = "{Owner:{Id:\"${headOwner}\",Properties:{textures:[{Value:\"${value}\"}]},Name:\"${name}\"}}";
+        val headMap = head.getAsMap();
+
+        // Fix for 1.16 and newer, because UUIDs are now stored as an integer array with 4 integers
+        if(MinecraftVersion.getVersion().getVersionId() >= MinecraftVersion.MC1_16_R1.getVersionId()) {
+            headMap.put("headOwner", getHeadOwnerIntArrayString(head));
+        }
+        val nbtString = StringSubstitutor.replace(nbtStringTemplate, headMap);
 
         val ownerCompound = new NBTContainer(nbtString);
         nbtTileEntity.mergeCompound(ownerCompound);
+    }
+
+    private String getHeadOwnerIntArrayString(@NonNull Head head) {
+        val headOwnerIntArray = headUtils.getIntArrayFromUuid(head.getHeadOwner());
+        String headOwnerIntArrayString = Arrays.stream(headOwnerIntArray)
+                .boxed()
+                .map(Object::toString)
+                .collect(Collectors.joining(","));
+        return "[I;" + headOwnerIntArrayString + "]";
     }
 }
