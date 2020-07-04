@@ -111,7 +111,7 @@ public class HeadSearcherImpl implements HeadSearcher {
         }
 
         // get heads that are already stored in the database
-        val storedHeadEntities = headRepository.findByNameContaining(searchTerm);
+        val storedHeadEntities = headRepository.findByNameIgnoreCaseContaining(searchTerm);
         updateSearchHeads(searchTerm, storedHeadEntities);
     }
 
