@@ -24,7 +24,6 @@ import org.bukkit.inventory.ItemStack;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -114,8 +113,13 @@ public class HeadPlacerImpl implements HeadPlacer {
         val nbtTileEntity = new NBTTileEntity(headBlockState);
         val nbtItem = new NBTItem(headItemStack);
 
-        String nbtString = nbtItem.getCompound("SkullOwner").asNBTString();
-        nbtString = "{Owner:" + nbtString + "}";
+        String nbtString = nbtItem.getCompound("SkullOwner").toString();
+        // Fix for 1.16 and newer, because head data is now stored under SkullOwner instead of Owner
+        if (MinecraftVersion.getVersion().getVersionId() >= MinecraftVersion.MC1_16_R1.getVersionId()) {
+            nbtString = "{SkullOwner:" + nbtString + "}";
+        } else {
+            nbtString = "{Owner:" + nbtString + "}";
+        }
 
         val ownerCompound = new NBTContainer(nbtString);
         nbtTileEntity.mergeCompound(ownerCompound);
@@ -130,14 +134,19 @@ public class HeadPlacerImpl implements HeadPlacer {
     private void updateHeadBlockState(@NonNull Block headBlock, @NonNull Head head) {
         val headBlockState = headBlock.getState();
         val nbtTileEntity = new NBTTileEntity(headBlockState);
-
-        val  nbtStringTemplate = "{Owner:{Id:\"${headOwner}\",Properties:{textures:[{Value:\"${value}\"}]},Name:\"${name}\"}}";
         val headMap = head.getAsMap();
 
-        // Fix for 1.16 and newer, because UUIDs are now stored as an integer array with 4 integers
-        if(MinecraftVersion.getVersion().getVersionId() >= MinecraftVersion.MC1_16_R1.getVersionId()) {
+        String nbtStringTemplate;
+
+        // Fix for 1.16 and newer, because UUIDs are now stored as an integer array with 4 integers and
+        // because head data is now stored under SkullOwner instead of Owner
+        if (MinecraftVersion.getVersion().getVersionId() >= MinecraftVersion.MC1_16_R1.getVersionId()) {
+            nbtStringTemplate = "{SkullOwner:{Id:${headOwner},Properties:{textures:[{Value:\"${value}\"}]},Name:\"${name}\"}}";
             headMap.put("headOwner", getHeadOwnerIntArrayString(head));
+        } else {
+            nbtStringTemplate = "{Owner:{Id:\"${headOwner}\",Properties:{textures:[{Value:\"${value}\"}]},Name:\"${name}\"}}";
         }
+
         val nbtString = StringSubstitutor.replace(nbtStringTemplate, headMap);
 
         val ownerCompound = new NBTContainer(nbtString);
