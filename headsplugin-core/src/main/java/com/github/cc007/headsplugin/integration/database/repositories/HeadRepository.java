@@ -14,6 +14,8 @@ public interface HeadRepository extends CrudRepository<HeadEntity, Long> {
 
     List<HeadEntity> findByNameContaining(String name);
 
+    List<HeadEntity> findByNameIgnoreCaseContaining(String name);
+
     Optional<HeadEntity> findByHeadOwner(String headOwner);
 
     List<HeadEntity> findByHeadOwnerIn(Collection<String> headOwners);
