@@ -9,13 +9,16 @@ import com.github.cc007.headsplugin.integration.rest.dto.mineskin.create.CreateS
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.search.SkinDto;
 import com.github.cc007.headsplugin.integration.rest.mappers.MineSkinSkinDetailsDtoToHeadMapper;
 
+import feign.FeignException;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,8 +32,10 @@ import java.util.stream.Collectors;
 public class MineSkinDao implements Searchable, Creatable {
 
     private final MineSkinClient client;
-
     private final MineSkinSkinDetailsDtoToHeadMapper headMapper;
+
+    @Value("${headsplugin.suppressHttpClientErrors:#{true}}")
+    private boolean suppressHttpClientErrors = true;
 
     @Override
     public String getDatabaseName() {
@@ -55,12 +60,19 @@ public class MineSkinDao implements Searchable, Creatable {
 
     @Override
     public List<Head> getHeads(String searchTerm) {
-        return client.find(searchTerm)
-                .getSkins()
-                .stream()
-                .map(SkinDto::getId)
-                .map(client::findById)
-                .map(headMapper::transform)
-                .collect(Collectors.toList());
+        try {
+            return client.find(searchTerm)
+                    .getSkins()
+                    .stream()
+                    .map(SkinDto::getId)
+                    .map(client::findById)
+                    .map(headMapper::transform)
+                    .collect(Collectors.toList());
+        } catch (FeignException.FeignServerException ex) {
+            if (!suppressHttpClientErrors) {
+                log.error(ex.getMessage(), ex);
+            }
+            return Collections.emptyList();
+        }
     }
 }
