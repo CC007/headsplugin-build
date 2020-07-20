@@ -2,6 +2,7 @@
 version: ${project.version}
 
 headsplugin:
+  suppressHttpClientErrors: true
   categories:
     # define your custom categories here
     custom:

@@ -8,6 +8,7 @@ import feign.codec.ErrorDecoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -23,6 +24,9 @@ public class StatusCodeHandlingErrorDecoder implements ErrorDecoder {
     private final HtmlAwareDecoder htmlAwareDecoder;
     private final ErrorDecoder defaultErrorDecoder = new ErrorDecoder.Default();
     private final Map<ErrorDecoderKey, Class<?>> errorDecoderActions = new HashMap<>();
+
+    @Value("${headsplugin.suppressHttpClientErrors:#{true}}")
+    private boolean suppressHttpClientErrors = true;
 
     public void addKey(ErrorDecoderKey key, Class<?> aClass) {
         if (!errorDecoderActions.containsKey(key)) {
@@ -64,10 +68,12 @@ public class StatusCodeHandlingErrorDecoder implements ErrorDecoder {
 
     private void logDecoderError(Response response) {
         log.error("Got response with status code: " + response.status() + " (" + response.reason() + ")");
-        log.error("For request: " + response.request().url());
-        log.error("Request headers:" + getHeaderBuilder(response.request().headers()));
-        log.error("Response headers:" + getHeaderBuilder(response.headers()));
-        log.error("Body:\n" + response.body().toString());
+        if(!suppressHttpClientErrors) {
+            log.error("For request: " + response.request().url());
+            log.error("Request headers:" + getHeaderBuilder(response.request().headers()));
+            log.error("Response headers:" + getHeaderBuilder(response.headers()));
+            log.error("Body:\n" + response.body().toString());
+        }
     }
 
     private String getHeaderBuilder(Map<String, Collection<String>> headers) {
