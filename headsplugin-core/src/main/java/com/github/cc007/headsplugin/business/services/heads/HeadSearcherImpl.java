@@ -105,6 +105,11 @@ public class HeadSearcherImpl implements HeadSearcher {
             val searchable = foundHeadsEntries.getKey();
             val foundHeads = foundHeadsEntries.getValue();
 
+            if(foundHeads.isEmpty()) {
+                log.warn("No heads found for the search " + searchTerm + " in " + searchable.getDatabaseName() + ". Skipping the update");
+                continue;
+            }
+
             val headEntities = headUpdater.updateHeads(foundHeads);
             updateDatabaseHeads(searchable, headEntities);
             updateSearchHeads(searchTerm, headEntities);

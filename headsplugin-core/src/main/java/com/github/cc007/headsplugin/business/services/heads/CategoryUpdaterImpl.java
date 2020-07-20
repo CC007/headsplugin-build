@@ -124,6 +124,10 @@ public class CategoryUpdaterImpl implements com.github.cc007.headsplugin.api.bus
 
     private <C extends Category> void updateCategory(String categoryName, Map<C, Categorizable<C>> categorizableMap) {
         val foundHeads = requestCategoryHeads(categorizableMap);
+        if(foundHeads.isEmpty()) {
+            log.warn("No heads found for category " + categoryName + ". Skipping the update");
+            return;
+        }
 
         val headEntities = headUpdater.updateHeads(foundHeads);
 
