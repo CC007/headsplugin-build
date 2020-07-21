@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 @ToString
 @EqualsAndHashCode
 @Log4j2
+@ConditionalOnProperty(name = "headsplugin.provider.minecraftHeads", havingValue = "true", matchIfMissing = true)
 public class MinecraftHeadsDao implements PredefinedCategorizable {
 
     private final MinecraftHeadsClient client;
