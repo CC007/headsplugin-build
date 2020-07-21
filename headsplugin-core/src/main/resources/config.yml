@@ -2,6 +2,11 @@
 version: ${project.version}
 
 headsplugin:
+  # define which heads database should be enabled.
+  provider:
+    freshcoal: false
+    mineskin: true
+    minecraftHeads: true
   suppressHttpClientErrors: true
   categories:
     # define your custom categories here
