@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @ToString
 @EqualsAndHashCode
 @Log4j2
+@ConditionalOnProperty(name = "headsplugin.provider.freshcoal", havingValue = "true", matchIfMissing = true)
 public class FreshCoalDao implements PredefinedCategorizable, Searchable {
 
     private final FreshCoalClient client;

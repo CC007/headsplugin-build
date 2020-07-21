@@ -16,6 +16,7 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 @ToString
 @EqualsAndHashCode
 @Log4j2
+@ConditionalOnProperty(name = "headsplugin.provider.mineskin", havingValue = "true", matchIfMissing = true)
 public class MineSkinDao implements Searchable, Creatable {
 
     private final MineSkinClient client;
