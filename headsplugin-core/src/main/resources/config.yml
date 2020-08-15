@@ -4,7 +4,7 @@ version: ${project.version}
 headsplugin:
   # define which heads database should be enabled.
   provider:
-    freshcoal: false
+    freshcoal: true
     mineskin: true
     minecraftHeads: true
   suppressHttpClientErrors: true
