@@ -3,7 +3,7 @@ version: ${version}
 api-version: "1.13"
 main: com.github.cc007.headsplugin.HeadsPlugin
 author: Rik Schaaf aka CC007 (http://coolcat007.nl/)
-softdepend: [Multiverse-Core]
+loadbefore: [zPermissions]
 description: >
   The base heads API for other plugins to use
 commands:
