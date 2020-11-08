@@ -6,7 +6,7 @@ headsplugin:
   provider:
     freshcoal: true
     mineskin: true
-    minecraftHeads: false
+    minecraftHeads: true
   suppressHttpClientErrors: true
   categories:
     # define your custom categories here
