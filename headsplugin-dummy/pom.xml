@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.cc007</groupId>
         <artifactId>headsplugin-parent</artifactId>
-        <version>2.0.10-SNAPSHOT</version>
+        <version>2.0.10</version>
         <relativePath>../headsplugin-parent</relativePath>
     </parent>
 
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>com.github.cc007</groupId>
             <artifactId>headsplugin-api</artifactId>
-            <version>2.0.10-SNAPSHOT</version>
+            <version>2.0.10</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
