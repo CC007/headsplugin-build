@@ -16,7 +16,7 @@
 
     <properties>
         <minecraft.version>1.13.2-R0.1-SNAPSHOT</minecraft.version>
-        <spigot-spring-boot.version>0.20.7</spigot-spring-boot.version>
+        <spigot-spring-boot.version>0.20.8-SNAPSHOT</spigot-spring-boot.version>
         <spring-boot.version>2.5.0</spring-boot.version>
         <spring-cloud.version>2020.0.3</spring-cloud.version>
         <switchyard.version>2.1.0.Final</switchyard.version>
