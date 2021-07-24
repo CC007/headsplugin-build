@@ -20,6 +20,10 @@
         <spring-boot.version>2.5.0</spring-boot.version>
         <spring-cloud.version>2020.0.3</spring-cloud.version>
         <switchyard.version>2.1.0.Final</switchyard.version>
+        <dagger2.version>2.35.1</dagger2.version>
+        <log4j.version>2.14.1</log4j.version>
+        <jpa.version>1.0-SNAPSHOT</jpa.version>
+        <feign.version>11.2</feign.version>
     </properties>
 
     <repositories>
@@ -103,7 +107,31 @@
                 <version>2.8.0</version>
             </dependency>
 
-            <!-- Google Gson -->
+            <!-- Google Dagger2 -->
+            <dependency>
+                <groupId>com.google.dagger</groupId>
+                <artifactId>dagger</artifactId>
+                <version>${dagger2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.dagger</groupId>
+                <artifactId>dagger-compiler</artifactId>
+                <version>${dagger2.version}</version>
+                <optional>true</optional>
+            </dependency>
+
+            <!-- HTTP -->
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-core</artifactId>
+                <version>${feign.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-gson</artifactId>
+                <version>${feign.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
@@ -143,7 +171,14 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.18</version>
+                <version>1.18.20</version>
+            </dependency>
+
+            <!-- JPA -->
+            <dependency>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
+                <version>3.0.0</version>
             </dependency>
 
             <!-- JSoup -->
@@ -185,6 +220,27 @@
                 <groupId>org.switchyard</groupId>
                 <artifactId>switchyard-common</artifactId>
                 <version>${switchyard.version}</version>
+            </dependency>
+
+            <!-- Logging -->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+
+            <!-- Transactions -->
+            <dependency>
+                <groupId>jakarta.transaction</groupId>
+                <artifactId>jakarta.transaction-api</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+
+            <!-- YAML -->
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>1.23</version>
             </dependency>
 
         </dependencies>

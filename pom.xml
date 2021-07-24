@@ -36,13 +36,27 @@
         </developer>
     </developers>
 
-    <modules>
-        <module>headsplugin-core</module>
-        <module>headsplugin-dependencies</module>
-        <module>headsplugin-dummy</module>
-        <module>headsplugin-files</module>
-        <module>headsplugin-parent</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>old</id>
+            <modules>
+                <module>headsplugin-core</module>
+                <module>headsplugin-dependencies</module>
+                <module>headsplugin-dummy</module>
+                <module>headsplugin-parent</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>new</id>
+            <modules>
+                <module>headsplugin-core</module>
+                <module>headsplugin-dependencies</module>
+<!--                <module>headsplugin-dummy</module>-->
+                <module>headsplugin-parent</module>
+                <module>headsplugin-rebuild</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
