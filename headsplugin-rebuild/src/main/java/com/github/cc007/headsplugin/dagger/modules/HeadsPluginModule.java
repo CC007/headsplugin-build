@@ -1,6 +1,7 @@
 package com.github.cc007.headsplugin.dagger.modules;
 
 import com.github.cc007.headsplugin.HeadsPlugin;
+import com.github.cc007.headsplugin.api.HeadsPluginApi;
 import com.github.cc007.headsplugin.config.properties.CategoriesProperties;
 import com.github.cc007.headsplugin.config.properties.ConfigProperties;
 
@@ -8,8 +9,6 @@ import dagger.Module;
 import dagger.Provides;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.introspector.PropertyUtils;
 
 import java.util.Optional;
 
@@ -37,6 +36,7 @@ public abstract class HeadsPluginModule {
     static CategoriesProperties provideCategoriesProperties(ConfigProperties configProperties) {
         return configProperties.getHeadsplugin().getCategories();
     }
+
 //
 //    @Binds
 //    public abstract HeadCreator bindHeadCreator(HeadCreatorImpl headCreatorImpl);

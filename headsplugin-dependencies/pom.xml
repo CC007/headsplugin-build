@@ -20,7 +20,7 @@
         <spring-boot.version>2.5.0</spring-boot.version>
         <spring-cloud.version>2020.0.3</spring-cloud.version>
         <switchyard.version>2.1.0.Final</switchyard.version>
-        <dagger2.version>2.35.1</dagger2.version>
+        <dagger2.version>2.38</dagger2.version>
         <log4j.version>2.14.1</log4j.version>
         <jpa.version>1.0-SNAPSHOT</jpa.version>
         <feign.version>11.2</feign.version>
