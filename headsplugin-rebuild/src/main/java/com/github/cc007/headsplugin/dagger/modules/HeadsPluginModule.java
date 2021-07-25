@@ -28,12 +28,6 @@ public abstract class HeadsPluginModule {
     @Provides
     static ConfigProperties provideConfigProperties(HeadsPlugin headsPlugin) {
         CustomClassLoaderConstructor configPropertiesClassLoader = new CustomClassLoaderConstructor(ConfigProperties.class.getClassLoader());
-//        configPropertiesClassLoader.setPropertyUtils(new PropertyUtils() {
-//            @Override
-//            public Property getProperty(Class<? extends Object> type, String name) {
-//                return super.getProperty(type, name.replace("-", ""));
-//            }
-//        });
         configPropertiesClassLoader.getPropertyUtils().setSkipMissingProperties(true);
         Yaml yaml = new Yaml(configPropertiesClassLoader);
         return yaml.loadAs(headsPlugin.getResource("config.yml"), ConfigProperties.class);
