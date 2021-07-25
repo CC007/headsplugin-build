@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.github.cc007</groupId>
         <artifactId>headsplugin-parent</artifactId>
-        <version>2.0.10</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath>../headsplugin-parent</relativePath>
     </parent>
     <artifactId>headsplugin-rebuild</artifactId>
@@ -15,6 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <jar.name>HeadsPluginAPI-${project.version}</jar.name>
     </properties>
     
     <licenses>
@@ -138,7 +139,7 @@
     
     <!-- Build settings -->
     <build>
-        <finalName>HeadsPluginAPI-rebuild-${project.version}</finalName>
+        <finalName>${jar.name}</finalName>
         <!-- Resource replacement -->
         <resources>
             <resource>
@@ -194,7 +195,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <finalName>HeadsPluginAPI-rebuild-${project.version}</finalName>
+                    <finalName>${jar.name}</finalName>
                 </configuration>
             </plugin>
 
@@ -238,7 +239,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <finalName>HeadsPluginAPI-rebuild-${project.version}</finalName>
+                    <finalName>${jar.name}</finalName>
                     <transformers>
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
