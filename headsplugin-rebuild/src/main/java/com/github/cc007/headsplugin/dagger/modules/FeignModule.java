@@ -5,15 +5,19 @@ import dagger.Provides;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 
+import javax.inject.Singleton;
+
 @Module
 public abstract class FeignModule {
     
     @Provides
+    @Singleton
     static GsonDecoder provideGsonDecoder() {
         return new GsonDecoder();
     }
     
     @Provides
+    @Singleton
     static GsonEncoder provideGsonEncoder() {
         return new GsonEncoder();
     }

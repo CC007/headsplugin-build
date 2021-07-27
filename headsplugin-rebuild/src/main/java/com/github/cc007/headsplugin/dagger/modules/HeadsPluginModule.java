@@ -10,12 +10,14 @@ import dagger.Provides;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 
+import javax.inject.Singleton;
 import java.util.Optional;
 
 @Module
 public abstract class HeadsPluginModule {
 
     @Provides
+    @Singleton
     static HeadsPlugin provideHeadsPlugin() {
         Optional<HeadsPlugin> headsPluginOptional = HeadsPlugin.getPlugin();
         if (!headsPluginOptional.isPresent()) {
@@ -25,6 +27,7 @@ public abstract class HeadsPluginModule {
     }
     
     @Provides
+    @Singleton
     static ConfigProperties provideConfigProperties(HeadsPlugin headsPlugin) {
         CustomClassLoaderConstructor configPropertiesClassLoader = new CustomClassLoaderConstructor(ConfigProperties.class.getClassLoader());
         configPropertiesClassLoader.getPropertyUtils().setSkipMissingProperties(true);
@@ -33,6 +36,7 @@ public abstract class HeadsPluginModule {
     }
 
     @Provides
+    @Singleton
     static CategoriesProperties provideCategoriesProperties(ConfigProperties configProperties) {
         return configProperties.getHeadsplugin().getCategories();
     }

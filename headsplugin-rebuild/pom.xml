@@ -12,10 +12,8 @@
     <packaging>jar</packaging>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
         <jar.name>HeadsPluginAPI-${project.version}</jar.name>
+        <openjpa.version>3.2.0</openjpa.version>
     </properties>
     
     <licenses>
@@ -120,19 +118,13 @@
             <artifactId>item-nbt-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>8.0.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>2.5.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa</artifactId>
-            <version>3.2.0</version>
+            <version>${openjpa.version}</version>
         </dependency>
 
     </dependencies>
@@ -166,7 +158,27 @@
                 </executions>
             </plugin>
 
-            <!-- Define JDK for compilation -->
+            <plugin>
+                <groupId>org.apache.openjpa</groupId>
+                <artifactId>openjpa-maven-plugin</artifactId>
+                <version>${openjpa.version}</version>
+                <configuration>
+                    <includes>**/entities/*.class</includes>
+                    <excludes>**/entities/XML*.class</excludes>
+                    <addDefaultConstructor>true</addDefaultConstructor>
+                    <enforcePropertyRestrictions>true</enforcePropertyRestrictions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>enhancer</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -238,6 +250,7 @@
                 </executions>
                 <configuration>
                     <finalName>${jar.name}</finalName>
+<!--                    <minimizeJar>true</minimizeJar>-->
                     <transformers>
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>

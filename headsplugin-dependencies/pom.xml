@@ -48,34 +48,43 @@
         </repository>
 
     </repositories>
+    <profiles>
+        <profile>
+            <id>old</id>
+            <dependencyManagement>
+                <dependencies>
+                    <!-- Spring boot dependencies import -->
+                    <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-dependencies</artifactId>
+                        <version>${spring-boot.version}</version>
+                        <type>pom</type>
+                        <scope>import</scope>
+                    </dependency>
+
+                    <!-- Spring cloud dependencies import -->
+                    <dependency>
+                        <groupId>org.springframework.cloud</groupId>
+                        <artifactId>spring-cloud-dependencies</artifactId>
+                        <version>${spring-cloud.version}</version>
+                        <type>pom</type>
+                        <scope>import</scope>
+                    </dependency>
+
+                    <!-- Spigot Spring Boot starter -->
+                    <dependency>
+                        <groupId>dev.alangomes</groupId>
+                        <artifactId>spigot-spring-boot-starter</artifactId>
+                        <version>${spigot-spring-boot.version}</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+    </profiles>
 
     <dependencyManagement>
         <dependencies>
 
-            <!-- Spring boot dependencies import -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- Spring cloud dependencies import -->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- Spigot Spring Boot starter -->
-            <dependency>
-                <groupId>dev.alangomes</groupId>
-                <artifactId>spigot-spring-boot-starter</artifactId>
-                <version>${spigot-spring-boot.version}</version>
-            </dependency>
 
             <!-- HeadsPlugin API dependency -->
             <dependency>
@@ -204,7 +213,7 @@
             <dependency>
                 <groupId>org.hsqldb</groupId>
                 <artifactId>hsqldb</artifactId>
-                <version>2.5.0</version>
+                <version>2.6.0</version>
                 <scope>runtime</scope>
             </dependency>
 

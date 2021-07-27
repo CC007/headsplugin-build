@@ -1,31 +1,39 @@
 package com.github.cc007.headsplugin.dagger.modules;
 
+import com.github.cc007.headsplugin.config.EntityManagerConfig;
+import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
+import com.github.cc007.headsplugin.integration.database.repositories.jpa.JpaCategoryRepository;
+
 import dagger.Module;
 import dagger.Provides;
 
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.EntityTransaction;
 
 @Module
 public abstract class JpaModule {
     
-    private static class EntityManagerLoader {
-        
-        private EntityManagerFactory getEntityManagerFactory() {
-            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-            EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
-            return entityManagerFactory;
-        }
-    }
-    
     @Provides
-    static EntityManager entityManager() {
-        return new EntityManagerLoader().getEntityManagerFactory().createEntityManager();
+    @Singleton
+    static EntityManager provideEntityManager() {
+        return new EntityManagerConfig().createEntityManagerFactory()
+                .createEntityManager();
     }
 
-//    @Binds
-//    public abstract CategoryRepository bindCategoryRepository(CategoryRepositoryImpl categoryRepositoryImpl);
+    @Provides
+    @Singleton
+    static EntityTransaction provideEntityTransaction(EntityManager entityManager) {
+        return entityManager.getTransaction();
+    }
+
+    @Provides
+    @Singleton
+    static CategoryRepository provideCategoryRepository(EntityManager entityManager) {
+        return JpaCategoryRepository.builder()
+                .entityManager(entityManager)
+                .build();
+    }
 //
 //    @Binds
 //    public abstract HeadRepository bindHeadRepository(HeadRepositoryImpl headRepositoryImpl);
