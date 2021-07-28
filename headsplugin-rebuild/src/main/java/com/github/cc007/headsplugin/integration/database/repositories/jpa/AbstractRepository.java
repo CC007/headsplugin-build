@@ -1,6 +1,5 @@
 package com.github.cc007.headsplugin.integration.database.repositories.jpa;
 
-import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.Repository;
 
 import lombok.NonNull;
@@ -10,7 +9,9 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
@@ -64,12 +65,51 @@ public abstract class AbstractRepository<E, ID> implements Repository<E, ID> {
     }
 
     /**
+     * Get an optional managed entity from the table for that entity type,
+     * based on the given property name and its value.
+     *
+     * @param propertyName the property name to filter on
+     * @param value the value that the property of the given name should have
+     * @return an optional managed entity
+     */
+    protected Optional<E> findBy(String propertyName, String value) {
+        TypedQuery<E> query = findBy0(propertyName, value);
+        return getSingleResult(query);
+    }
+
+    /**
+     * Get an list of managed entity from the table for that entity type,
+     * based on the given property name and its value.
+     *
+     * @param propertyName the property name to filter on
+     * @param value the value that the property of the given name should have
+     * @return an optional managed entity
+     */
+    protected List<E> findAllBy(String propertyName, String value) {
+        TypedQuery<E> query = findBy0(propertyName, value);
+        return query.getResultList();
+    }
+
+    private TypedQuery<E> findBy0(String propertyName, String value) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<E> criteriaQuery = criteriaBuilder
+                .createQuery(entityType);
+
+        Root<E> root = criteriaQuery.from(entityType);
+
+        criteriaQuery.select(root).where(criteriaBuilder.equal(root.get(propertyName), value));
+
+        return entityManager.createQuery(criteriaQuery);
+    }
+
+    /**
      * Get an optional managed entity for a given query
      *
      * @param query the query to be executed to retrieve the entity
      * @return an optional managed entity for the given query
      */
-    protected Optional<CategoryEntity> getSingleResult(TypedQuery<CategoryEntity> query) {
+    protected Optional<E> getSingleResult(TypedQuery<E> query) {
         try {
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {

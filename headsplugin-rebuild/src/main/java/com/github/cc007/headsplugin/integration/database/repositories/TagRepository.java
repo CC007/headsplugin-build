@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface TagRepository extends Repository<TagEntity, Long> {
 
-    List<TagEntity> findByName(String name);
+    List<TagEntity> findAllByName(String name);
 }

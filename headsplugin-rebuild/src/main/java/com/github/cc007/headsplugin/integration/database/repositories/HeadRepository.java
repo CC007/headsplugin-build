@@ -8,17 +8,13 @@ import java.util.Optional;
 
 public interface HeadRepository extends Repository<HeadEntity, Long> {
 
-    List<HeadEntity> findByNameContaining(String name);
-
-    List<HeadEntity> findByNameIgnoreCaseContaining(String name);
+    List<HeadEntity> findAllByNameIgnoreCaseContaining(String name);
 
     Optional<HeadEntity> findByHeadOwner(String headOwner);
 
-    List<HeadEntity> findByHeadOwnerIn(Collection<String> headOwners);
+    List<HeadEntity> findAllByHeadOwnerIn(Collection<String> headOwners);
 
-    List<HeadEntity> findByCategories_NameAndHeadOwnerIn(String categoryName, Collection<String> headOwners);
-
-    List<HeadEntity> findByDatabases_NameAndHeadOwnerIn(String databaseName, Collection<String> headOwners);
+    List<HeadEntity> findAllByDatabases_NameAndHeadOwnerIn(String databaseName, Collection<String> headOwners);
 
 
 }
