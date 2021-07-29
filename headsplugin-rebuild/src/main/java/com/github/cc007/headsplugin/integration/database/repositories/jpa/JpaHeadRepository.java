@@ -15,7 +15,11 @@ public class JpaHeadRepository extends AbstractRepository<HeadEntity, Long> impl
 
     @Override
     public List<HeadEntity> findAllByNameIgnoreCaseContaining(String name) {
-        return findAllByIgnoreCaseContaining("name", name);
+        TypedQuery<HeadEntity> query = queryByCondition((criteriaBuilder, root) -> criteriaBuilder.like(
+                criteriaBuilder.lower(root.get("name")),
+                "%" + name.toLowerCase() + "%"
+        ));
+        return query.getResultList();
     }
 
     @Override
@@ -25,27 +29,26 @@ public class JpaHeadRepository extends AbstractRepository<HeadEntity, Long> impl
 
     @Override
     public List<HeadEntity> findAllByHeadOwnerIn(Collection<String> headOwners) {
-        return findAllByIn("headOwner", headOwners);
+        return findAllByPropertyIn("headOwner", headOwners);
     }
 
     @Override
     public List<String> findAllHeadOwnersByHeadOwnerIn(Collection<String> headOwners) {
-        TypedQuery<String> query = findProperty("headOwner", String.class,
-                (criteriaBuilder, root) ->
-                        root.get("headOwner")
-                                .in(headOwners));
+        TypedQuery<String> query = querySelectionByCondition(
+                root -> root.get("headOwner"), String.class,
+                (criteriaBuilder, root) -> root.get("headOwner").in(headOwners)
+        );
         return query.getResultList();
     }
 
     @Override
     public List<HeadEntity> findAllByDatabases_NameAndHeadOwnerIn(String databaseName, Collection<String> headOwners) {
-        TypedQuery<HeadEntity> query = find(((criteriaBuilder, headEntityRoot) -> criteriaBuilder.and(
+        TypedQuery<HeadEntity> query = queryByCondition(((criteriaBuilder, headEntityRoot) -> criteriaBuilder.and(
                 criteriaBuilder.equal(
                         headEntityRoot.get("databases").get("name"),
                         databaseName
                 ),
-                headEntityRoot.get("headOwner")
-                        .in(headOwners)
+                headEntityRoot.get("headOwner").in(headOwners)
         )));
         return query.getResultList();
     }

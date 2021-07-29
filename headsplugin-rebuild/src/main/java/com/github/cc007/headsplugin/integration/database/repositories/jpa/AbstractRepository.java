@@ -11,6 +11,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.lang.reflect.InvocationTargetException;
@@ -19,9 +20,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 @SuperBuilder
 public abstract class AbstractRepository<E, ID> implements Repository<E, ID> {
+    @SuppressWarnings("unchecked")
     private final Class<E> entityType = (Class<E>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     @NonNull
     protected final EntityManager entityManager;
@@ -76,7 +79,7 @@ public abstract class AbstractRepository<E, ID> implements Repository<E, ID> {
      * @return an optional managed entity
      */
     protected Optional<E> findBy(String propertyName, String value) {
-        TypedQuery<E> query = find((cb, r) -> cb.equal(
+        TypedQuery<E> query = queryByCondition((cb, r) -> cb.equal(
                 r.get(propertyName),
                 value
         ));
@@ -91,8 +94,8 @@ public abstract class AbstractRepository<E, ID> implements Repository<E, ID> {
      * @param value the value that the property of the given name should have
      * @return an optional managed entity
      */
-    protected List<E> findAllBy(String propertyName, String value) {
-        TypedQuery<E> query = find((cb, r) -> cb.equal(
+    protected List<E> findAllByProperty(String propertyName, String value) {
+        TypedQuery<E> query = queryByCondition((cb, r) -> cb.equal(
                 r.get(propertyName),
                 value
         ));
@@ -107,26 +110,10 @@ public abstract class AbstractRepository<E, ID> implements Repository<E, ID> {
      * @param value the value that the property of the given name should contain
      * @return an optional managed entity
      */
-    protected List<E> findAllByContaining(String propertyName, String value) {
-        TypedQuery<E> query = find((criteriaBuilder, root) -> criteriaBuilder.like(
+    protected List<E> findAllByPropertyContaining(String propertyName, String value) {
+        TypedQuery<E> query = queryByCondition((criteriaBuilder, root) -> criteriaBuilder.like(
                 root.get(propertyName),
                 "%" + value + "%"
-        ));
-        return query.getResultList();
-    }
-
-    /**
-     * Get an list of managed entity from the table for that entity type,
-     * based on the given property name and the case-insenitive value it needs to contain.
-     *
-     * @param propertyName the property name to filter on
-     * @param value the case-insensitive value that the property of the given name should contain
-     * @return an optional managed entity
-     */
-    protected List<E> findAllByIgnoreCaseContaining(String propertyName, String value) {
-        TypedQuery<E> query = find((criteriaBuilder, root) -> criteriaBuilder.like(
-                criteriaBuilder.lower(root.get(propertyName)),
-                "%" + value.toLowerCase() + "%"
         ));
         return query.getResultList();
     }
@@ -139,41 +126,25 @@ public abstract class AbstractRepository<E, ID> implements Repository<E, ID> {
      * @param values the values, one of which the property of the given name should have
      * @return an optional managed entity
      */
-    protected List<E> findAllByIn(String propertyName, Collection<String> values) {
-        TypedQuery<E> query = find((criteriaBuilder, root) ->
-                root.get(propertyName)
-                    .in(values));
+    protected List<E> findAllByPropertyIn(String propertyName, Collection<String> values) {
+        TypedQuery<E> query = queryByCondition((criteriaBuilder, root) ->
+                root.get(propertyName).in(values)
+        );
         return query.getResultList();
     }
 
     /**
      * Create a typed query based on the given where condition for a given entity type
      *
-     * @param whereCondition a bifunction that generates the predicate to be used in the where condition
+     * @param whereCondition a biFunction that generates the predicate to be used in the where condition
      *                       of the criteria query
      * @return the typed query
      */
-    protected TypedQuery<E> find(BiFunction<CriteriaBuilder, Root<E>, Predicate> whereCondition) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-
-        CriteriaQuery<E> criteriaQuery = criteriaBuilder
-                .createQuery(entityType);
-
-        Root<E> root = criteriaQuery.from(entityType);
-
-        criteriaQuery.select(root).where(whereCondition.apply(criteriaBuilder, root));
-
-        return entityManager.createQuery(criteriaQuery);
+    protected TypedQuery<E> queryByCondition(BiFunction<CriteriaBuilder, Root<E>, Predicate> whereCondition) {
+        return querySelectionByCondition(root -> root, entityType, whereCondition);
     }
 
-    /**
-     * Create a typed query based on the given where condition for a given entity type
-     *
-     * @param whereCondition a bifunction that generates the predicate to be used in the where condition
-     *                       of the criteria query
-     * @return the typed query
-     */
-    protected <T> TypedQuery<T> findProperty(String selectPropertyName, Class<T> selectPropertyType, BiFunction<CriteriaBuilder, Root<E>, Predicate> whereCondition) {
+    protected <T> TypedQuery<T> querySelectionByCondition(Function<Root<E>, Path<T>> selection, Class<T> selectPropertyType, BiFunction<CriteriaBuilder, Root<E>, Predicate> whereCondition) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<T> criteriaQuery = criteriaBuilder
@@ -181,7 +152,7 @@ public abstract class AbstractRepository<E, ID> implements Repository<E, ID> {
 
         Root<E> root = criteriaQuery.from(entityType);
 
-        criteriaQuery.select(root.get(selectPropertyName)).where(whereCondition.apply(criteriaBuilder, root));
+        criteriaQuery.select(selection.apply(root)).where(whereCondition.apply(criteriaBuilder, root));
 
         return entityManager.createQuery(criteriaQuery);
     }
