@@ -35,7 +35,7 @@ import java.util.Set;
 )
 @Getter
 @Setter
-@ToString
+@ToString()
 @NoArgsConstructor
 public class CategoryEntity {
 
@@ -69,6 +69,7 @@ public class CategoryEntity {
     @Setter(AccessLevel.NONE)
     private Set<HeadEntity> heads = new HashSet<>();
 
+    @ToString.Exclude
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
@@ -94,11 +95,11 @@ public class CategoryEntity {
         heads.remove(head);
     }
 
-    public void addDatabase(DatabaseEntity database){
-        databases.add(database);
-    }
-
-    public void removeDatabase(DatabaseEntity database){
-        databases.remove(database);
-    }
+//    public void addDatabase(DatabaseEntity database){
+//        databases.add(database);
+//    }
+//
+//    public void removeDatabase(DatabaseEntity database){
+//        databases.remove(database);
+//    }
 }

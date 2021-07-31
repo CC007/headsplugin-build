@@ -5,6 +5,8 @@ import com.github.cc007.headsplugin.business.services.HelloService;
 import com.github.cc007.headsplugin.config.properties.ConfigProperties;
 import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
+import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
+import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
 
 import org.apache.commons.collections4.Transformer;
 
@@ -20,6 +22,10 @@ public interface HeadsPluginServices {
     Transformer<CategoryEntity, Category> categoryEntityToCategoryMapper();
 
     CategoryRepository categoryRepository();
+
+    DatabaseRepository databaseRepository();
+
+    HeadRepository headRepository();
 
     EntityManager entityManager();
 

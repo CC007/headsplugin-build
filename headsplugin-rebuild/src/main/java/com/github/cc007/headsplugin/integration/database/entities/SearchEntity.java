@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -34,6 +35,7 @@ import java.util.Set;
 )
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 public class SearchEntity {
 
