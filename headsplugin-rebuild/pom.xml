@@ -188,7 +188,7 @@
                         <path>
                             <groupId>com.google.dagger</groupId>
                             <artifactId>dagger-compiler</artifactId>
-                            <version>2.16</version>
+                            <version>${dagger2.version}</version>
                         </path>
 
                         <path>
