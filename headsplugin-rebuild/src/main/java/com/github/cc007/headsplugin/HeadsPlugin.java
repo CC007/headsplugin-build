@@ -10,6 +10,7 @@ import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
+import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -17,11 +18,11 @@ import org.apache.openjpa.persistence.EntityExistsException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.RollbackException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
@@ -85,10 +86,67 @@ public class HeadsPlugin extends JavaPlugin implements HeadsPluginApi {
         CategoryRepository categoryRepository = headsPluginServices.categoryRepository();
         DatabaseRepository databaseRepository = headsPluginServices.databaseRepository();
         HeadRepository headRepository = headsPluginServices.headRepository();
-        EntityTransaction entityTransaction = headsPluginServices.entityTransaction();
+        EntityManager entityManager = headsPluginServices.entityManager();
+
+
+        String headOwner1_2 = UUID.randomUUID().toString();
+        String headOwner2_1 = UUID.randomUUID().toString();
+        setupDB(headsPluginServices, headOwner1_2, headOwner2_1);
+
+        log.info("Find database by name: Database1");
+        databaseRepository.findByName("Database1").ifPresent(database -> {
+            entityManager.refresh(database);
+            log.info(" Database found: " + prettyPrint(database.toString(), true));
+            database.getCategories()
+                    .forEach(category ->
+                            log.info(" Category named \"" + category.getName() + "\" " +
+                                    "with number of databases: " + category.getDatabases().size()));
+        });
+        log.info("Find database by name: Database2");
+        databaseRepository.findByName("Database2").ifPresent(database -> {
+            entityManager.refresh(database);
+            log.info(" Database found: " + prettyPrint(database.toString(), true));
+            database.getCategories()
+                    .forEach(category ->
+                            log.info(" Category named \"" + category.getName() + "\" " +
+                                    "with number of databases: " + category.getDatabases().size()));
+        });
+
+        log.info("Find category by name: Category1");
+        categoryRepository.findByName("Category1")
+                .ifPresent(category -> log.info(" Category found: " + prettyPrint(category.toString(), true)));
+
+        log.info("Find head by headOwner: " + headOwner2_1);
+        headRepository.findByHeadOwner(headOwner2_1)
+                .ifPresent(head -> log.info(" Head found: " + prettyPrint(head.toString(), true)));
+
+        log.info("Find head by headOwner in: [" + headOwner2_1 + ", " + headOwner1_2 + "]");
+        headRepository.findAllByHeadOwnerIn(Arrays.asList(headOwner2_1, headOwner1_2))
+                .forEach(head -> log.info(" Head found: " + prettyPrint(head.toString(), true)));
+
+        log.info("Find head by name ignore case containing: head2");
+        headRepository.findAllByNameIgnoreCaseContaining("head2")
+                .forEach(head -> log.info(" Head found: " + prettyPrint(head.toString(), true)));
+
+        log.info("Find head by database name (Database2) and headOwner in: [" + headOwner2_1 + ", " + headOwner1_2 + ", <random UUID>]");
+        headRepository.findAllByDatabases_NameAndHeadOwnerIn(
+                "Database2",
+                Arrays.asList(headOwner2_1, headOwner1_2, UUID.randomUUID().toString())
+        ).forEach(head -> log.info(" Head found: " + prettyPrint(head.toString(), true)));
+
+        log.info("Find headOwner by headOwner in: [" + headOwner2_1 + ", " + headOwner1_2 + ", <random UUID>]");
+        headRepository.findAllHeadOwnersByHeadOwnerIn(Arrays.asList(headOwner2_1, headOwner1_2, UUID.randomUUID().toString()))
+                .forEach(headOwner -> log.info(" headOwner found: " + headOwner));
+    }
+
+    private void setupDB(HeadsPluginServices headsPluginServices, String headOwner1_2, String headOwner2_1) {
+        Transaction transaction = headsPluginServices.transaction();
+        CategoryRepository categoryRepository = headsPluginServices.categoryRepository();
+        DatabaseRepository databaseRepository = headsPluginServices.databaseRepository();
+        HeadRepository headRepository = headsPluginServices.headRepository();
 
         try {
-            entityTransaction.begin();
+            transaction.begin();
 
             HeadEntity head1_1 = headRepository.manageNew();
             head1_1.setName("Head1_1");
@@ -97,7 +155,7 @@ public class HeadsPlugin extends JavaPlugin implements HeadsPluginApi {
 
             HeadEntity head1_2 = headRepository.manageNew();
             head1_2.setName("Head1_2");
-            head1_2.setHeadOwner(UUID.randomUUID().toString());
+            head1_2.setHeadOwner(headOwner1_2);
             head1_2.setValue("Value1_2");
 
             CategoryEntity category1 = categoryRepository.manageNew();
@@ -109,7 +167,7 @@ public class HeadsPlugin extends JavaPlugin implements HeadsPluginApi {
 
             HeadEntity head2_1 = headRepository.manageNew();
             head2_1.setName("Head2_1");
-            head2_1.setHeadOwner(UUID.randomUUID().toString());
+            head2_1.setHeadOwner(headOwner2_1);
             head2_1.setValue("Value2_1");
 
             HeadEntity head2_2 = headRepository.manageNew();
@@ -136,27 +194,16 @@ public class HeadsPlugin extends JavaPlugin implements HeadsPluginApi {
             DatabaseEntity database2 = databaseRepository.manageNew();
             database2.setName("Database2");
             database2.addCategory(category1);
-            database1.addhead(head1_1);
-            database1.addhead(head1_2);
+            database2.addhead(head1_1);
+            database2.addhead(head1_2);
 
-            entityTransaction.commit();
+            transaction.commit(true);
         } catch (RollbackException e) {
             if (e.getCause() instanceof EntityExistsException || e.getCause().getCause() instanceof EntityExistsException) {
                 log.warn("Entities were already added to the database");
             } else {
                 throw e;
             }
-        }
-        Optional<DatabaseEntity> database = databaseRepository.findByName("Database1");
-        if(database.isPresent()) {
-            log.info("Database found: " + prettyPrint(database.toString(), true));
-            DatabaseEntity databaseEntity = database.get();
-            databaseEntity.getCategories().forEach(categoryEntity -> {
-                log.info("Category named \"" + categoryEntity.getName() + "\" " +
-                        "with number of databases: " + categoryEntity.getDatabases().size());
-            });
-        } else {
-            log.error("No database found");
         }
     }
 
@@ -179,7 +226,7 @@ public class HeadsPlugin extends JavaPlugin implements HeadsPluginApi {
                 println(sb, indent + 2);
 
                 character = prettyPrint(sr, sb, indent + 2, newLineBeforeClosingBracket);
-                if(newLineBeforeClosingBracket) {
+                if (newLineBeforeClosingBracket) {
                     println(sb, indent);
                 }
             }

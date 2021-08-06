@@ -7,11 +7,11 @@ import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
+import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
 import org.apache.commons.collections4.Transformer;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
 public interface HeadsPluginServices {
 
@@ -29,7 +29,7 @@ public interface HeadsPluginServices {
 
     EntityManager entityManager();
 
-    EntityTransaction entityTransaction();
+    Transaction transaction();
 
     //StartupCategoryUpdater startupCategoryUpdater();
 }

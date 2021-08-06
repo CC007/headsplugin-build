@@ -1,6 +1,5 @@
 package com.github.cc007.headsplugin.dagger.modules;
 
-import com.github.cc007.headsplugin.config.EntityManagerConfig;
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
@@ -11,28 +10,35 @@ import com.github.cc007.headsplugin.integration.database.repositories.jpa.JpaDat
 import com.github.cc007.headsplugin.integration.database.repositories.jpa.JpaHeadRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.jpa.JpaSearchRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.jpa.JpaTagRepository;
+import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
 import dagger.Module;
 import dagger.Provides;
 
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 @Module
 public abstract class JpaModule {
-    
+
     @Provides
     @Singleton
-    static EntityManager provideEntityManager() {
-        return new EntityManagerConfig().createEntityManagerFactory()
-                .createEntityManager();
+    static EntityManagerFactory provideEntityManagerFactory() {
+        return Persistence.createEntityManagerFactory("default");
     }
 
     @Provides
     @Singleton
-    static EntityTransaction provideEntityTransaction(EntityManager entityManager) {
-        return entityManager.getTransaction();
+    static EntityManager provideEntityManager(EntityManagerFactory entityManagerFactory) {
+        return entityManagerFactory.createEntityManager();
+    }
+
+    @Provides
+    @Singleton
+    static Transaction provideEntityTransaction(EntityManager entityManager) {
+        return new Transaction(entityManager);
     }
 
     @Provides
@@ -74,13 +80,4 @@ public abstract class JpaModule {
                 .entityManager(entityManager)
                 .build();
     }
-//
-//    @Binds
-//    public abstract HeadRepository bindHeadRepository(HeadRepositoryImpl headRepositoryImpl);
-//
-//    @Binds
-//    public abstract DatabaseRepository bindDatabaseRepository(DatabaseRepositoryImpl databaseRepositoryImpl);
-//
-//    @Binds
-//    public abstract SearchRepository bindSearchRepository(SearchRepositoryImpl searchRepositoryImpl);
 }
