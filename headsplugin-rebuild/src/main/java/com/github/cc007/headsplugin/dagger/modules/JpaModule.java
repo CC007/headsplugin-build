@@ -11,6 +11,7 @@ import com.github.cc007.headsplugin.integration.database.repositories.jpa.JpaHea
 import com.github.cc007.headsplugin.integration.database.repositories.jpa.JpaSearchRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.jpa.JpaTagRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
+import com.github.cc007.headsplugin.integration.database.transaction.jpa.JpaTransaction;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,7 +39,7 @@ public abstract class JpaModule {
     @Provides
     @Singleton
     static Transaction provideEntityTransaction(EntityManager entityManager) {
-        return new Transaction(entityManager);
+        return new JpaTransaction(entityManager);
     }
 
     @Provides
