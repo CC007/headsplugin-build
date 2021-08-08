@@ -14,15 +14,6 @@ import java.util.Optional;
 public class JpaHeadRepository extends AbstractRepository<HeadEntity, Long> implements HeadRepository {
 
     @Override
-    public List<HeadEntity> findAllByNameIgnoreCaseContaining(String name) {
-        TypedQuery<HeadEntity> query = queryByCondition((criteriaBuilder, root) -> criteriaBuilder.like(
-                criteriaBuilder.lower(root.get("name")),
-                "%" + name.toLowerCase() + "%"
-        ));
-        return query.getResultList();
-    }
-
-    @Override
     public Optional<HeadEntity> findByHeadOwner(String headOwner) {
         return findBy("headOwner", headOwner);
     }
@@ -50,6 +41,15 @@ public class JpaHeadRepository extends AbstractRepository<HeadEntity, Long> impl
                 ),
                 headEntityRoot.get("headOwner").in(headOwners)
         )));
+        return query.getResultList();
+    }
+
+    @Override
+    public List<HeadEntity> findAllByNameIgnoreCaseContaining(String name) {
+        TypedQuery<HeadEntity> query = queryByCondition((criteriaBuilder, root) -> criteriaBuilder.like(
+                criteriaBuilder.lower(root.get("name")),
+                "%" + name.toLowerCase() + "%"
+        ));
         return query.getResultList();
     }
 
