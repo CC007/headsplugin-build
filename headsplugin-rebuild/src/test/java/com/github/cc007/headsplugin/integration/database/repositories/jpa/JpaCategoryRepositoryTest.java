@@ -4,17 +4,18 @@ import com.github.cc007.headsplugin.dagger.DaggerHeadsPluginComponent;
 import com.github.cc007.headsplugin.dagger.HeadsPluginComponent;
 import com.github.cc007.headsplugin.integration.database.DatabaseTestSetup;
 
+import lombok.val;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import static com.github.cc007.headsplugin.integration.database.entities.CategoryEntityMatcher.aCategoryEntityThat;
 import static com.github.cc007.headsplugin.integration.database.entities.DatabaseEntityMatcher.aDatabaseEntityThat;
 import static com.github.cc007.headsplugin.integration.database.entities.HeadEntityMatcher.aHeadEntityThat;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAnd;
-import lombok.val;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 class JpaCategoryRepositoryTest {
 

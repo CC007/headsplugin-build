@@ -1,7 +1,6 @@
 package com.github.cc007.headsplugin.dagger.modules;
 
 import com.github.cc007.headsplugin.HeadsPlugin;
-import com.github.cc007.headsplugin.api.HeadsPluginApi;
 import com.github.cc007.headsplugin.config.properties.CategoriesProperties;
 import com.github.cc007.headsplugin.config.properties.ConfigProperties;
 

@@ -5,11 +5,12 @@ import com.mistraltech.smog.core.MatchAccumulator;
 import com.mistraltech.smog.core.PropertyMatcher;
 import com.mistraltech.smog.core.ReflectingPropertyMatcher;
 import com.mistraltech.smog.core.annotation.Matches;
-import static org.hamcrest.CoreMatchers.equalTo;
 import org.hamcrest.Matcher;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+
+import static org.hamcrest.CoreMatchers.equalTo;
 
 @Matches(CategoryEntity.class)
 public final class CategoryEntityMatcher extends CompositePropertyMatcher<CategoryEntity> {
