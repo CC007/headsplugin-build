@@ -6,10 +6,15 @@ import com.github.cc007.headsplugin.dagger.modules.HeadsPluginModule;
 import com.github.cc007.headsplugin.dagger.modules.JpaModule;
 import com.github.cc007.headsplugin.dagger.modules.MapperModule;
 import com.github.cc007.headsplugin.dagger.modules.ServiceModule;
+import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
+import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
+import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
+import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
 import dagger.Component;
 
 import javax.inject.Singleton;
+import javax.persistence.EntityManager;
 
 @Singleton
 @Component(modules = {
@@ -20,4 +25,14 @@ import javax.inject.Singleton;
         MapperModule.class
 })
 public interface HeadsPluginComponent extends HeadsPluginServices {
+
+    CategoryRepository categoryRepository();
+
+    DatabaseRepository databaseRepository();
+
+    HeadRepository headRepository();
+
+    EntityManager entityManager();
+
+    Transaction transaction();
 }
