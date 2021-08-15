@@ -24,7 +24,7 @@ public abstract class HeadsPluginModule {
         }
         return headsPluginOptional.get();
     }
-    
+
     @Provides
     @Singleton
     static ConfigProperties provideConfigProperties(HeadsPlugin headsPlugin) {
