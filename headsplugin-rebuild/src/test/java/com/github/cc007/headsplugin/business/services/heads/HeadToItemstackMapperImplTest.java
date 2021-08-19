@@ -21,14 +21,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -44,33 +50,113 @@ class HeadToItemstackMapperImplTest {
     private NbtService nbtService;
 
     @InjectMocks
+    @Spy
     private HeadToItemstackMapperImpl headToItemstackMapper;
 
     @Test
     void getItemStacksHeads() {
         // prepare
+        String name1 = "TestHead1";
+        String name2 = "TestHead2";
+        UUID uuid1 = UUID.randomUUID();
+        UUID uuid2 = UUID.randomUUID();
+        String value1 = "TestValue1";
+        String value2 = "TestValue2";
+
+        ItemStack expected1 = Mockito.mock(ItemStack.class);
+        ItemStack expected2 = Mockito.mock(ItemStack.class);
+
+        Head head1 = Head.builder()
+                .name(name1)
+                .headOwner(uuid1)
+                .value(value1)
+                .build();
+        Head head2 = Head.builder()
+                .name(name2)
+                .headOwner(uuid2)
+                .value(value2)
+                .build();
+
+        doReturn(expected1)
+                .when(headToItemstackMapper).getItemStack(head1, 1);
+        doReturn(expected2)
+                .when(headToItemstackMapper).getItemStack(head2, 1);
 
         // execute
+        List<ItemStack> actual = headToItemstackMapper.getItemStacks(Arrays.asList(head1, head2));
 
         // verify
+        verify(headToItemstackMapper).getItemStack(head1, 1);
+        verify(headToItemstackMapper).getItemStack(head2, 1);
+
+        assertThat(actual, containsInAnyOrder(expected1, expected2));
     }
 
     @Test
     void getItemStacksHeadsQuantity() {
         // prepare
+        String name1 = "TestHead1";
+        String name2 = "TestHead2";
+        UUID uuid1 = UUID.randomUUID();
+        UUID uuid2 = UUID.randomUUID();
+        String value1 = "TestValue1";
+        String value2 = "TestValue2";
+        int quantity = 42;
+
+        ItemStack expected1 = Mockito.mock(ItemStack.class);
+        ItemStack expected2 = Mockito.mock(ItemStack.class);
+
+        Head head1 = Head.builder()
+                .name(name1)
+                .headOwner(uuid1)
+                .value(value1)
+                .build();
+        Head head2 = Head.builder()
+                .name(name2)
+                .headOwner(uuid2)
+                .value(value2)
+                .build();
+
+        doReturn(expected1)
+                .when(headToItemstackMapper).getItemStack(head1, 42);
+        doReturn(expected2)
+                .when(headToItemstackMapper).getItemStack(head2, 42);
 
         // execute
+        List<ItemStack> actual = headToItemstackMapper.getItemStacks(Arrays.asList(head1, head2), 42);
 
         // verify
+        verify(headToItemstackMapper).getItemStack(head1, 42);
+        verify(headToItemstackMapper).getItemStack(head2, 42);
+
+        assertThat(actual, containsInAnyOrder(expected1, expected2));
     }
 
     @Test
     void getItemStackHead() {
         // prepare
+        String name = "TestHead";
+        UUID uuid = UUID.randomUUID();
+        String value = "TestValue";
+
+        ItemStack expected = Mockito.mock(ItemStack.class);
+
+        Head head = Head.builder()
+                .name(name)
+                .headOwner(uuid)
+                .value(value)
+                .build();
+
+        doReturn(expected)
+                .when(headToItemstackMapper).getItemStack(head, 1);
 
         // execute
+        ItemStack actual = headToItemstackMapper.getItemStack(head);
 
         // verify
+        verify(headToItemstackMapper).getItemStack(head, 1);
+
+        assertThat(actual, sameInstance(expected));
     }
 
     @Test
