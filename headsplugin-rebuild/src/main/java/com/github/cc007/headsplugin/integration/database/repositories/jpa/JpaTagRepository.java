@@ -2,17 +2,31 @@ package com.github.cc007.headsplugin.integration.database.repositories.jpa;
 
 import com.github.cc007.headsplugin.integration.database.entities.TagEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.TagRepository;
+import com.github.cc007.headsplugin.integration.database.services.ManagedEntityService;
+import com.github.cc007.headsplugin.integration.database.services.QueryService;
 
-import lombok.experimental.SuperBuilder;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-@SuperBuilder
-public class JpaTagRepository extends AbstractRepository<TagEntity, Long> implements TagRepository {
+@RequiredArgsConstructor
+public class JpaTagRepository implements TagRepository {
+
+    private final QueryService queryService;
+    private final ManagedEntityService managedEntityService;
 
     @Override
     public List<TagEntity> findAllByName(String name) {
-        return findAllByProperty("name", name);
+        return queryService.findAllByProperty(TagEntity.class, "name", name);
     }
 
+    @Override
+    public TagEntity manageNew() {
+        return managedEntityService.manageNew(TagEntity.class);
+    }
+
+    @Override
+    public TagEntity manage(TagEntity entity) {
+        return managedEntityService.manage(entity);
+    }
 }

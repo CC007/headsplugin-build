@@ -2,15 +2,31 @@ package com.github.cc007.headsplugin.integration.database.repositories.jpa;
 
 import com.github.cc007.headsplugin.integration.database.entities.SearchEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.SearchRepository;
+import com.github.cc007.headsplugin.integration.database.services.ManagedEntityService;
+import com.github.cc007.headsplugin.integration.database.services.QueryService;
 
-import lombok.experimental.SuperBuilder;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
-@SuperBuilder
-public class JpaSearchRepository extends AbstractRepository<SearchEntity, Long> implements SearchRepository {
+@RequiredArgsConstructor
+public class JpaSearchRepository implements SearchRepository {
+
+    private final QueryService queryService;
+    private final ManagedEntityService managedEntityService;
+
     @Override
     public Optional<SearchEntity> findBySearchTerm(String searchTerm) {
-        return findBy("searchTerm", searchTerm);
+        return queryService.findByProperty(SearchEntity.class, "searchTerm", searchTerm);
+    }
+
+    @Override
+    public SearchEntity manageNew() {
+        return managedEntityService.manageNew(SearchEntity.class);
+    }
+
+    @Override
+    public SearchEntity manage(SearchEntity entity) {
+        return managedEntityService.manage(entity);
     }
 }

@@ -10,6 +10,10 @@ import com.github.cc007.headsplugin.integration.database.repositories.jpa.JpaDat
 import com.github.cc007.headsplugin.integration.database.repositories.jpa.JpaHeadRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.jpa.JpaSearchRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.jpa.JpaTagRepository;
+import com.github.cc007.headsplugin.integration.database.services.ManagedEntityService;
+import com.github.cc007.headsplugin.integration.database.services.QueryService;
+import com.github.cc007.headsplugin.integration.database.services.jpa.JpaManagedEntityService;
+import com.github.cc007.headsplugin.integration.database.services.jpa.JpaQueryService;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 import com.github.cc007.headsplugin.integration.database.transaction.jpa.JpaNestableTransaction;
 
@@ -44,41 +48,43 @@ public abstract class JpaModule {
 
     @Provides
     @Singleton
-    static CategoryRepository provideCategoryRepository(EntityManager entityManager) {
-        return JpaCategoryRepository.builder()
-                .entityManager(entityManager)
-                .build();
+    static QueryService provideQueryService(EntityManager entityManager) {
+        return new JpaQueryService(entityManager);
     }
 
     @Provides
     @Singleton
-    static DatabaseRepository provideDatabaseRepository(EntityManager entityManager) {
-        return JpaDatabaseRepository.builder()
-                .entityManager(entityManager)
-                .build();
+    static ManagedEntityService provideManagedEntityService(EntityManager entityManager) {
+        return new JpaManagedEntityService(entityManager);
     }
 
     @Provides
     @Singleton
-    static HeadRepository provideHeadRepository(EntityManager entityManager) {
-        return JpaHeadRepository.builder()
-                .entityManager(entityManager)
-                .build();
+    static CategoryRepository provideCategoryRepository(QueryService queryService, ManagedEntityService managedEntityService) {
+        return new JpaCategoryRepository(queryService, managedEntityService);
     }
 
     @Provides
     @Singleton
-    static SearchRepository provideSearchRepository(EntityManager entityManager) {
-        return JpaSearchRepository.builder()
-                .entityManager(entityManager)
-                .build();
+    static DatabaseRepository provideDatabaseRepository(QueryService queryService, ManagedEntityService managedEntityService) {
+        return new JpaDatabaseRepository(queryService, managedEntityService);
     }
 
     @Provides
     @Singleton
-    static TagRepository provideTagRepository(EntityManager entityManager) {
-        return JpaTagRepository.builder()
-                .entityManager(entityManager)
-                .build();
+    static HeadRepository provideHeadRepository(QueryService queryService, ManagedEntityService managedEntityService) {
+        return new JpaHeadRepository(queryService, managedEntityService);
+    }
+
+    @Provides
+    @Singleton
+    static SearchRepository provideSearchRepository(QueryService queryService, ManagedEntityService managedEntityService) {
+        return new JpaSearchRepository(queryService, managedEntityService);
+    }
+
+    @Provides
+    @Singleton
+    static TagRepository provideTagRepository(QueryService queryService, ManagedEntityService managedEntityService) {
+        return new JpaTagRepository(queryService, managedEntityService);
     }
 }
