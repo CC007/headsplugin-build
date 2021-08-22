@@ -9,6 +9,8 @@ import com.github.cc007.headsplugin.dagger.modules.ServiceModule;
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
+import com.github.cc007.headsplugin.integration.database.repositories.SearchRepository;
+import com.github.cc007.headsplugin.integration.database.repositories.TagRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
 import dagger.Component;
@@ -31,6 +33,10 @@ public interface HeadsPluginComponent extends HeadsPluginServices {
     DatabaseRepository databaseRepository();
 
     HeadRepository headRepository();
+
+    TagRepository tagRepository();
+
+    SearchRepository searchRepository();
 
     EntityManager entityManager();
 

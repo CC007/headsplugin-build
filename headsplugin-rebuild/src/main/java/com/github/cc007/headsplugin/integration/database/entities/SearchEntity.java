@@ -54,7 +54,7 @@ public class SearchEntity {
 
     @Column(name = "searchCount")
     @Setter(AccessLevel.NONE)
-    private int searchCount;
+    private long searchCount;
 
     @Column(name = "lastUpdated")
     @Convert(converter = LocalDateTimeConverter.class)

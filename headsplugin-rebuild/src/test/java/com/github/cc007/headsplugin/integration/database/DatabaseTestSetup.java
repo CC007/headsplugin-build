@@ -13,6 +13,8 @@ public class DatabaseTestSetup {
         val transaction = headsPluginComponent.transaction();
         val categoryRepository = headsPluginComponent.categoryRepository();
         val databaseRepository = headsPluginComponent.databaseRepository();
+        val searchRepository = headsPluginComponent.searchRepository();
+        val tagRepository = headsPluginComponent.tagRepository();
         val headRepository = headsPluginComponent.headRepository();
 
         transaction.runTransacted(() -> {
@@ -49,11 +51,16 @@ public class DatabaseTestSetup {
             category2.addhead(head2_1);
             category2.addhead(head2_2);
 
+            val tag = tagRepository.manageNew();
+            tag.setName("Tag1");
+            tag.addhead(head1_1);
+            tag.addhead(head2_2);
 
             val database1 = databaseRepository.manageNew();
             database1.setName("Database1");
             database1.addCategory(category1);
             database1.addCategory(category2);
+            database1.addTag(tag);
             database1.addhead(head1_1);
             database1.addhead(head1_2);
             database1.addhead(head2_1);
@@ -64,6 +71,13 @@ public class DatabaseTestSetup {
             database2.addCategory(category1);
             database2.addhead(head1_1);
             database2.addhead(head1_2);
+
+            val search = searchRepository.manageNew();
+            search.setSearchTerm("Search1");
+            search.addhead(head1_2);
+            search.addhead(head2_2);
+            search.incrementSearchCount();
+            search.incrementSearchCount();
         });
     }
 

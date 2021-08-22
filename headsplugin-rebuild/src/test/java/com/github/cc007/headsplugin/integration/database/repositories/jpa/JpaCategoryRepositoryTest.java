@@ -54,7 +54,6 @@ class JpaCategoryRepositoryTest {
                         aHeadEntityThat()
                                 .hasName("Head1_2")
                                 .hasValue("Value1_2")
-
                 ))
         )));
     }
@@ -80,7 +79,6 @@ class JpaCategoryRepositoryTest {
                         aHeadEntityThat()
                                 .hasName("Head2_2")
                                 .hasValue("Value2_2")
-
                 ))
         )));
     }

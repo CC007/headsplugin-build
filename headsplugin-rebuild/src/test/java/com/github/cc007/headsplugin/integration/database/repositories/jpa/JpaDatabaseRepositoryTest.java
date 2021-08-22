@@ -49,7 +49,6 @@ class JpaDatabaseRepositoryTest {
                         category1(),
                         category2()
                 ))
-
         )));
     }
 
@@ -64,9 +63,9 @@ class JpaDatabaseRepositoryTest {
         // verify
         assertThat(actual, isPresentAnd(is(aDatabaseEntityThat()
                 .hasName("Database2")
-                .hasCategories(contains(category1()
+                .hasCategories(contains(
+                        category1()
                 ))
-
         )));
     }
 
@@ -84,7 +83,6 @@ class JpaDatabaseRepositoryTest {
                         aHeadEntityThat()
                                 .hasName("Head1_2")
                                 .hasValue("Value1_2")
-
                 ));
     }
 
@@ -101,7 +99,6 @@ class JpaDatabaseRepositoryTest {
                         aHeadEntityThat()
                                 .hasName("Head2_2")
                                 .hasValue("Value2_2")
-
                 ));
     }
 }
