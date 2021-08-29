@@ -89,8 +89,6 @@
 
     <dependencyManagement>
         <dependencies>
-
-
             <!-- HeadsPlugin API dependency -->
             <dependency>
                 <groupId>com.github.cc007</groupId>
@@ -253,6 +251,38 @@
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>1.23</version>
+            </dependency>
+
+            <!-- test dependencies -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>5.7.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest</artifactId>
+                <version>2.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.mistraltech.smog</groupId>
+                <artifactId>smog-core</artifactId>
+                <version>1.1.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.npathai</groupId>
+                <artifactId>hamcrest-optional</artifactId>
+                <version>2.0.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>3.11.2</version>
+                <scope>test</scope>
             </dependency>
 
         </dependencies>
