@@ -1,8 +1,8 @@
 package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
-import com.github.cc007.headsplugin.api.services.heads.HeadToItemstackMapper;
-import com.github.cc007.headsplugin.api.services.heads.HeadUtils;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadToItemstackMapper;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadUtils;
 import com.github.cc007.headsplugin.business.services.NbtService;
 
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
