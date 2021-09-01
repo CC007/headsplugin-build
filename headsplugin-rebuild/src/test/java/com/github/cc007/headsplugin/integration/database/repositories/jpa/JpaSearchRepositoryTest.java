@@ -1,12 +1,8 @@
 package com.github.cc007.headsplugin.integration.database.repositories.jpa;
 
-import com.github.cc007.headsplugin.dagger.DaggerHeadsPluginComponent;
-import com.github.cc007.headsplugin.dagger.HeadsPluginComponent;
-import com.github.cc007.headsplugin.integration.database.DatabaseTestSetup;
+import com.github.cc007.headsplugin.integration.database.DummyDatabase;
 
 import lombok.val;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static com.github.cc007.headsplugin.integration.database.entities.HeadEntityMatcher.aHeadEntityThat;
@@ -18,38 +14,27 @@ import static org.hamcrest.Matchers.is;
 
 class JpaSearchRepositoryTest {
 
-    private static HeadsPluginComponent headsPluginComponent;
-
-    @BeforeAll
-    static void beforeAll() {
-        headsPluginComponent = DaggerHeadsPluginComponent.create();
-        DatabaseTestSetup.setUpDB(headsPluginComponent);
-    }
-
-    @AfterAll
-    static void afterAll() {
-        DatabaseTestSetup.tearDownDB(headsPluginComponent, true);
-    }
-
     @Test
     void findBySearchTermSearch1() {
-        // prepare
-        val searchRepository = headsPluginComponent.searchRepository();
+        DummyDatabase.runWithDB(headsPluginComponent -> {
+            // prepare
+            val searchRepository = headsPluginComponent.searchRepository();
 
-        // execute
-        val actual = searchRepository.findBySearchTerm("Search1");
+            // execute
+            val actual = searchRepository.findBySearchTerm("Search1");
 
-        // verify
-        assertThat(actual, isPresentAnd(is(aSearchEntityThat()
-                .hasSearchTerm("Search1")
-                .hasHeads(containsInAnyOrder(
-                        aHeadEntityThat()
-                                .hasName("Head1_2")
-                                .hasValue("Value1_2"),
-                        aHeadEntityThat()
-                                .hasName("Head2_2")
-                                .hasValue("Value2_2")
-                ))
-        )));
+            // verify
+            assertThat(actual, isPresentAnd(is(aSearchEntityThat()
+                    .hasSearchTerm("Search1")
+                    .hasHeads(containsInAnyOrder(
+                            aHeadEntityThat()
+                                    .hasName("Head1_2")
+                                    .hasValue("Value1_2"),
+                            aHeadEntityThat()
+                                    .hasName("Head2_2")
+                                    .hasValue("Value2_2")
+                    ))
+            )));
+        });
     }
 }

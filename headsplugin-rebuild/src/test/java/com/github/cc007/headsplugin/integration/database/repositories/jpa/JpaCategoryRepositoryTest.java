@@ -1,12 +1,8 @@
 package com.github.cc007.headsplugin.integration.database.repositories.jpa;
 
-import com.github.cc007.headsplugin.dagger.DaggerHeadsPluginComponent;
-import com.github.cc007.headsplugin.dagger.HeadsPluginComponent;
-import com.github.cc007.headsplugin.integration.database.DatabaseTestSetup;
+import com.github.cc007.headsplugin.integration.database.DummyDatabase;
 
 import lombok.val;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static com.github.cc007.headsplugin.integration.database.entities.CategoryEntityMatcher.aCategoryEntityThat;
@@ -19,67 +15,59 @@ import static org.hamcrest.Matchers.is;
 
 class JpaCategoryRepositoryTest {
 
-    private static HeadsPluginComponent headsPluginComponent;
-
-    @BeforeAll
-    static void beforeAll() {
-        headsPluginComponent = DaggerHeadsPluginComponent.create();
-        DatabaseTestSetup.setUpDB(headsPluginComponent);
-    }
-
-    @AfterAll
-    static void afterAll() {
-        DatabaseTestSetup.tearDownDB(headsPluginComponent, true);
-    }
 
     @Test
     void findByNameCategory1() {
-        // prepare
-        val categoryRepository = headsPluginComponent.categoryRepository();
+        DummyDatabase.runWithDB(headsPluginComponent -> {
+            // prepare
+            val categoryRepository = headsPluginComponent.categoryRepository();
 
-        // execute
-        val actual = categoryRepository.findByName("Category1");
+            // execute
+            val actual = categoryRepository.findByName("Category1");
 
-        // verify
-        assertThat(actual, isPresentAnd(is(aCategoryEntityThat()
-                .hasName("Category1")
-                .hasDatabases(containsInAnyOrder(
-                        aDatabaseEntityThat().hasName("Database1"),
-                        aDatabaseEntityThat().hasName("Database2")
-                ))
-                .hasHeads(containsInAnyOrder(
-                        aHeadEntityThat()
-                                .hasName("Head1_1")
-                                .hasValue("Value1_1"),
-                        aHeadEntityThat()
-                                .hasName("Head1_2")
-                                .hasValue("Value1_2")
-                ))
-        )));
+            // verify
+            assertThat(actual, isPresentAnd(is(aCategoryEntityThat()
+                    .hasName("Category1")
+                    .hasDatabases(containsInAnyOrder(
+                            aDatabaseEntityThat().hasName("Database1"),
+                            aDatabaseEntityThat().hasName("Database2")
+                    ))
+                    .hasHeads(containsInAnyOrder(
+                            aHeadEntityThat()
+                                    .hasName("Head1_1")
+                                    .hasValue("Value1_1"),
+                            aHeadEntityThat()
+                                    .hasName("Head1_2")
+                                    .hasValue("Value1_2")
+                    ))
+            )));
+        });
     }
 
     @Test
     void findByNameCategory2() {
-        // prepare
-        val categoryRepository = headsPluginComponent.categoryRepository();
+        DummyDatabase.runWithDB(headsPluginComponent -> {
+            // prepare
+            val categoryRepository = headsPluginComponent.categoryRepository();
 
-        // execute
-        val actual = categoryRepository.findByName("Category2");
+            // execute
+            val actual = categoryRepository.findByName("Category2");
 
-        // verify
-        assertThat(actual, isPresentAnd(is(aCategoryEntityThat()
-                .hasName("Category2")
-                .hasDatabases(containsInAnyOrder(
-                        aDatabaseEntityThat().hasName("Database1")
-                ))
-                .hasHeads(containsInAnyOrder(
-                        aHeadEntityThat()
-                                .hasName("Head2_1")
-                                .hasValue("Value2_1"),
-                        aHeadEntityThat()
-                                .hasName("Head2_2")
-                                .hasValue("Value2_2")
-                ))
-        )));
+            // verify
+            assertThat(actual, isPresentAnd(is(aCategoryEntityThat()
+                    .hasName("Category2")
+                    .hasDatabases(containsInAnyOrder(
+                            aDatabaseEntityThat().hasName("Database1")
+                    ))
+                    .hasHeads(containsInAnyOrder(
+                            aHeadEntityThat()
+                                    .hasName("Head2_1")
+                                    .hasValue("Value2_1"),
+                            aHeadEntityThat()
+                                    .hasName("Head2_2")
+                                    .hasValue("Value2_2")
+                    ))
+            )));
+        });
     }
 }

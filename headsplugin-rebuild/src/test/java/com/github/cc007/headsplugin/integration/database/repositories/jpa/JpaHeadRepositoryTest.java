@@ -1,14 +1,11 @@
 package com.github.cc007.headsplugin.integration.database.repositories.jpa;
 
-import com.github.cc007.headsplugin.dagger.DaggerHeadsPluginComponent;
-import com.github.cc007.headsplugin.dagger.HeadsPluginComponent;
-import com.github.cc007.headsplugin.integration.database.DatabaseTestSetup;
+import com.github.cc007.headsplugin.integration.database.DummyDatabase;
 import com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntityMatcher;
 
 import lombok.val;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -29,140 +26,144 @@ import static org.hamcrest.Matchers.is;
 
 class JpaHeadRepositoryTest {
 
-    private static HeadsPluginComponent headsPluginComponent;
     private static String headOwner1_2;
     private static String headOwner2_1;
 
     @BeforeAll
     static void beforeAll() {
-        headsPluginComponent = DaggerHeadsPluginComponent.create();
-        DatabaseTestSetup.setUpDB(headsPluginComponent);
-        fetchHeadOwners();
-    }
+        DummyDatabase.runWithDB(headsPluginComponent -> {
+            val databaseRepository = headsPluginComponent.databaseRepository();
 
-    @AfterAll
-    static void afterAll() {
-        DatabaseTestSetup.tearDownDB(headsPluginComponent, true);
-    }
+            Optional<DatabaseEntity> database1Optional = databaseRepository.findByName("Database1");
+            Assumptions.assumeTrue(database1Optional.isPresent());
+            Set<HeadEntity> heads = database1Optional.get().getHeads();
 
-    private static void fetchHeadOwners() {
-        val databaseRepository = headsPluginComponent.databaseRepository();
+            Optional<HeadEntity> head1_2Optional = heads.stream()
+                    .filter(headEntity -> "Head1_2".equals(headEntity.getName()))
+                    .findAny();
+            Assumptions.assumeTrue(head1_2Optional.isPresent());
+            headOwner1_2 = head1_2Optional.get().getHeadOwner();
 
-        Optional<DatabaseEntity> database1Optional = databaseRepository.findByName("Database1");
-        Assumptions.assumeTrue(database1Optional.isPresent());
-        Set<HeadEntity> heads = database1Optional.get().getHeads();
-
-        Optional<HeadEntity> head1_2Optional = heads.stream()
-                .filter(headEntity -> "Head1_2".equals(headEntity.getName()))
-                .findAny();
-        Assumptions.assumeTrue(head1_2Optional.isPresent());
-        headOwner1_2 = head1_2Optional.get().getHeadOwner();
-
-        Optional<HeadEntity> head2_1Optional = heads.stream()
-                .filter(headEntity -> "Head2_1".equals(headEntity.getName()))
-                .findAny();
-        Assumptions.assumeTrue(head2_1Optional.isPresent());
-        headOwner2_1 = head2_1Optional.get().getHeadOwner();
+            Optional<HeadEntity> head2_1Optional = heads.stream()
+                    .filter(headEntity -> "Head2_1".equals(headEntity.getName()))
+                    .findAny();
+            Assumptions.assumeTrue(head2_1Optional.isPresent());
+            headOwner2_1 = head2_1Optional.get().getHeadOwner();
+        });
     }
 
     @Test
     void findByHeadOwner1_2() {
-        // prepare
-        val headRepository = headsPluginComponent.headRepository();
+        DummyDatabase.runWithDB(headsPluginComponent -> {
+            // prepare
+            val headRepository = headsPluginComponent.headRepository();
 
-        // execute
-        val actual = headRepository.findByHeadOwner(headOwner1_2);
+            // execute
+            val actual = headRepository.findByHeadOwner(headOwner1_2);
 
-        // verify
-        assertThat(actual, isPresentAnd(is(head1_2())));
+            // verify
+            assertThat(actual, isPresentAnd(is(head1_2())));
+        });
     }
 
     @Test
     void findByHeadOwner2_1() {
-        // prepare
-        val headRepository = headsPluginComponent.headRepository();
+        DummyDatabase.runWithDB(headsPluginComponent -> {
+            // prepare
+            val headRepository = headsPluginComponent.headRepository();
 
-        // execute
-        val actual = headRepository.findByHeadOwner(headOwner2_1);
+            // execute
+            val actual = headRepository.findByHeadOwner(headOwner2_1);
 
-        // verify
-        assertThat(actual, isPresentAnd(is(head2_1())));
+            // verify
+            assertThat(actual, isPresentAnd(is(head2_1())));
+        });
     }
 
 
     @Test
     void findAllByHeadOwnerIn() {
-        // prepare
-        val headRepository = headsPluginComponent.headRepository();
+        DummyDatabase.runWithDB(headsPluginComponent -> {
+            // prepare
+            val headRepository = headsPluginComponent.headRepository();
 
-        // execute
-        val actual = headRepository.findAllByHeadOwnerIn(Arrays.asList(
-                headOwner1_2,
-                headOwner2_1,
-                UUID.randomUUID().toString()
-        ));
+            // execute
+            val actual = headRepository.findAllByHeadOwnerIn(Arrays.asList(
+                    headOwner1_2,
+                    headOwner2_1,
+                    UUID.randomUUID().toString()
+            ));
 
-        // verify
-        assertThat(actual, containsInAnyOrder(head1_2(), head2_1()));
+            // verify
+            assertThat(actual, containsInAnyOrder(head1_2(), head2_1()));
+        });
     }
 
     @Test
     void findAllHeadOwnersByHeadOwnerIn() {
-        // prepare
-        val headRepository = headsPluginComponent.headRepository();
+        DummyDatabase.runWithDB(headsPluginComponent -> {
+            // prepare
+            val headRepository = headsPluginComponent.headRepository();
 
-        // execute
-        val actual = headRepository.findAllHeadOwnersByHeadOwnerIn(Arrays.asList(
-                headOwner1_2,
-                headOwner2_1,
-                UUID.randomUUID().toString()
-        ));
+            // execute
+            val actual = headRepository.findAllHeadOwnersByHeadOwnerIn(Arrays.asList(
+                    headOwner1_2,
+                    headOwner2_1,
+                    UUID.randomUUID().toString()
+            ));
 
-        // verify
-        assertThat(actual, containsInAnyOrder(headOwner1_2, headOwner2_1));
+            // verify
+            assertThat(actual, containsInAnyOrder(headOwner1_2, headOwner2_1));
+        });
     }
 
     @Test
     void findAllByDatabases_NameAndHeadOwnerIn() {
-        // prepare
-        val headRepository = headsPluginComponent.headRepository();
+        DummyDatabase.runWithDB(headsPluginComponent -> {
+            // prepare
+            val headRepository = headsPluginComponent.headRepository();
 
-        // execute
-        val actual = headRepository.findAllByDatabases_NameAndHeadOwnerIn(
-                "Database2",
-                Arrays.asList(
-                        headOwner1_2,
-                        headOwner2_1,
-                        UUID.randomUUID().toString()
-                )
-        );
+            // execute
+            val actual = headRepository.findAllByDatabases_NameAndHeadOwnerIn(
+                    "Database2",
+                    Arrays.asList(
+                            headOwner1_2,
+                            headOwner2_1,
+                            UUID.randomUUID().toString()
+                    )
+            );
 
-        // verify
-        assertThat(actual, contains(head1_2()));
+            // verify
+            assertThat(actual, contains(head1_2()));
+        });
     }
 
     @Test
     void findAllByNameIgnoreCaseContainingHead2() {
-        // prepare
-        val headRepository = headsPluginComponent.headRepository();
+        DummyDatabase.runWithDB(headsPluginComponent -> {
+            // prepare
+            val headRepository = headsPluginComponent.headRepository();
 
-        // execute
-        val actual = headRepository.findAllByNameIgnoreCaseContaining("head2");
+            // execute
+            val actual = headRepository.findAllByNameIgnoreCaseContaining("head2");
 
-        // verify
-        assertThat(actual, containsInAnyOrder(head2_1(), head2_2()));
+            // verify
+            assertThat(actual, containsInAnyOrder(head2_1(), head2_2()));
+        });
     }
 
     @Test
     void findAllByNameIgnoreCaseContainingHead() {
-        // prepare
-        val headRepository = headsPluginComponent.headRepository();
+        DummyDatabase.runWithDB(headsPluginComponent -> {
+            // prepare
+            val headRepository = headsPluginComponent.headRepository();
 
-        // execute
-        val actual = headRepository.findAllByNameIgnoreCaseContaining("head");
+            // execute
+            val actual = headRepository.findAllByNameIgnoreCaseContaining("head");
 
-        // verify
-        assertThat(actual, containsInAnyOrder(head1_1(), head1_2(), head2_1(), head2_2()));
+            // verify
+            assertThat(actual, containsInAnyOrder(head1_1(), head1_2(), head2_1(), head2_2()));
+        });
     }
 
     private HeadEntityMatcher head1_1() {
