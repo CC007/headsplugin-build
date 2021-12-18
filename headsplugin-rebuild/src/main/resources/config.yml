@@ -1,5 +1,6 @@
 # used for new version detection
 version: ${project.version}
+profiler.defaultLogLevel: DEBUG
 
 headsplugin:
   # define which heads database should be enabled.
