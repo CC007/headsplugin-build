@@ -54,8 +54,8 @@
 
         <!-- Minecraft related dependencies -->
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -138,7 +138,7 @@
         </dependency>
 
     </dependencies>
-    
+
     <!-- Build settings -->
     <build>
         <finalName>${jar.name}</finalName>
