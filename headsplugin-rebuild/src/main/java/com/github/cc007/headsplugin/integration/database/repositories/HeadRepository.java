@@ -1,6 +1,9 @@
 package com.github.cc007.headsplugin.integration.database.repositories;
 
+import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
+
+import lombok.val;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,5 +21,11 @@ public interface HeadRepository extends Repository<HeadEntity, Long> {
 
     List<HeadEntity> findAllByNameIgnoreCaseContaining(String name);
 
-
+    default HeadEntity createFromHead(Head head) {
+        val headEntity = manageNew();
+        headEntity.setHeadOwner(head.getHeadOwner().toString());
+        headEntity.setName(head.getName());
+        headEntity.setValue(head.getValue());
+        return headEntity;
+    }
 }

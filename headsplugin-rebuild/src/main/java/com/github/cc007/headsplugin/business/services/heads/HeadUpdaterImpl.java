@@ -44,21 +44,13 @@ public class HeadUpdaterImpl implements HeadUpdater {
                     });
 
             val newHeadEntities = newHeads.stream()
-                    .map(this::createNewHeadEntity)
+                    .map(headRepository::createFromHead)
                     .collect(Collectors.toList());
 
             val storedHeads = headRepository.findAllByHeadOwnerIn(foundHeadOwnerStrings);
             storedHeads.addAll(newHeadEntities);
             return storedHeads;
         });
-    }
-
-    private HeadEntity createNewHeadEntity(Head head) {
-        val headEntity = headRepository.manageNew();
-        headEntity.setHeadOwner(head.getHeadOwner().toString());
-        headEntity.setName(head.getName());
-        headEntity.setValue(head.getValue());
-        return headEntity;
     }
 
     @Override
