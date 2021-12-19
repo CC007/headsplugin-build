@@ -29,8 +29,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -79,7 +77,10 @@ class HeadUpdaterImplTest {
         headEntity2.setHeadOwner(headOwner2.toString());
 
         HeadEntity newHeadEntity3 = new HeadEntity();
+        newHeadEntity3.setHeadOwner(headOwner3.toString());
+
         HeadEntity newHeadEntity4 = new HeadEntity();
+        newHeadEntity4.setHeadOwner(headOwner4.toString());
 
 
         List<HeadEntity> storedHeads = new ArrayList<>(Arrays.asList(headEntity1, headEntity2));
@@ -101,8 +102,10 @@ class HeadUpdaterImplTest {
                         headOwner2.toString()
                 ));
 
-        when(headRepository.manageNew())
-                .thenReturn(newHeadEntity3, newHeadEntity4);
+        when(headRepository.createFromHead(head3))
+                .thenReturn(newHeadEntity3);
+        when(headRepository.createFromHead(head4))
+                .thenReturn(newHeadEntity4);
 
         when(headRepository.findAllByHeadOwnerIn(headOwnerCaptor2.capture()))
                 .thenReturn(storedHeads);
@@ -111,7 +114,6 @@ class HeadUpdaterImplTest {
         List<HeadEntity> actual = headUpdater.updateHeads(foundHeads);
 
         // verify
-        verify(headRepository, times(2)).manageNew();
         verifyNoMoreInteractions(headRepository, databaseRepository, headUtils, transaction);
         assertThat(headOwnerCaptor1.getValue(), contains(
                 headOwner1.toString(),
