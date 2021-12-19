@@ -1,0 +1,101 @@
+package com.github.cc007.headsplugin.integration.daos.interfaces;
+
+import com.github.cc007.headsplugin.api.business.domain.Head;
+
+import lombok.val;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAnd;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class SearchableTest {
+
+    @Spy
+    Searchable searchable = new DummySearchable();
+
+    @Test
+    void getFirstHeadWithOneHead() {
+        // prepare
+        val testSearchTerm = "SearchTerm";
+        val expected = Head.builder().name("expected").build();
+
+        val testHeads = new ArrayList<Head>();
+        testHeads.add(expected);
+
+        when(searchable.getHeads(testSearchTerm))
+                .thenReturn(testHeads);
+
+        // execute
+        Optional<Head> actual = searchable.getFirstHead(testSearchTerm);
+
+        // verify
+        assertThat(actual, isPresentAndIs(expected));
+    }
+
+    @Test
+    void getFirstHeadWithMultipleHeads() {
+        // prepare
+        val testSearchTerm = "SearchTerm";
+        val expected = Head.builder().name("expected").build();
+        val second = Head.builder().name("second").build();
+        val third = Head.builder().name("third").build();
+
+        val testHeads = new ArrayList<Head>();
+        testHeads.add(expected);
+        testHeads.add(second);
+        testHeads.add(third);
+
+        when(searchable.getHeads(testSearchTerm))
+                .thenReturn(testHeads);
+
+        // execute
+        Optional<Head> actual = searchable.getFirstHead(testSearchTerm);
+
+        // verify
+        assertThat(actual, isPresentAndIs(expected));
+        assertThat(actual, isPresentAnd(is(not(second))));
+        assertThat(actual, isPresentAnd(is(not(third))));
+    }
+
+    @Test
+    void getFirstHeadWithNoHeads() {
+        // prepare
+        val testSearchTerm = "SearchTerm";
+
+        val testHeads = new ArrayList<Head>();
+
+        when(searchable.getHeads(testSearchTerm))
+                .thenReturn(testHeads);
+
+        // execute
+        Optional<Head> actual = searchable.getFirstHead(testSearchTerm);
+
+        // verify
+        assertThat(actual, isEmpty());
+    }
+}
+
+class DummySearchable implements Searchable {
+    @Override
+    public List<Head> getHeads(String searchTerm) {
+        return null;
+    }
+
+    @Override
+    public String getDatabaseName() {
+        return null;
+    }
+}
