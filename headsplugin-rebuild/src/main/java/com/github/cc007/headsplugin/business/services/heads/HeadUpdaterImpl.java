@@ -32,17 +32,7 @@ public class HeadUpdaterImpl implements HeadUpdater {
         return transaction.runTransacted(() -> {
             val foundHeadOwnerStrings = headUtils.getHeadOwnerStrings(foundHeads);
             val storedHeadOwnerStrings = headRepository.findAllHeadOwnersByHeadOwnerIn(foundHeadOwnerStrings);
-
-            val newHeads = new ArrayList<Head>();
-            val newHeadOwnerStrings = new ArrayList<String>();
-            foundHeads.stream()
-                    .filter(foundHead -> !storedHeadOwnerStrings.contains(foundHead.getHeadOwner().toString()))
-                    .filter(foundHead -> !newHeadOwnerStrings.contains(foundHead.getHeadOwner().toString()))
-                    .forEach(foundHead -> {
-                        newHeads.add(foundHead);
-                        newHeadOwnerStrings.add(foundHead.getHeadOwner().toString());
-                    });
-
+            val newHeads = getNewHeads(foundHeads, storedHeadOwnerStrings);
             val newHeadEntities = newHeads.stream()
                     .map(headRepository::createFromHead)
                     .collect(Collectors.toList());
@@ -56,6 +46,19 @@ public class HeadUpdaterImpl implements HeadUpdater {
     @Override
     public void updateDatabaseHeads(List<HeadEntity> foundHeadEntities, DatabaseEntity databaseEntity) {
         foundHeadEntities.forEach(databaseEntity::addhead);
+    }
+
+    private ArrayList<Head> getNewHeads(Collection<Head> foundHeads, List<String> storedHeadOwnerStrings) {
+        val newHeads = new ArrayList<Head>();
+        val newHeadOwnerStrings = new ArrayList<String>();
+        foundHeads.stream()
+                .filter(foundHead -> !storedHeadOwnerStrings.contains(foundHead.getHeadOwner().toString()))
+                .filter(foundHead -> !newHeadOwnerStrings.contains(foundHead.getHeadOwner().toString()))
+                .forEach(foundHead -> {
+                    newHeads.add(foundHead);
+                    newHeadOwnerStrings.add(foundHead.getHeadOwner().toString());
+                });
+        return newHeads;
     }
 
 }
