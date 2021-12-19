@@ -44,7 +44,7 @@ class CategorizableTest {
                 .thenReturn(Collections.singletonList(testCategoryHead31));
 
         // execute
-        List<Head> actual = categorizable.getAllCategoryHeads();
+        val actual = categorizable.getAllCategoryHeads();
 
         // verify
         assertThat(actual, Matchers.containsInAnyOrder(testCategoryHead11, testCategoryHead12, testCategoryHead31));
@@ -66,7 +66,7 @@ class CategorizableTest {
                 .thenReturn(Collections.singletonList(testCategoryHeadShared));
 
         // execute
-        List<Head> actual = categorizable.getAllCategoryHeads();
+        val actual = categorizable.getAllCategoryHeads();
 
         // verify
         assertThat(actual, Matchers.contains(testCategoryHeadShared));

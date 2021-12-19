@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAnd;
@@ -37,7 +36,7 @@ class SearchableTest {
                 .thenReturn(Collections.singletonList(expected));
 
         // execute
-        Optional<Head> actual = searchable.getFirstHead(testSearchTerm);
+        val actual = searchable.getFirstHead(testSearchTerm);
 
         // verify
         assertThat(actual, isPresentAndIs(expected));
@@ -55,7 +54,7 @@ class SearchableTest {
                 .thenReturn(Arrays.asList(expected, second, third));
 
         // execute
-        Optional<Head> actual = searchable.getFirstHead(testSearchTerm);
+        val actual = searchable.getFirstHead(testSearchTerm);
 
         // verify
         assertThat(actual, isPresentAndIs(expected));
@@ -72,7 +71,7 @@ class SearchableTest {
                 .thenReturn(Collections.emptyList());
 
         // execute
-        Optional<Head> actual = searchable.getFirstHead(testSearchTerm);
+        val actual = searchable.getFirstHead(testSearchTerm);
 
         // verify
         assertThat(actual, isEmpty());

@@ -3,6 +3,7 @@ package com.github.cc007.headsplugin.integration.daos.interfaces;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 
 import lombok.NonNull;
+import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -23,13 +24,13 @@ class PredefinedCategorizableTest {
     @Test
     void getSource() {
         // prepare
-        String expected = "DatabaseName";
+        val expected = "DatabaseName";
 
         when(predefinedCategorizable.getDatabaseName())
                 .thenReturn(expected);
 
         // execute
-        String actual = predefinedCategorizable.getSource();
+        val actual = predefinedCategorizable.getSource();
 
         // verify
         assertThat(actual, is(expected));
