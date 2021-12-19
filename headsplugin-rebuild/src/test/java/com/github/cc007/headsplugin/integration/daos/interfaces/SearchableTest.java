@@ -8,7 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,11 +33,8 @@ class SearchableTest {
         val testSearchTerm = "SearchTerm";
         val expected = Head.builder().name("expected").build();
 
-        val testHeads = new ArrayList<Head>();
-        testHeads.add(expected);
-
         when(searchable.getHeads(testSearchTerm))
-                .thenReturn(testHeads);
+                .thenReturn(Collections.singletonList(expected));
 
         // execute
         Optional<Head> actual = searchable.getFirstHead(testSearchTerm);
@@ -53,13 +51,8 @@ class SearchableTest {
         val second = Head.builder().name("second").build();
         val third = Head.builder().name("third").build();
 
-        val testHeads = new ArrayList<Head>();
-        testHeads.add(expected);
-        testHeads.add(second);
-        testHeads.add(third);
-
         when(searchable.getHeads(testSearchTerm))
-                .thenReturn(testHeads);
+                .thenReturn(Arrays.asList(expected, second, third));
 
         // execute
         Optional<Head> actual = searchable.getFirstHead(testSearchTerm);
@@ -75,10 +68,8 @@ class SearchableTest {
         // prepare
         val testSearchTerm = "SearchTerm";
 
-        val testHeads = new ArrayList<Head>();
-
         when(searchable.getHeads(testSearchTerm))
-                .thenReturn(testHeads);
+                .thenReturn(Collections.emptyList());
 
         // execute
         Optional<Head> actual = searchable.getFirstHead(testSearchTerm);
@@ -89,6 +80,7 @@ class SearchableTest {
 }
 
 class DummySearchable implements Searchable {
+
     @Override
     public List<Head> getHeads(String searchTerm) {
         return null;
