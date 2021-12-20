@@ -9,12 +9,12 @@ public interface CategorizableUtils {
 
     /**
      * Get a map with category names as keys and a set of {@link Categorizable}s as values for those keys.
-     * One category could be available for multiple catagorizables. That's why they are supplied in a set.
+     * One category could be available for multiple categorizables. That's why they are supplied in a set.
      *
      * This value will be cached after the first call to {@link #getCategoryMap()}.
      * If you need the value to change, you can call {@link #clearCategoryMap()} to clear the cache.
      *
-     * @return the map of catagorizables for each category
+     * @return the map of categorizables for each category
      */
     Map<String, Set<Categorizable>> getCategoryMap();
 
