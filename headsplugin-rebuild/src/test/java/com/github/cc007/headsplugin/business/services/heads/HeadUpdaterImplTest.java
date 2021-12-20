@@ -35,7 +35,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class HeadUpdaterImplTest {
 
-
     @Mock
     private HeadRepository headRepository;
 
@@ -53,9 +52,9 @@ class HeadUpdaterImplTest {
 
     @Captor
     private ArgumentCaptor<List<String>> headOwnerCaptor1;
+
     @Captor
     private ArgumentCaptor<List<String>> headOwnerCaptor2;
-
 
     @Test
     void updateHeads() {
