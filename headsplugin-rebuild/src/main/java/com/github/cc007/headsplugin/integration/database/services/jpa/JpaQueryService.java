@@ -24,7 +24,10 @@ public class JpaQueryService implements QueryService {
 
     @Override
     public <E> List<E> findAll(Class<E> entityType) {
-        CriteriaQuery<E> criteriaQuery = entityManager.getCriteriaBuilder().createQuery(entityType);
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<E> criteriaQuery = criteriaBuilder.createQuery(entityType);
+        Root<E> root = criteriaQuery.from(entityType);
 
         final TypedQuery<E> query = entityManager.createQuery(criteriaQuery);
 
@@ -67,12 +70,18 @@ public class JpaQueryService implements QueryService {
     }
 
     @Override
-    public <E> TypedQuery<E> queryByCondition(Class<E> entityType, BiFunction<CriteriaBuilder, Root<E>, Predicate> whereCondition) {
+    public <E> TypedQuery<E> queryByCondition(Class<E> entityType,
+                                              BiFunction<CriteriaBuilder, Root<E>, Predicate> whereCondition) {
         return querySelectionByCondition(entityType, root -> root, entityType, whereCondition);
     }
 
     @Override
-    public <E, T> TypedQuery<T> querySelectionByCondition(Class<E> entityType, Function<Root<E>, Path<T>> selection, Class<T> selectPropertyType, BiFunction<CriteriaBuilder, Root<E>, Predicate> whereCondition) {
+    public <E, T> TypedQuery<T> querySelectionByCondition(
+            Class<E> entityType,
+            Function<Root<E>, Path<T>> selection,
+            Class<T> selectPropertyType,
+            BiFunction<CriteriaBuilder, Root<E>, Predicate> whereCondition
+    ) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<T> criteriaQuery = criteriaBuilder

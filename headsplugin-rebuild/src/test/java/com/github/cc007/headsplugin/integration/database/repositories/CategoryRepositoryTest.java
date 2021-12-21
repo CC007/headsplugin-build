@@ -10,6 +10,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static com.github.cc007.headsplugin.integration.database.entities.CategoryEntityMatcher.aCategoryEntityThat;
@@ -67,6 +68,11 @@ class CategoryRepositoryTest {
 }
 
 class DummyCategoryRepository implements CategoryRepository {
+
+    @Override
+    public List<CategoryEntity> findAll() {
+        return null;
+    }
 
     @Override
     public Optional<CategoryEntity> findByName(String name) {
