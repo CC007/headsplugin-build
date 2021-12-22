@@ -18,6 +18,13 @@ jobs:
     steps:
       # Checkout the code as the first step.
       - checkout
+      # Restore maven cache
+      - restore_cache:
+          keys:
+            # when lock file changes, use increasingly general patterns to restore cache
+            - maven-repo-v1-{{ .Branch }}-{{ checksum "pom.xml" }}
+            - maven-repo-v1-{{ .Branch }}-
+            - maven-repo-v1-
       # Use mvn clean and package as the standard maven build phase
       - run:
           name: Build
@@ -26,13 +33,19 @@ jobs:
       - run:
           name: Test
           command: mvn -s ./.circleci/mvn/settings.xml -P new test
+      # Store the test results
       - store_test_results:
           path: headsplugin-rebuild/target/surefire-reports
+      # Save maven cache
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: maven-repo-v1-{{ .Branch }}-{{ checksum "pom.xml" }}
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
+  build-new: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build-and-test
