@@ -2,7 +2,6 @@ package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadUtils;
-import com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
@@ -139,35 +138,6 @@ class HeadUpdaterImplTest {
                         .hasHeadOwner(headOwner3.toString()),
                 aHeadEntityThat()
                         .hasHeadOwner(headOwner4.toString())
-        ));
-    }
-
-    @Test
-    void updateDatabaseHeads() {
-        // prepare
-        DatabaseEntity databaseEntity = new DatabaseEntity();
-        HeadEntity headEntity1 = new HeadEntity();
-        headEntity1.setHeadOwner("HeadOwner1");
-        HeadEntity headEntity2 = new HeadEntity();
-        headEntity1.setHeadOwner("HeadOwner2");
-        HeadEntity headEntity3 = new HeadEntity();
-        headEntity1.setHeadOwner("HeadOwner3");
-        HeadEntity headEntity4 = new HeadEntity();
-        headEntity1.setHeadOwner("HeadOwner4");
-        databaseEntity.addhead(headEntity1);
-        databaseEntity.addhead(headEntity2);
-
-        List<HeadEntity> foundHeadEntities = Arrays.asList(headEntity3, headEntity4);
-
-        // execute
-        headUpdater.updateDatabaseHeads(foundHeadEntities, databaseEntity);
-
-        // verify
-        assertThat(databaseEntity.getHeads(), containsInAnyOrder(
-                headEntity1,
-                headEntity2,
-                headEntity3,
-                headEntity4
         ));
     }
 }

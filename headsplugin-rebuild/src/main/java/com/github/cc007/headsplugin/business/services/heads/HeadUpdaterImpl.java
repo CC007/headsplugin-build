@@ -3,7 +3,6 @@ package com.github.cc007.headsplugin.business.services.heads;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadUpdater;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadUtils;
-import com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
@@ -41,11 +40,6 @@ public class HeadUpdaterImpl implements HeadUpdater {
             storedHeads.addAll(newHeadEntities);
             return storedHeads;
         });
-    }
-
-    @Override
-    public void updateDatabaseHeads(List<HeadEntity> foundHeadEntities, DatabaseEntity databaseEntity) {
-        foundHeadEntities.forEach(databaseEntity::addhead);
     }
 
     private ArrayList<Head> getNewHeads(Collection<Head> foundHeads, List<String> storedHeadOwnerStrings) {
