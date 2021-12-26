@@ -4,6 +4,7 @@ import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.Profiler;
 import com.github.cc007.headsplugin.api.business.services.heads.CategoryUpdater;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadUpdater;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadUtils;
 import com.github.cc007.headsplugin.config.properties.CategoriesProperties;
 import com.github.cc007.headsplugin.integration.daos.interfaces.Categorizable;
 import com.github.cc007.headsplugin.integration.daos.services.CategorizableUtils;
@@ -29,6 +30,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
 
     private final HeadUpdater headUpdater;
     private final CategorizableUtils categorizableUtils;
+    private final HeadUtils headUtils;
     private final CategoryRepository categoryRepository;
     private final DatabaseRepository databaseRepository;
     private final CategoriesProperties categoriesProperties;
@@ -39,7 +41,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
     public void updateCategory(String categoryName) throws IllegalArgumentException {
         transaction.runTransacted(() -> {
             val foundHeadsBySource = requestCategoryHeads(categoryName);
-            if (isEmpty(foundHeadsBySource)) {
+            if (headUtils.isEmpty(foundHeadsBySource)) {
                 log.warn("No heads found for category " + categoryName + ". Skipping the update");
                 return;
             }
@@ -102,7 +104,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
     private void updateCategories(Collection<String> categoryNames) {
         categoryNames.forEach(categoryName -> {
             val foundHeadsBySource = requestCategoryHeads(categoryName);
-            if (isEmpty(foundHeadsBySource)) {
+            if (headUtils.isEmpty(foundHeadsBySource)) {
                 log.warn("No heads found for category " + categoryName + ". Skipping this category");
                 return;
             }
@@ -115,7 +117,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
      * Request the heads for a given category from the categorizables sources
      *
      * @param categoryName the name of the category to request heads for
-     * @return the heads for that category
+     * @return the heads for that category, grouped by source
      */
     private Map<String, List<Head>> requestCategoryHeads(String categoryName) {
         return categorizableUtils.getCategoryMap()
@@ -128,22 +130,6 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
     }
 
     /**
-     * Determine if the map of lists contains any values.
-     * If there are no keys or if none of the keys return a list with any values, this will be true.
-     *
-     * @param listMap the map of lists
-     * @return whether any heads were found
-     */
-    private boolean isEmpty(Map<?, ? extends List<?>> listMap) {
-        if (listMap.isEmpty()) {
-            return true;
-        }
-        return listMap.values()
-                .stream()
-                .allMatch(Collection::isEmpty);
-    }
-
-    /**
      * Update a category for the given category name with the given heads.
      * <p>
      * First all heads that weren't already in the database will be added.
@@ -152,7 +138,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
      * The category will also be linked to this source, if it wasn't already
      *
      * @param categoryName  the category name of the category to update
-     * @param headsBySource the heads that need to be added to the database and linked to the category and source
+     * @param headsBySource the heads for that category, grouped by source
      */
     private void updateCategory(String categoryName, Map<String, List<Head>> headsBySource) {
         val category = categoryRepository.findByOrCreateFromName(categoryName);

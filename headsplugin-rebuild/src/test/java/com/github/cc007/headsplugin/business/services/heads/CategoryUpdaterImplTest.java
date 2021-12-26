@@ -3,6 +3,7 @@ package com.github.cc007.headsplugin.business.services.heads;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.Profiler;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadUpdater;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadUtils;
 import com.github.cc007.headsplugin.config.properties.CategoriesProperties;
 import com.github.cc007.headsplugin.integration.daos.interfaces.Categorizable;
 import com.github.cc007.headsplugin.integration.daos.services.CategorizableUtils;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
@@ -51,6 +53,9 @@ class CategoryUpdaterImplTest {
 
     @Mock
     CategorizableUtils categorizableUtils;
+
+    @Spy
+    HeadUtils headUtils = new HeadUtilsImpl();
 
     @Mock
     CategoryRepository categoryRepository;
