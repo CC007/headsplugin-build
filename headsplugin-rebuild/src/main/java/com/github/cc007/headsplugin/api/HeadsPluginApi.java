@@ -1,11 +1,13 @@
 package com.github.cc007.headsplugin.api;
 
+import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Optional;
 
-public interface HeadsPluginApi {
+public class HeadsPluginApi {
+    private static HeadsPluginServices headsPluginServices;
 
     /**
      * Gets a plugin
@@ -13,32 +15,37 @@ public interface HeadsPluginApi {
      * @param pluginName Name of the plugin to get
      * @return Optional of the plugin from name
      */
-    static Optional<Plugin> getPlugin(String pluginName) {
-        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin(pluginName);
-        if (plugin != null && plugin.isEnabled()) {
-            return Optional.of(plugin);
-        } else {
-            return Optional.empty();
-        }
+    public static Optional<Plugin> getPlugin(String pluginName) {
+        return Optional.ofNullable(
+                Bukkit.getServer()
+                        .getPluginManager()
+                        .getPlugin(pluginName)
+        ).filter(Plugin::isEnabled);
     }
 
     /**
-     * Gets the instance of the HeadsPluginApi
-     * @return Optional of the HeadsPluginApi plugin
-     */
-    static Optional<HeadsPluginApi> getPlugin() {
-        return getPlugin("HeadsPluginAPI")
-                .filter(plugin -> plugin instanceof HeadsPluginApi)
-                .map(plugin -> (HeadsPluginApi) plugin);
-    }
-
-    /**
-     * Get the services provider for the this plugin.
+     * Gets the HeadPluginAPI plugin
      *
+     * @return Optional of the plugin
+     */
+    public static Optional<Plugin> getPlugin() {
+        return getPlugin("HeadsPluginAPI");
+    }
+
+    /**
+     * Get the services provider for this plugin.
      * These services include things like searching for heads, updating categories, etc.
      *
-     * @return the services provider
+     * @return Optional of the services provider
      */
-    HeadsPluginServices getHeadsPluginServices();
+    public static Optional<HeadsPluginServices> getHeadsPluginServices() {
+        return Optional.ofNullable(headsPluginServices);
+    }
 
+    /**
+     * @hidden
+     */
+    public static void setHeadsPluginServices(@NonNull HeadsPluginServices headsPluginServices) {
+        HeadsPluginApi.headsPluginServices = headsPluginServices;
+    }
 }

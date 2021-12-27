@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Optional;
 
 @Log4j2
-public class HeadsPlugin extends JavaPlugin implements HeadsPluginApi {
+public class HeadsPlugin extends JavaPlugin {
 
     private HeadsPluginComponent headsPluginComponent;
     private ClassLoader defaultClassLoader;
@@ -34,6 +34,7 @@ public class HeadsPlugin extends JavaPlugin implements HeadsPluginApi {
         defaultClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClassLoader());
         headsPluginComponent = DaggerHeadsPluginComponent.create();
+        HeadsPluginApi.setHeadsPluginServices(headsPluginComponent);
 
         //StartupCategoryUpdater startupCategoryUpdater = headsPluginComponent.startupCategoryUpdater();
         //startupCategoryUpdater.update();
@@ -45,13 +46,8 @@ public class HeadsPlugin extends JavaPlugin implements HeadsPluginApi {
         Thread.currentThread().setContextClassLoader(defaultClassLoader);
     }
 
-    @Override
-    public HeadsPluginComponent getHeadsPluginServices() {
-        return headsPluginComponent;
-    }
-
     private void shutdownDatabase() {
-        val entityManager = getHeadsPluginServices().entityManager();
+        val entityManager = headsPluginComponent.entityManager();
         entityManager.getTransaction().begin();
         entityManager.createNativeQuery("CHECKPOINT;").executeUpdate();
         entityManager.createNativeQuery("SHUTDOWN;").executeUpdate();
