@@ -3,13 +3,13 @@ package com.github.cc007.headsplugin.integration.database.repositories;
 import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
 
 import lombok.val;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +41,7 @@ class CategoryRepositoryTest {
         // verify
         assertThat(actual, is(aCategoryEntityThat()
                 .hasName(testCategoryName)
-                .hasLastUpdated(Matchers.notNullValue())));
+                .hasLastUpdated(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC))));
     }
 
     @Test

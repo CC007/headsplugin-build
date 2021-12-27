@@ -3,6 +3,7 @@ package com.github.cc007.headsplugin.integration.database.repositories;
 import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +17,7 @@ public interface CategoryRepository extends Repository<CategoryEntity, Long> {
         return findByName(name).orElseGet(() -> {
             CategoryEntity newCategory = manageNew();
             newCategory.setName(name);
-            newCategory.setLastUpdated(LocalDateTime.now());
+            newCategory.setLastUpdated(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
             return newCategory;
         });
     }
