@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -466,7 +465,7 @@ class CategoryUpdaterImplTest {
 
         when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
                 .thenAnswer(invocation -> {
-                    Supplier<List<HeadEntity>> supplier = invocation.getArgument(1);
+                    Supplier<?> supplier = invocation.getArgument(1);
                     return supplier.get();
                 });
 
@@ -574,7 +573,7 @@ class CategoryUpdaterImplTest {
 
         when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
                 .thenAnswer(invocation -> {
-                    Supplier<List<HeadEntity>> supplier = invocation.getArgument(1);
+                    Supplier<?> supplier = invocation.getArgument(1);
                     return supplier.get();
                 });
 
@@ -652,7 +651,7 @@ class CategoryUpdaterImplTest {
 
         when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
                 .thenAnswer(invocation -> {
-                    Supplier<List<HeadEntity>> supplier = invocation.getArgument(1);
+                    Supplier<?> supplier = invocation.getArgument(1);
                     return supplier.get();
                 });
 
@@ -730,7 +729,7 @@ class CategoryUpdaterImplTest {
 
         when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
                 .thenAnswer(invocation -> {
-                    Supplier<List<HeadEntity>> supplier = invocation.getArgument(1);
+                    Supplier<?> supplier = invocation.getArgument(1);
                     return supplier.get();
                 });
 

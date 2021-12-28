@@ -136,6 +136,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
      * Then all heads will be linked to the given category and data source (like MineSkin), if it wasn't already.
      * This includes both all new heads and the ones that were already in the database.
      * The category will also be linked to this source, if it wasn't already
+     * Finally the last updated timestamp will be updated for this search term
      *
      * @param categoryName  the category name of the category to update
      * @param headsBySource the heads for that category, grouped by source
