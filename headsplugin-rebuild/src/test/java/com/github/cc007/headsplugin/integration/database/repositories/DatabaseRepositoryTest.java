@@ -71,9 +71,4 @@ class DummyDatabaseRepository implements DatabaseRepository {
     public DatabaseEntity manageNew() {
         return null;
     }
-
-    @Override
-    public DatabaseEntity manage(DatabaseEntity entity) {
-        return null;
-    }
 }

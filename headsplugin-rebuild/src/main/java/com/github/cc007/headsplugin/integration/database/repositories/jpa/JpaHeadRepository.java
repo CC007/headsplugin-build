@@ -62,9 +62,4 @@ public class JpaHeadRepository implements HeadRepository {
     public HeadEntity manageNew() {
         return managedEntityService.manageNew(HeadEntity.class);
     }
-
-    @Override
-    public HeadEntity manage(HeadEntity entity) {
-        return managedEntityService.manage(entity);
-    }
 }

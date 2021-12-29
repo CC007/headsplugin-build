@@ -84,9 +84,4 @@ class DummyHeadRepository implements HeadRepository {
     public HeadEntity manageNew() {
         return null;
     }
-
-    @Override
-    public HeadEntity manage(HeadEntity entity) {
-        return null;
-    }
 }

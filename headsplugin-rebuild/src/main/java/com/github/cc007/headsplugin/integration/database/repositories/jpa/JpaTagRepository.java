@@ -24,9 +24,4 @@ public class JpaTagRepository implements TagRepository {
     public TagEntity manageNew() {
         return managedEntityService.manageNew(TagEntity.class);
     }
-
-    @Override
-    public TagEntity manage(TagEntity entity) {
-        return managedEntityService.manage(entity);
-    }
 }

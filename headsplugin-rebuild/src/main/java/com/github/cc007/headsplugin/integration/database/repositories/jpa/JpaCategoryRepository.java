@@ -30,9 +30,4 @@ public class JpaCategoryRepository implements CategoryRepository {
     public CategoryEntity manageNew() {
         return managedEntityService.manageNew(CategoryEntity.class);
     }
-
-    @Override
-    public CategoryEntity manage(CategoryEntity entity) {
-        return managedEntityService.manage(entity);
-    }
 }

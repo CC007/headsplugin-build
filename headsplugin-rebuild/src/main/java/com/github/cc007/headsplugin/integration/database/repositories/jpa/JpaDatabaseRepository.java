@@ -24,9 +24,4 @@ public class JpaDatabaseRepository implements DatabaseRepository {
     public DatabaseEntity manageNew() {
         return managedEntityService.manageNew(DatabaseEntity.class);
     }
-
-    @Override
-    public DatabaseEntity manage(DatabaseEntity entity) {
-        return managedEntityService.manage(entity);
-    }
 }

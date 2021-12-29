@@ -24,9 +24,4 @@ public class JpaSearchRepository implements SearchRepository {
     public SearchEntity manageNew() {
         return managedEntityService.manageNew(SearchEntity.class);
     }
-
-    @Override
-    public SearchEntity manage(SearchEntity entity) {
-        return managedEntityService.manage(entity);
-    }
 }

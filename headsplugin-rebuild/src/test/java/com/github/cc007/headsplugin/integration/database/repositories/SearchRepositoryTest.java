@@ -73,17 +73,12 @@ class SearchRepositoryTest {
 class  DummySearchRepository implements SearchRepository {
 
     @Override
-    public SearchEntity manageNew() {
-        return null;
-    }
-
-    @Override
-    public SearchEntity manage(SearchEntity entity) {
-        return null;
-    }
-
-    @Override
     public Optional<SearchEntity> findBySearchTerm(String searchTerm) {
         return Optional.empty();
+    }
+
+    @Override
+    public SearchEntity manageNew() {
+        return null;
     }
 }

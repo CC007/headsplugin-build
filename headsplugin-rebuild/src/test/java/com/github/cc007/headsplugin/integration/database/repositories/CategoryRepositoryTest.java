@@ -83,9 +83,4 @@ class DummyCategoryRepository implements CategoryRepository {
     public CategoryEntity manageNew() {
         return null;
     }
-
-    @Override
-    public CategoryEntity manage(CategoryEntity entity) {
-        return null;
-    }
 }

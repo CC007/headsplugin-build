@@ -19,9 +19,4 @@ public class JpaManagedEntityService implements ManagedEntityService {
         entityManager.persist(entity);
         return entity;
     }
-
-    @Override
-    public <E> E manage(E entity) {
-        return entityManager.merge(entity);
-    }
 }
