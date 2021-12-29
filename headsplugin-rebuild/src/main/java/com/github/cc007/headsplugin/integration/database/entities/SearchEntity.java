@@ -81,10 +81,6 @@ public class SearchEntity {
         heads.add(head);
     }
 
-    public void removeHead(HeadEntity head) {
-        heads.remove(head);
-    }
-
     public void resetSearchCount() {
         searchCount = 0;
     }

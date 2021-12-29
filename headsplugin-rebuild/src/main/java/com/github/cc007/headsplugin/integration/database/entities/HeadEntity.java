@@ -108,37 +108,4 @@ public class HeadEntity {
     public Set<SearchEntity> getSearches() {
         return Collections.unmodifiableSet(searches);
     }
-
-//    public void addDatabase(DatabaseEntity database){
-//        databases.add(database);
-//    }
-//
-//    public void removeDatabase(DatabaseEntity database){
-//        databases.remove(database);
-//    }
-//
-//    public void addTag(TagEntity tag){
-//        tags.add(tag);
-//    }
-//
-//    public void removeTag(TagEntity tag){
-//        tags.remove(tag);
-//    }
-//
-//    public void addCategory(CategoryEntity category){
-//        categories.add(category);
-//    }
-//
-//    public void removeCategory(CategoryEntity category){
-//        categories.remove(category);
-//    }
-//
-//    public void addSearch(SearchEntity search){
-//        searches.add(search);
-//    }
-//
-//    public void removeSearch(SearchEntity search){
-//        searches.remove(search);
-//    }
-
 }

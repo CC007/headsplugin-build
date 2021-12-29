@@ -90,16 +90,4 @@ public class CategoryEntity {
     public void addhead(HeadEntity head) {
         heads.add(head);
     }
-
-    public void removeHead(HeadEntity head) {
-        heads.remove(head);
-    }
-
-//    public void addDatabase(DatabaseEntity database){
-//        databases.add(database);
-//    }
-//
-//    public void removeDatabase(DatabaseEntity database){
-//        databases.remove(database);
-//    }
 }

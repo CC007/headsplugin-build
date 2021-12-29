@@ -103,23 +103,11 @@ public class DatabaseEntity {
         heads.add(head);
     }
 
-    public void removeHead(HeadEntity head) {
-        heads.remove(head);
-    }
-
     public void addTag(TagEntity tag) {
         tags.add(tag);
     }
 
-    public void removeTag(TagEntity tag) {
-        tags.remove(tag);
-    }
-
     public void addCategory(CategoryEntity category) {
         categories.add(category);
-    }
-
-    public void removeCategory(CategoryEntity category) {
-        categories.remove(category);
     }
 }
