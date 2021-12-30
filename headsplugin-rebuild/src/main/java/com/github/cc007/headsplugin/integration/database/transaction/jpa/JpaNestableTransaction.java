@@ -11,6 +11,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
@@ -51,19 +52,21 @@ public class JpaNestableTransaction implements Transaction {
     }
 
     @Override
-    public <T> T runTransacted(Supplier<T> supplier, Consumer<RollbackException> exceptionHandler) {
+    public <T> T runTransacted(Supplier<T> supplier, Function<RollbackException, T> exceptionHandler) {
         return runTransacted(supplier, exceptionHandler, true);
     }
 
     @Override
-    public <T> T runTransacted(Supplier<T> supplier, Consumer<RollbackException> exceptionHandler, boolean clearCache) {
+    public <T> T runTransacted(Supplier<T> supplier, Function<RollbackException, T> exceptionHandler, boolean clearCache) {
         val value = new AtomicReference<T>();
         //noinspection CodeBlock2Expr
-        runTransacted(() -> {
-            value.set(supplier.get());
-        }, e -> {
-            throw e;
-        }, clearCache);
+        runTransacted(
+                () -> {
+                    value.set(supplier.get());
+                },
+                e -> value.set(exceptionHandler.apply(e)),
+                clearCache
+        );
         return value.get();
     }
 

@@ -12,6 +12,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.RollbackException;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
@@ -28,6 +30,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class JpaNestableTransactionTest {
+
+    private static final String RETURN_VALUE = "Hello World!";
 
     @Mock
     EntityManager entityManager;
@@ -743,6 +747,772 @@ class JpaNestableTransactionTest {
         verify(runnable).run();
         verify(entityManager, times(2)).getTransaction();
         verifyNoMoreInteractions(entityManager, runnable, entityTransaction);
+        verifyNoMoreInteractions(exceptionHandlerInner, exceptionHandlerOuter);
+    }
+
+    private String supplyValue() {
+        return RETURN_VALUE;
+    }
+
+    @Test
+    void runTransactedReturningValue() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        val entityTransaction = mock(EntityTransaction.class);
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doNothing().when(entityTransaction).commit();
+        doNothing().when(entityManager).clear();
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(supplier);
+
+        // verify
+        assertThat(actual, is(RETURN_VALUE));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verify(entityManager).clear();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+    }
+
+    @Test
+    void runTransactedReturningValueWithRollbackException() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        val entityTransaction = mock(EntityTransaction.class);
+        var testRollbackException = new RollbackException();
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doThrow(testRollbackException).when(entityTransaction).commit();
+
+        // execute
+        Assertions.assertThrows(RollbackException.class, () ->
+                jpaNestableTransaction.runTransacted(supplier)
+        );
+
+        // verify
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+    }
+
+    @Test
+    void runTransactedReturningValueNested() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        val entityTransaction = mock(EntityTransaction.class);
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doNothing().when(entityTransaction).commit();
+        doNothing().when(entityManager).clear();
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(() -> jpaNestableTransaction.runTransacted(supplier));
+
+        // verify
+        assertThat(actual, is(RETURN_VALUE));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verify(entityManager).clear();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+    }
+
+    @Test
+    void runTransactedReturningValueClearCacheTrue() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        val entityTransaction = mock(EntityTransaction.class);
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doNothing().when(entityTransaction).commit();
+        doNothing().when(entityManager).clear();
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(supplier, true);
+
+        // verify
+        assertThat(actual, is(RETURN_VALUE));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verify(entityManager).clear();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+    }
+
+    @Test
+    void runTransactedReturningValueClearCacheFalse() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        val entityTransaction = mock(EntityTransaction.class);
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doNothing().when(entityTransaction).commit();
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(supplier, false);
+
+        // verify
+        assertThat(actual, is(RETURN_VALUE));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+    }
+
+    @Test
+    void runTransactedReturningValueClearCacheTrueThenFalse() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        val entityTransaction = mock(EntityTransaction.class);
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue() + 1,supplyValue() + 2);
+        doNothing().when(entityTransaction).commit();
+        doNothing().when(entityManager).clear();
+
+        // execute
+        val actual1 = jpaNestableTransaction.runTransacted(supplier, true);
+        val actual2 = jpaNestableTransaction.runTransacted(supplier, false);
+
+        // verify
+        assertThat(actual1, is(RETURN_VALUE + 1));
+        assertThat(actual2, is(RETURN_VALUE + 2));
+        verify(entityTransaction, times(2)).begin();
+        verify(entityTransaction, times(2)).commit();
+        verify(supplier, times(2)).get();
+        verify(entityManager, times(4)).getTransaction();
+        verify(entityManager).clear(); // <- only once!
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+    }
+
+    @Test
+    void runTransactedReturningValueClearCacheTrueWithRollbackException() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        val entityTransaction = mock(EntityTransaction.class);
+        var testRollbackException = new RollbackException();
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doThrow(testRollbackException).when(entityTransaction).commit();
+
+        // execute
+        Assertions.assertThrows(RollbackException.class, () ->
+                jpaNestableTransaction.runTransacted(supplier, true)
+        );
+
+        // verify
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+    }
+
+    @Test
+    void runTransactedReturningValueClearCacheFalseWithRollbackException() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        val entityTransaction = mock(EntityTransaction.class);
+        var testRollbackException = new RollbackException();
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doThrow(testRollbackException).when(entityTransaction).commit();
+
+        // execute
+        Assertions.assertThrows(RollbackException.class, () ->
+                jpaNestableTransaction.runTransacted(supplier, false)
+        );
+
+        // verify
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+    }
+
+    @Test
+    void runTransactedReturningValueClearCacheTrueNested() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        val entityTransaction = mock(EntityTransaction.class);
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doNothing().when(entityTransaction).commit();
+        doNothing().when(entityManager).clear();
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(
+                () -> jpaNestableTransaction.runTransacted(supplier, true),
+                true
+        );
+
+        // verify
+        assertThat(actual, is(RETURN_VALUE));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verify(entityManager).clear();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+    }
+
+    @Test
+    void runTransactedReturningValueClearCacheFalseTrueNested() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        val entityTransaction = mock(EntityTransaction.class);
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doNothing().when(entityTransaction).commit();
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(
+                () -> jpaNestableTransaction.runTransacted(supplier, false),
+                false
+        );
+
+        // verify
+        assertThat(actual, is(RETURN_VALUE));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+    }
+
+    @Test
+    void runTransactedReturningValueClearCacheOuterTrueNested() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        val entityTransaction = mock(EntityTransaction.class);
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doNothing().when(entityTransaction).commit();
+        doNothing().when(entityManager).clear();
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(
+                () -> jpaNestableTransaction.runTransacted(supplier, false),
+                true
+        );
+
+        // verify
+        assertThat(actual, is(RETURN_VALUE));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verify(entityManager).clear();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+    }
+
+    @Test
+    void runTransactedReturningValueClearCacheInnerTrueTrueNested() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        val entityTransaction = mock(EntityTransaction.class);
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doNothing().when(entityTransaction).commit();
+        doNothing().when(entityManager).clear();
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(
+                () -> jpaNestableTransaction.runTransacted(supplier, true),
+                false
+        );
+
+        // verify
+        assertThat(actual, is(RETURN_VALUE));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verify(entityManager).clear();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+    }
+
+    @Test
+    void runTransactedReturningValueWithRollackHandler() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") val exceptionHandler = (Function<RollbackException, String>) mock(Function.class);
+        val entityTransaction = mock(EntityTransaction.class);
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doNothing().when(entityTransaction).commit();
+        doNothing().when(entityManager).clear();
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(supplier, exceptionHandler);
+
+        // verify
+        assertThat(actual, is(RETURN_VALUE));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verify(entityManager).clear();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+        verifyNoInteractions(exceptionHandler);
+    }
+
+    @Test
+    void runTransactedReturningValueWithRollackHandlerThrowingWithRollbackException() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") val exceptionHandler = (Function<RollbackException, String>) mock(Function.class);
+        val entityTransaction = mock(EntityTransaction.class);
+        val testRollbackException = new RollbackException();
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doThrow(testRollbackException).when(entityTransaction).commit();
+        doThrow(testRollbackException).when(exceptionHandler).apply(testRollbackException);
+
+        // execute
+        Assertions.assertThrows(RollbackException.class, () ->
+                jpaNestableTransaction.runTransacted(supplier, exceptionHandler)
+        );
+
+        // verify
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction, exceptionHandler);
+        verifyNoMoreInteractions(exceptionHandler);
+    }
+
+    @Test
+    void runTransactedReturningValueWithRollackHandlerDoNothingWithRollbackException() {
+        // prepare
+        val exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") val exceptionHandler = (Function<RollbackException, String>) mock(Function.class);
+        val entityTransaction = mock(EntityTransaction.class);
+        val testRollbackException = new RollbackException();
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doThrow(testRollbackException).when(entityTransaction).commit();
+        when(exceptionHandler.apply(testRollbackException))
+                .thenReturn(exceptionHandlerReturnValue);
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(supplier, exceptionHandler);
+
+        // verify
+        assertThat(actual, is(exceptionHandlerReturnValue));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction, exceptionHandler);
+        verifyNoMoreInteractions(exceptionHandler);
+    }
+
+    @Test
+    void runTransactedReturningValueWithRollackHandlerNested() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") val exceptionHandler = (Function<RollbackException, String>) mock(Function.class);
+        val entityTransaction = mock(EntityTransaction.class);
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doNothing().when(entityTransaction).commit();
+        doNothing().when(entityManager).clear();
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(
+                () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandler),
+                exceptionHandler
+        );
+
+        // verify
+        assertThat(actual, is(RETURN_VALUE));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verify(entityManager).clear();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+        verifyNoInteractions(exceptionHandler);
+    }
+
+    @Test
+    void runTransactedReturningValueWithRollackHandlerThrowingSameExceptionNestedWithRollbackException() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        val entityTransaction = mock(EntityTransaction.class);
+        val testRollbackException = new RollbackException("RBE");
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doThrow(testRollbackException).when(entityTransaction).commit();
+        doThrow(testRollbackException).when(exceptionHandlerInner).apply(testRollbackException);
+        doThrow(testRollbackException).when(exceptionHandlerOuter).apply(testRollbackException);
+
+        // execute
+        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+                jpaNestableTransaction.runTransacted(
+                        () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
+                        exceptionHandlerOuter
+                )
+        );
+
+        // verify
+        assertThat(actualException, is(testRollbackException));
+        assertThat(actualException.getSuppressed(), emptyArray());
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+        verifyNoMoreInteractions(exceptionHandlerInner, exceptionHandlerOuter);
+    }
+
+    @Test
+    void runTransactedReturningValueWithRollackHandlerInnerThrowingDifferentExceptionNestedWithRollbackException() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        val entityTransaction = mock(EntityTransaction.class);
+        val testRollbackException1 = new RollbackException("RBE1");
+        val testRollbackException2 = new RollbackException("RBE2");
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doThrow(testRollbackException1).when(entityTransaction).commit();
+        doThrow(testRollbackException2).when(exceptionHandlerInner).apply(testRollbackException1);
+        doThrow(testRollbackException2).when(exceptionHandlerOuter).apply(testRollbackException2);
+
+        // execute
+        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+                jpaNestableTransaction.runTransacted(
+                        () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
+                        exceptionHandlerOuter
+                )
+        );
+
+        // verify
+        assertThat(actualException, is(testRollbackException2));
+        assertThat(actualException.getSuppressed(), arrayContaining(testRollbackException1));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+        verifyNoMoreInteractions(exceptionHandlerInner, exceptionHandlerOuter);
+    }
+
+    @Test
+    void runTransactedReturningValueWithRollackHandlerOuterThrowingDifferentExceptionNestedWithRollbackException() {
+        // prepare
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        val entityTransaction = mock(EntityTransaction.class);
+        val testRollbackException1 = new RollbackException("RBE1");
+        val testRollbackException2 = new RollbackException("RBE2");
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doThrow(testRollbackException1).when(entityTransaction).commit();
+        doThrow(testRollbackException1).when(exceptionHandlerInner).apply(testRollbackException1);
+        doThrow(testRollbackException2).when(exceptionHandlerOuter).apply(testRollbackException1);
+
+        // execute
+        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+                jpaNestableTransaction.runTransacted(
+                        () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
+                        exceptionHandlerOuter
+                )
+        );
+
+        // verify
+        assertThat(actualException, is(testRollbackException2));
+        assertThat(actualException.getSuppressed(), arrayContaining(testRollbackException1));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+        verifyNoMoreInteractions(exceptionHandlerInner, exceptionHandlerOuter);
+    }
+
+    @Test
+    void runTransactedReturningValueWithRollackHandlerDoNothingNestedWithRollbackException() {
+        // prepare
+        val exceptionHandlerReturnValue1 = "ExceptionHandlerReturnValue1";
+        val exceptionHandlerReturnValue2 = "ExceptionHandlerReturnValue2";
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        val entityTransaction = mock(EntityTransaction.class);
+        val testRollbackException = new RollbackException();
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doThrow(testRollbackException).when(entityTransaction).commit();
+        when(exceptionHandlerInner.apply(testRollbackException))
+                .thenReturn(exceptionHandlerReturnValue1);
+        when(exceptionHandlerOuter.apply(testRollbackException))
+                .thenReturn(exceptionHandlerReturnValue2);
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(
+                () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
+                exceptionHandlerOuter
+        );
+
+        // verify
+        assertThat(actual, is(exceptionHandlerReturnValue2));
+        assertThat(testRollbackException.getSuppressed(), emptyArray());
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+        verifyNoMoreInteractions(exceptionHandlerInner, exceptionHandlerOuter);
+    }
+
+    @Test
+    void runTransactedReturningValueWithRollackHandlerInnerDoNothingOuterThrowingSameExceptionNestedWithRollbackException() {
+        // prepare
+        val exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        val entityTransaction = mock(EntityTransaction.class);
+        val testRollbackException = new RollbackException("RBE1");
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doThrow(testRollbackException).when(entityTransaction).commit();
+        when(exceptionHandlerInner.apply(testRollbackException))
+                .thenReturn(exceptionHandlerReturnValue);
+        doThrow(testRollbackException).when(exceptionHandlerOuter).apply(testRollbackException);
+
+        // execute
+        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+                jpaNestableTransaction.runTransacted(
+                        () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
+                        exceptionHandlerOuter
+                )
+        );
+
+        // verify
+        assertThat(actualException, is(testRollbackException));
+        assertThat(actualException.getSuppressed(), emptyArray());
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+        verifyNoMoreInteractions(exceptionHandlerInner, exceptionHandlerOuter);
+    }
+
+    @Test
+    void runTransactedReturningValueWithRollackHandlerInnerDoNothingOuterThrowingDifferentExceptionNestedWithRollbackException() {
+        // prepare
+        val exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        val entityTransaction = mock(EntityTransaction.class);
+        val testRollbackException1 = new RollbackException("RBE1");
+        val testRollbackException2 = new RollbackException("RBE2");
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doThrow(testRollbackException1).when(entityTransaction).commit();
+        when(exceptionHandlerInner.apply(testRollbackException1))
+                .thenReturn(exceptionHandlerReturnValue);
+        doThrow(testRollbackException2).when(exceptionHandlerOuter).apply(testRollbackException1);
+
+        // execute
+        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+                jpaNestableTransaction.runTransacted(
+                        () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
+                        exceptionHandlerOuter
+                )
+        );
+
+        // verify
+        assertThat(actualException, is(testRollbackException2));
+        assertThat(actualException.getSuppressed(), arrayContaining(testRollbackException1));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+        verifyNoMoreInteractions(exceptionHandlerInner, exceptionHandlerOuter);
+    }
+
+    @Test
+    void runTransactedReturningValueWithRollackHandlerInnerThrowingSameExceptionOuterDoNothingNestedWithRollbackException() {
+        // prepare
+        val exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        val entityTransaction = mock(EntityTransaction.class);
+        val testRollbackException = new RollbackException("RBE1");
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doThrow(testRollbackException).when(entityTransaction).commit();
+        doThrow(testRollbackException).when(exceptionHandlerInner).apply(testRollbackException);
+        when(exceptionHandlerOuter.apply(testRollbackException))
+                .thenReturn(exceptionHandlerReturnValue);
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(
+                () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
+                exceptionHandlerOuter
+        );
+
+        // verify
+        assertThat(actual, is(exceptionHandlerReturnValue));
+        assertThat(testRollbackException.getSuppressed(), emptyArray());
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
+        verifyNoMoreInteractions(exceptionHandlerInner, exceptionHandlerOuter);
+    }
+
+    @Test
+    void runTransactedReturningValueWithRollackHandlerInnerThrowingDifferentExceptionOuterDoNothingNestedWithRollbackException() {
+        // prepare
+        val exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
+        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        val entityTransaction = mock(EntityTransaction.class);
+        val testRollbackException1 = new RollbackException("RBE1");
+        val testRollbackException2 = new RollbackException("RBE2");
+
+        when(entityManager.getTransaction())
+                .thenReturn(entityTransaction, entityTransaction);
+        doNothing().when(entityTransaction).begin();
+        when(supplier.get())
+                .thenReturn(supplyValue());
+        doThrow(testRollbackException1).when(entityTransaction).commit();
+        doThrow(testRollbackException2).when(exceptionHandlerInner).apply(testRollbackException1);
+        when(exceptionHandlerOuter.apply(testRollbackException2))
+                .thenReturn(exceptionHandlerReturnValue);
+
+        // execute
+        val actual = jpaNestableTransaction.runTransacted(
+                () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
+                exceptionHandlerOuter
+        );
+
+        // verify
+        assertThat(actual, is(exceptionHandlerReturnValue));
+        assertThat(testRollbackException2.getSuppressed(), arrayContaining(testRollbackException1));
+        verify(entityTransaction).begin();
+        verify(entityTransaction).commit();
+        verify(supplier).get();
+        verify(entityManager, times(2)).getTransaction();
+        verifyNoMoreInteractions(entityManager, supplier, entityTransaction);
         verifyNoMoreInteractions(exceptionHandlerInner, exceptionHandlerOuter);
     }
 }
