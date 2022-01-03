@@ -23,7 +23,7 @@ public class CategorizableUtilsImpl implements CategorizableUtils {
     public Map<String, Set<Categorizable>> getCategoryMap() {
         if (categoryMap == null) {
             categoryMap = new HashMap<>();
-            for (Categorizable categorizable : categorizables) {
+            for (val categorizable : categorizables) {
                 for (val categoryName : categorizable.getCategoryNames()) {
                     val categoryNameCategorizables = categoryMap.computeIfAbsent(categoryName, (key) -> new HashSet<>());
                     categoryNameCategorizables.add(categorizable);
