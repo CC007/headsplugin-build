@@ -1,6 +1,7 @@
 package com.github.cc007.headsplugin.business.utils;
 
 import lombok.val;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -10,6 +11,7 @@ import java.util.function.Consumer;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -43,6 +45,38 @@ class OptionalUtilsTest {
 
         // verify
         assertThat(actual, isEmpty());
+        assertThat(result.get(), nullValue());
+    }
+
+    @Test
+    void peekOptionalNull() {
+        // prepare
+        val result = new AtomicReference<String>();
+        val testConsumer = (Consumer<String>) result::set;
+
+        // execute
+        val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+                OptionalUtils.peek(null, testConsumer)
+        );
+
+        // verify
+        assertThat(actualException.getMessage(), containsString("is marked non-null but is null"));
+        assertThat(result.get(), nullValue());
+    }
+
+    @Test
+    void peekConsumerNull() {
+        // prepare
+        val testOptionalString = Optional.<String>empty();
+        val result = new AtomicReference<String>();
+
+        // execute
+        val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+                OptionalUtils.peek(testOptionalString, null)
+        );
+
+        // verify
+        assertThat(actualException.getMessage(), containsString("is marked non-null but is null"));
         assertThat(result.get(), nullValue());
     }
 }
