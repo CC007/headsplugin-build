@@ -5,8 +5,11 @@ import com.github.cc007.headsplugin.api.business.services.heads.HeadToItemstackM
 import com.github.cc007.headsplugin.api.business.services.heads.HeadUtils;
 import com.github.cc007.headsplugin.business.services.NbtService;
 
-import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
+import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.NBTItem;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.ExtensionMethod;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.bukkit.Bukkit;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @RequiredArgsConstructor
+@ExtensionMethod(HeadToItemstackMapperImpl.class)
 public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
 
     private final HeadUtils headUtils;
@@ -35,7 +39,7 @@ public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
      * provided List of <code>Head</code> objects
      */
     @Override
-    public List<ItemStack> getItemStacks(List<Head> heads) {
+    public List<ItemStack> getItemStacks(@NonNull List<Head> heads) {
         return getItemStacks(heads, 1);
     }
 
@@ -49,7 +53,7 @@ public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
      * provided List of <code>Head</code> objects
      */
     @Override
-    public List<ItemStack> getItemStacks(List<Head> heads, int quantity) {
+    public List<ItemStack> getItemStacks(@NonNull List<Head> heads, int quantity) {
         return heads.stream().map((head -> getItemStack(head, quantity))).collect(Collectors.toList());
     }
 
@@ -62,7 +66,7 @@ public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
      * <code>Head</code>
      */
     @Override
-    public ItemStack getItemStack(Head head) {
+    public ItemStack getItemStack(@NonNull Head head) {
         return getItemStack(head, 1);
     }
 
@@ -76,35 +80,46 @@ public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
      * <code>Head</code>
      */
     @Override
-    public ItemStack getItemStack(Head head, int quantity) {
-        val minecraftVersion = MinecraftVersion.getVersion();
+    public ItemStack getItemStack(@NonNull Head head, int quantity) {
         val playerHeadItemStack = new ItemStack(Material.PLAYER_HEAD, quantity);
+        initSkullMeta(playerHeadItemStack, head.getName());
+        return initNbtData(head, playerHeadItemStack);
+    }
+
+    private void initSkullMeta(ItemStack playerHeadItemStack, String displayName) {
         val headSkullMeta = Optional.ofNullable((SkullMeta) playerHeadItemStack.getItemMeta());
         headSkullMeta.ifPresent((meta) -> {
             meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5")));
-            meta.setDisplayName(head.getName());
+            meta.setDisplayName(displayName);
             playerHeadItemStack.setItemMeta(meta);
         });
+    }
+
+    private ItemStack initNbtData(Head head, ItemStack playerHeadItemStack) {
         val nbtItem = nbtService.getNbtItem(playerHeadItemStack);
+        setDisplayName(nbtItem, head.getName());
+        setSkullOwner(nbtItem, head);
+        return nbtItem.getItem();
+    }
+
+    private void setDisplayName(NBTItem nbtItem, String displayName) {
         val displayCompound = nbtItem.addCompound("display");
-        displayCompound.setString("Name", "\"" + head.getName() + "\"");
+        displayCompound.setString("Name", "\"" + displayName + "\"");
+    }
 
+    private void setSkullOwner(NBTItem nbtItem, Head head) {
+        val idIntArray = headUtils.getIntArrayFromUuid(head.getHeadOwner());
         val skullOwnerCompound = nbtItem.addCompound("SkullOwner");
-
-        // Fix for 1.16 and newer, because UUIDs are now stored as an integer array with 4 integers
-        if (minecraftVersion.getVersionId() >= MinecraftVersion.MC1_16_R1.getVersionId()) {
-            val idIntArray = headUtils.getIntArrayFromUuid(head.getHeadOwner());
-            skullOwnerCompound.setIntArray("Id", idIntArray);
-        } else {
-            skullOwnerCompound.setString("Id", head.getHeadOwner().toString());
-        }
-
+        skullOwnerCompound.setIntArray("Id", idIntArray);
         skullOwnerCompound.setString("Name", head.getName());
+        setTextureValueProperty(skullOwnerCompound, head.getValue());
+    }
+
+    private void setTextureValueProperty(NBTCompound skullOwnerCompound, String headValue) {
         val propertiesCompound = skullOwnerCompound.addCompound("Properties");
         val texturesCompoundList = propertiesCompound.getCompoundList("textures");
         val textureListCompound = texturesCompoundList.addCompound();
-        textureListCompound.setString("Value", head.getValue());
-
-        return nbtItem.getItem();
+        textureListCompound.setString("Value", headValue);
     }
+
 }
