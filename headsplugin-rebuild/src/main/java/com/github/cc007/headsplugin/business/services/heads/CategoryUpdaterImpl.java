@@ -4,10 +4,10 @@ import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.Profiler;
 import com.github.cc007.headsplugin.api.business.services.heads.CategoryUpdater;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadUpdater;
-import com.github.cc007.headsplugin.api.business.services.heads.HeadUtils;
+import com.github.cc007.headsplugin.api.business.services.heads.utils.CategoryUtils;
+import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
 import com.github.cc007.headsplugin.config.properties.CategoriesProperties;
 import com.github.cc007.headsplugin.integration.daos.interfaces.Categorizable;
-import com.github.cc007.headsplugin.integration.daos.services.CategorizableUtils;
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class CategoryUpdaterImpl implements CategoryUpdater {
 
     private final HeadUpdater headUpdater;
-    private final CategorizableUtils categorizableUtils;
+    private final CategoryUtils categoryUtils;
     private final HeadUtils headUtils;
     private final CategoryRepository categoryRepository;
     private final DatabaseRepository databaseRepository;
@@ -52,7 +52,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
     @Override
     public void updateCategories() {
         profiler.runProfiled(Level.INFO, "Done updating all categories", () -> {
-            val categoryMap = categorizableUtils.getCategoryMap();
+            val categoryMap = categoryUtils.getCategoryMap();
             //noinspection CodeBlock2Expr
             transaction.runTransacted(() -> {
                 updateCategories(categoryMap.keySet());
@@ -63,7 +63,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
     @Override
     public void updateCategoriesIfNecessary() {
         profiler.runProfiled(Level.INFO, "Done updating necessary categories", () -> {
-            val categoryMap = categorizableUtils.getCategoryMap();
+            val categoryMap = categoryUtils.getCategoryMap();
             transaction.runTransacted(() -> {
                 val categoriesToBeUpdated = getCategoriesToBeUpdated(categoryMap.keySet());
                 log.debug("Found categories to be updated: " + categoriesToBeUpdated);
@@ -74,7 +74,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
 
     @Override
     public Collection<String> getUpdatableCategoryNames(boolean necessaryOnly) {
-        Set<String> categoryNames = categorizableUtils.getCategoryMap().keySet();
+        Set<String> categoryNames = categoryUtils.getCategoryMap().keySet();
         return necessaryOnly ? getCategoriesToBeUpdated(categoryNames) : categoryNames;
     }
 
@@ -120,7 +120,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
      * @return the heads for that category, grouped by source
      */
     private Map<String, List<Head>> requestCategoryHeads(String categoryName) {
-        return categorizableUtils.getCategoryMap()
+        return categoryUtils.getCategoryMap()
                 .get(categoryName)
                 .stream()
                 .collect(Collectors.toMap(

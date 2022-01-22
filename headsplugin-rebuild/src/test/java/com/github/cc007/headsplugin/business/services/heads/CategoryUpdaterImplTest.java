@@ -3,10 +3,11 @@ package com.github.cc007.headsplugin.business.services.heads;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.Profiler;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadUpdater;
-import com.github.cc007.headsplugin.api.business.services.heads.HeadUtils;
+import com.github.cc007.headsplugin.api.business.services.heads.utils.CategoryUtils;
+import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
+import com.github.cc007.headsplugin.business.services.heads.utils.HeadUtilsImpl;
 import com.github.cc007.headsplugin.config.properties.CategoriesProperties;
 import com.github.cc007.headsplugin.integration.daos.interfaces.Categorizable;
-import com.github.cc007.headsplugin.integration.daos.services.CategorizableUtils;
 import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
 import com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
@@ -51,7 +52,7 @@ class CategoryUpdaterImplTest {
     HeadUpdater headUpdater;
 
     @Mock
-    CategorizableUtils categorizableUtils;
+    CategoryUtils categoryUtils;
 
     @Spy
     HeadUtils headUtils = new HeadUtilsImpl();
@@ -104,7 +105,7 @@ class CategoryUpdaterImplTest {
             return null;
         }).when(transaction).runTransacted(isA(Runnable.class));
 
-        when(categorizableUtils.getCategoryMap())
+        when(categoryUtils.getCategoryMap())
                 .thenReturn(categoryMap);
 
         when(testCategorizable11.getSource())
@@ -148,7 +149,7 @@ class CategoryUpdaterImplTest {
         verifyNoMoreInteractions(testCategorizable11, testCategorizable12, testCategorizable21);
         verifyNoMoreInteractions(testHeadEntity1, testHeadEntity2);
         verifyNoMoreInteractions(testCategoryEntity, testDatabaseEntity1, testDatabaseEntity2);
-        verifyNoMoreInteractions(transaction, categorizableUtils, headUpdater, categoryRepository, databaseRepository);
+        verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository);
     }
 
     @Test
@@ -174,7 +175,7 @@ class CategoryUpdaterImplTest {
             return null;
         }).when(transaction).runTransacted(isA(Runnable.class));
 
-        when(categorizableUtils.getCategoryMap())
+        when(categoryUtils.getCategoryMap())
                 .thenReturn(categoryMap);
 
         when(testCategorizable11.getSource())
@@ -192,7 +193,7 @@ class CategoryUpdaterImplTest {
 
         // verify
         verifyNoMoreInteractions(testCategorizable11, testCategorizable12, testCategorizable21);
-        verifyNoMoreInteractions(transaction, categorizableUtils, headUpdater, categoryRepository, databaseRepository);
+        verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository);
     }
 
     @Test
@@ -211,14 +212,14 @@ class CategoryUpdaterImplTest {
             return null;
         }).when(transaction).runTransacted(isA(Runnable.class));
 
-        when(categorizableUtils.getCategoryMap())
+        when(categoryUtils.getCategoryMap())
                 .thenReturn(categoryMap);
 
         // execute
         categoryUpdater.updateCategory(testCategoryName1);
 
         // verify
-        verifyNoMoreInteractions(transaction, categorizableUtils, headUpdater, categoryRepository, databaseRepository);
+        verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository);
     }
 
     @Test
@@ -256,7 +257,7 @@ class CategoryUpdaterImplTest {
         }).when(profiler).runProfiled(eq(Level.INFO), isA(String.class), isA(Runnable.class));
 
         //noinspection unchecked
-        when(categorizableUtils.getCategoryMap())
+        when(categoryUtils.getCategoryMap())
                 .thenReturn(categoryMap, categoryMap);
 
         doAnswer(invocation -> {
@@ -323,7 +324,7 @@ class CategoryUpdaterImplTest {
         verifyNoMoreInteractions(testHeadEntity1, testHeadEntity2);
         verifyNoMoreInteractions(testCategoryEntity1, testCategoryEntity2);
         verifyNoMoreInteractions(testDatabaseEntity11, testDatabaseEntity12, testDatabaseEntity21);
-        verifyNoMoreInteractions(transaction, categorizableUtils, headUpdater, categoryRepository, databaseRepository);
+        verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository);
     }
 
     @Test
@@ -351,7 +352,7 @@ class CategoryUpdaterImplTest {
         }).when(profiler).runProfiled(eq(Level.INFO), isA(String.class), isA(Runnable.class));
 
         //noinspection unchecked
-        when(categorizableUtils.getCategoryMap())
+        when(categoryUtils.getCategoryMap())
                 .thenReturn(categoryMap, categoryMap);
 
         doAnswer(invocation -> {
@@ -378,7 +379,7 @@ class CategoryUpdaterImplTest {
 
         // verify
         verifyNoMoreInteractions(testCategorizable11, testCategorizable12, testCategorizable21);
-        verifyNoMoreInteractions(transaction, categorizableUtils, headUpdater, categoryRepository, databaseRepository);
+        verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository);
     }
 
     @Test
@@ -398,7 +399,7 @@ class CategoryUpdaterImplTest {
         }).when(profiler).runProfiled(eq(Level.INFO), isA(String.class), isA(Runnable.class));
 
         //noinspection unchecked
-        when(categorizableUtils.getCategoryMap())
+        when(categoryUtils.getCategoryMap())
                 .thenReturn(categoryMap, categoryMap);
 
         doAnswer(invocation -> {
@@ -411,7 +412,7 @@ class CategoryUpdaterImplTest {
         categoryUpdater.updateCategories();
 
         // verify
-        verifyNoMoreInteractions(transaction, categorizableUtils, headUpdater, categoryRepository, databaseRepository);
+        verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository);
     }
 
     @Test
@@ -451,7 +452,7 @@ class CategoryUpdaterImplTest {
         }).when(profiler).runProfiled(eq(Level.INFO), isA(String.class), isA(Runnable.class));
 
         //noinspection unchecked
-        when(categorizableUtils.getCategoryMap())
+        when(categoryUtils.getCategoryMap())
                 .thenReturn(categoryMap, categoryMap);
 
         doAnswer(invocation -> {
@@ -520,7 +521,7 @@ class CategoryUpdaterImplTest {
         verifyNoMoreInteractions(testDatabaseEntity1, testDatabaseEntity2);
         verifyNoMoreInteractions(
                 transaction,
-                categorizableUtils,
+                categoryUtils,
                 headUpdater,
                 categoryRepository,
                 databaseRepository,
@@ -559,7 +560,7 @@ class CategoryUpdaterImplTest {
         }).when(profiler).runProfiled(eq(Level.INFO), isA(String.class), isA(Runnable.class));
 
         //noinspection unchecked
-        when(categorizableUtils.getCategoryMap())
+        when(categoryUtils.getCategoryMap())
                 .thenReturn(categoryMap, categoryMap);
 
         doAnswer(invocation -> {
@@ -605,7 +606,7 @@ class CategoryUpdaterImplTest {
         verifyNoMoreInteractions(testCategoryEntity1, testCategoryEntity2);
         verifyNoMoreInteractions(
                 transaction,
-                categorizableUtils,
+                categoryUtils,
                 headUpdater,
                 categoryRepository,
                 databaseRepository,
@@ -637,7 +638,7 @@ class CategoryUpdaterImplTest {
         }).when(profiler).runProfiled(eq(Level.INFO), isA(String.class), isA(Runnable.class));
 
         //noinspection unchecked
-        when(categorizableUtils.getCategoryMap())
+        when(categoryUtils.getCategoryMap())
                 .thenReturn(categoryMap, categoryMap);
 
         doAnswer(invocation -> {
@@ -672,7 +673,7 @@ class CategoryUpdaterImplTest {
         verifyNoMoreInteractions(testCategoryEntity1, testCategoryEntity2);
         verifyNoMoreInteractions(
                 transaction,
-                categorizableUtils,
+                categoryUtils,
                 headUpdater,
                 categoryRepository,
                 databaseRepository,
@@ -692,14 +693,14 @@ class CategoryUpdaterImplTest {
         categoryMap.put(testCategoryName1, Collections.singleton(testCategorizable1));
         categoryMap.put(testCategoryName2, Collections.singleton(testCategorizable2));
 
-        when(categorizableUtils.getCategoryMap())
+        when(categoryUtils.getCategoryMap())
                 .thenReturn(categoryMap);
 
         // execute
         val actual = categoryUpdater.getUpdatableCategoryNames(false);
 
         // verify
-        verifyNoMoreInteractions(categorizableUtils);
+        verifyNoMoreInteractions(categoryUtils);
         assertThat(actual, containsInAnyOrder(testCategoryName1, testCategoryName2));
     }
 
@@ -724,7 +725,7 @@ class CategoryUpdaterImplTest {
 
         when(categoriesProperties.getUpdate())
                 .thenReturn(categoryUpdateProperties);
-        when(categorizableUtils.getCategoryMap())
+        when(categoryUtils.getCategoryMap())
                 .thenReturn(categoryMap);
 
         when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
@@ -747,7 +748,7 @@ class CategoryUpdaterImplTest {
         val actual = categoryUpdater.getUpdatableCategoryNames(true);
 
         // verify
-        verifyNoMoreInteractions(categorizableUtils, categoryRepository, categoriesProperties);
+        verifyNoMoreInteractions(categoryUtils, categoryRepository, categoriesProperties);
         verifyNoMoreInteractions(testCategoryEntity1, testCategoryEntity2);
         assertThat(actual, contains(testCategoryName1));
     }

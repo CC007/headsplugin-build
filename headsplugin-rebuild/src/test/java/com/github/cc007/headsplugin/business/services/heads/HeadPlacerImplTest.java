@@ -1,8 +1,9 @@
 package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
-import com.github.cc007.headsplugin.api.business.services.heads.HeadUtils;
+import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
 import com.github.cc007.headsplugin.business.services.NbtService;
+import com.github.cc007.headsplugin.business.services.heads.utils.HeadUtilsImpl;
 
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTContainer;

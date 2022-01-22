@@ -2,7 +2,7 @@ package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadUpdater;
-import com.github.cc007.headsplugin.api.business.services.heads.HeadUtils;
+import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;

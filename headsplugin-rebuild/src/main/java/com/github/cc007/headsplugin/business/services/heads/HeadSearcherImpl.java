@@ -4,7 +4,7 @@ import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.Profiler;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadSearcher;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadUpdater;
-import com.github.cc007.headsplugin.api.business.services.heads.HeadUtils;
+import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
 import com.github.cc007.headsplugin.config.properties.HeadspluginProperties;
 import com.github.cc007.headsplugin.integration.daos.interfaces.DatabaseClientDao;
 import com.github.cc007.headsplugin.integration.daos.interfaces.Searchable;
