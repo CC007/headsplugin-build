@@ -1,4 +1,4 @@
-package com.github.cc007.headsplugin.integration.daos.services.impl;
+package com.github.cc007.headsplugin.business.services.heads.utils;
 
 import com.github.cc007.headsplugin.integration.daos.interfaces.Categorizable;
 
@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -23,13 +23,13 @@ import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CategorizableUtilsImplTest {
+class CategoryUtilsImplTest {
 
     @Mock
-    List<Categorizable> categorizables;
+    Set<Categorizable> categorizables;
 
     @InjectMocks
-    CategorizableUtilsImpl categorizableUtils;
+    CategoryUtilsImpl categorizableUtils;
 
     @Test
     void getCategoryMap() {
