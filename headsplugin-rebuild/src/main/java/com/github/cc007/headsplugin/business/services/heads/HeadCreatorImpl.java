@@ -16,12 +16,13 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @ExtensionMethod(OptionalUtils.class)
 public class HeadCreatorImpl implements HeadCreator {
 
-    private final List<Creatable> creatables;
+    private final Set<Creatable> creatables;
     private final HeadUpdater headUpdater;
     private final DatabaseRepository databaseRepository;
     private final Transaction transaction;

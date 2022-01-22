@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
 class HeadSearcherImplTest {
 
     @Mock
-    List<Searchable> searchables;
+    Set<Searchable> searchables;
 
     @Mock
     HeadUpdater headUpdater;
