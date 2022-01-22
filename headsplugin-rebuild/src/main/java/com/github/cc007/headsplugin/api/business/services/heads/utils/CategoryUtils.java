@@ -1,11 +1,11 @@
-package com.github.cc007.headsplugin.integration.daos.services;
+package com.github.cc007.headsplugin.api.business.services.heads.utils;
 
 import com.github.cc007.headsplugin.integration.daos.interfaces.Categorizable;
 
 import java.util.Map;
 import java.util.Set;
 
-public interface CategorizableUtils {
+public interface CategoryUtils {
 
     /**
      * Get a map with category names as keys and a set of {@link Categorizable}s as values for those keys.

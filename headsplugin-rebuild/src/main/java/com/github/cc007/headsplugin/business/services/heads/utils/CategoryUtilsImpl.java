@@ -1,21 +1,20 @@
-package com.github.cc007.headsplugin.integration.daos.services.impl;
+package com.github.cc007.headsplugin.business.services.heads.utils;
 
+import com.github.cc007.headsplugin.api.business.services.heads.utils.CategoryUtils;
 import com.github.cc007.headsplugin.integration.daos.interfaces.Categorizable;
-import com.github.cc007.headsplugin.integration.daos.services.CategorizableUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class CategorizableUtilsImpl implements CategorizableUtils {
+public class CategoryUtilsImpl implements CategoryUtils {
 
-    private final List<Categorizable> categorizables;
+    private final Set<Categorizable> categorizables;
 
     private Map<String, Set<Categorizable>> categoryMap;
 
