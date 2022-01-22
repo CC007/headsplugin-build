@@ -1,7 +1,7 @@
-package com.github.cc007.headsplugin.business.services.heads;
+package com.github.cc007.headsplugin.business.services.heads.utils;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
-import com.github.cc007.headsplugin.api.business.services.heads.HeadUtils;
+import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
 
 import lombok.NonNull;
 import lombok.val;

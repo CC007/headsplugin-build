@@ -1,4 +1,4 @@
-package com.github.cc007.headsplugin.api.business.services.heads;
+package com.github.cc007.headsplugin.api.business.services.heads.utils;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 
