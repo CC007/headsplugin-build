@@ -18,7 +18,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -82,9 +81,9 @@ class HeadUpdaterImplTest {
         newHeadEntity4.setHeadOwner(headOwner4.toString());
 
 
-        List<HeadEntity> storedHeads = new ArrayList<>(Arrays.asList(headEntity1, headEntity2));
+        List<HeadEntity> storedHeads = new ArrayList<>(List.of(headEntity1, headEntity2));
 
-        Collection<Head> foundHeads = Arrays.asList(head1, head2, head2, head3, head4, head4);
+        Collection<Head> foundHeads = List.of(head1, head2, head2, head3, head4, head4);
 
         when(transaction.runTransacted(isA(Supplier.class)))
                 .thenAnswer(invocation -> {
@@ -96,7 +95,7 @@ class HeadUpdaterImplTest {
                 .thenCallRealMethod();
 
         when(headRepository.findAllHeadOwnersByHeadOwnerIn(headOwnerCaptor1.capture()))
-                .thenReturn(Arrays.asList(
+                .thenReturn(List.of(
                         headOwner1.toString(),
                         headOwner2.toString()
                 ));

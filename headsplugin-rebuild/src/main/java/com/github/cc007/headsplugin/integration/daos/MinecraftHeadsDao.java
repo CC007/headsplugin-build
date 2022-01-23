@@ -14,7 +14,6 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.Transformer;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,7 +51,7 @@ public class MinecraftHeadsDao implements PredefinedCategorizable {
 
     @Override
     public List<String> getCategoryNames() {
-        return Arrays.asList(
+        return List.of(
                 "alphabet",
                 "animals",
                 "blocks",

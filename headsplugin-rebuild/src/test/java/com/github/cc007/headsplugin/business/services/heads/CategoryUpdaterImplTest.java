@@ -26,10 +26,9 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -87,17 +86,18 @@ class CategoryUpdaterImplTest {
         val testSource2 = "Source2";
         val testHead1 = Head.builder().name("Head1").build();
         val testHead2 = Head.builder().name("Head2").build();
-        val testHeads11 = Arrays.asList(testHead1, testHead2);
-        val testHeads12 = Collections.singletonList(testHead1);
+        val testHeads11 = List.of(testHead1, testHead2);
+        val testHeads12 = List.of(testHead1);
         val testCategoryEntity = Mockito.mock(CategoryEntity.class);
         val testHeadEntity1 = Mockito.mock(HeadEntity.class);
         val testHeadEntity2 = Mockito.mock(HeadEntity.class);
         val testDatabaseEntity1 = Mockito.mock(DatabaseEntity.class);
         val testDatabaseEntity2 = Mockito.mock(DatabaseEntity.class);
 
-        val categoryMap = new HashMap<String, Set<Categorizable>>();
-        categoryMap.put(testCategoryName1, new HashSet<>(Arrays.asList(testCategorizable11, testCategorizable12)));
-        categoryMap.put(testCategoryName2, Collections.singleton(testCategorizable21));
+        val categoryMap = Map.ofEntries(
+                Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
+                Map.entry(testCategoryName2, Set.of(testCategorizable21))
+        );
 
         doAnswer(invocation -> {
             Runnable runnable = invocation.getArgument(0);
@@ -121,9 +121,9 @@ class CategoryUpdaterImplTest {
                 .thenReturn(testCategoryEntity);
 
         when(headUpdater.updateHeads(testHeads11))
-                .thenReturn(Arrays.asList(testHeadEntity1, testHeadEntity2));
+                .thenReturn(List.of(testHeadEntity1, testHeadEntity2));
         when(headUpdater.updateHeads(testHeads12))
-                .thenReturn(Collections.singletonList(testHeadEntity1));
+                .thenReturn(List.of(testHeadEntity1));
 
         when(databaseRepository.findByOrCreateFromName(testSource1))
                 .thenReturn(testDatabaseEntity1);
@@ -165,9 +165,10 @@ class CategoryUpdaterImplTest {
         val testHead1 = Head.builder().name("Head1").build();
         val testHead2 = Head.builder().name("Head2").build();
 
-        val categoryMap = new HashMap<String, Set<Categorizable>>();
-        categoryMap.put(testCategoryName1, new HashSet<>(Arrays.asList(testCategorizable11, testCategorizable12)));
-        categoryMap.put(testCategoryName2, Collections.singleton(testCategorizable21));
+        val categoryMap = Map.ofEntries(
+                Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
+                Map.entry(testCategoryName2, Set.of(testCategorizable21))
+        );
 
         doAnswer(invocation -> {
             Runnable runnable = invocation.getArgument(0);
@@ -202,9 +203,10 @@ class CategoryUpdaterImplTest {
         val testCategoryName1 = "CategoryName1";
         val testCategoryName2 = "CategoryName2";
 
-        val categoryMap = new HashMap<String, Set<Categorizable>>();
-        categoryMap.put(testCategoryName1, Collections.emptySet());
-        categoryMap.put(testCategoryName2, Collections.emptySet());
+        val categoryMap = Map.ofEntries(
+                Map.entry(testCategoryName1, Collections.<Categorizable>emptySet()),
+                Map.entry(testCategoryName2, Collections.<Categorizable>emptySet())
+        );
 
         doAnswer(invocation -> {
             Runnable runnable = invocation.getArgument(0);
@@ -235,9 +237,9 @@ class CategoryUpdaterImplTest {
         val testSource21 = "Source21";
         val testHead1 = Head.builder().name("Head1").build();
         val testHead2 = Head.builder().name("Head2").build();
-        val testHeads11 = Arrays.asList(testHead1, testHead2);
-        val testHeads12 = Collections.singletonList(testHead1);
-        val testHeads21 = Collections.singletonList(testHead2);
+        val testHeads11 = List.of(testHead1, testHead2);
+        val testHeads12 = List.of(testHead1);
+        val testHeads21 = List.of(testHead2);
         val testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
         val testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
         val testHeadEntity1 = Mockito.mock(HeadEntity.class);
@@ -246,9 +248,10 @@ class CategoryUpdaterImplTest {
         val testDatabaseEntity12 = Mockito.mock(DatabaseEntity.class);
         val testDatabaseEntity21 = Mockito.mock(DatabaseEntity.class);
 
-        val categoryMap = new HashMap<String, Set<Categorizable>>();
-        categoryMap.put(testCategoryName1, new HashSet<>(Arrays.asList(testCategorizable11, testCategorizable12)));
-        categoryMap.put(testCategoryName2, Collections.singleton(testCategorizable21));
+        val categoryMap = Map.ofEntries(
+                Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
+                Map.entry(testCategoryName2, Set.of(testCategorizable21))
+        );
 
         doAnswer(invocation -> {
             Runnable runnable = invocation.getArgument(2);
@@ -285,11 +288,11 @@ class CategoryUpdaterImplTest {
                 .thenReturn(testCategoryEntity2);
 
         when(headUpdater.updateHeads(testHeads11))
-                .thenReturn(Arrays.asList(testHeadEntity1, testHeadEntity2));
+                .thenReturn(List.of(testHeadEntity1, testHeadEntity2));
         when(headUpdater.updateHeads(testHeads12))
-                .thenReturn(Collections.singletonList(testHeadEntity1));
+                .thenReturn(List.of(testHeadEntity1));
         when(headUpdater.updateHeads(testHeads21))
-                .thenReturn(Collections.singletonList(testHeadEntity2));
+                .thenReturn(List.of(testHeadEntity2));
 
         when(databaseRepository.findByOrCreateFromName(testSource11))
                 .thenReturn(testDatabaseEntity11);
@@ -341,9 +344,10 @@ class CategoryUpdaterImplTest {
         val testHead1 = Head.builder().name("Head1").build();
         val testHead2 = Head.builder().name("Head2").build();
 
-        val categoryMap = new HashMap<String, Set<Categorizable>>();
-        categoryMap.put(testCategoryName1, new HashSet<>(Arrays.asList(testCategorizable11, testCategorizable12)));
-        categoryMap.put(testCategoryName2, Collections.singleton(testCategorizable21));
+        val categoryMap = Map.ofEntries(
+                Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
+                Map.entry(testCategoryName2, Set.of(testCategorizable21))
+        );
 
         doAnswer(invocation -> {
             Runnable runnable = invocation.getArgument(2);
@@ -388,9 +392,10 @@ class CategoryUpdaterImplTest {
         val testCategoryName1 = "CategoryName1";
         val testCategoryName2 = "CategoryName2";
 
-        val categoryMap = new HashMap<String, Set<Categorizable>>();
-        categoryMap.put(testCategoryName1, Collections.emptySet());
-        categoryMap.put(testCategoryName2, Collections.emptySet());
+        val categoryMap = Map.ofEntries(
+                Map.entry(testCategoryName1, Collections.<Categorizable>emptySet()),
+                Map.entry(testCategoryName2, Collections.<Categorizable>emptySet())
+        );
 
         doAnswer(invocation -> {
             Runnable runnable = invocation.getArgument(2);
@@ -427,8 +432,8 @@ class CategoryUpdaterImplTest {
         val testSource2 = "Source2";
         val testHead1 = Head.builder().name("Head1").build();
         val testHead2 = Head.builder().name("Head2").build();
-        val testHeads11 = Arrays.asList(testHead1, testHead2);
-        val testHeads12 = Collections.singletonList(testHead1);
+        val testHeads11 = List.of(testHead1, testHead2);
+        val testHeads12 = List.of(testHead1);
         val testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
         val testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
         val testHeadEntity1 = Mockito.mock(HeadEntity.class);
@@ -438,9 +443,10 @@ class CategoryUpdaterImplTest {
         val testLastUpdated1 = LocalDateTime.now().minusHours(6);
         val testLastUpdated2 = LocalDateTime.now().minusHours(2);
 
-        val categoryMap = new HashMap<String, Set<Categorizable>>();
-        categoryMap.put(testCategoryName1, new HashSet<>(Arrays.asList(testCategorizable11, testCategorizable12)));
-        categoryMap.put(testCategoryName2, Collections.singleton(testCategorizable21));
+        val categoryMap = Map.ofEntries(
+                Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
+                Map.entry(testCategoryName2, Set.of(testCategorizable21))
+        );
 
         val categoryUpdateProperties = new CategoriesProperties.Update();
         categoryUpdateProperties.setInterval(4);
@@ -490,9 +496,9 @@ class CategoryUpdaterImplTest {
                 .thenReturn(testHeads12);
 
         when(headUpdater.updateHeads(testHeads11))
-                .thenReturn(Arrays.asList(testHeadEntity1, testHeadEntity2));
+                .thenReturn(List.of(testHeadEntity1, testHeadEntity2));
         when(headUpdater.updateHeads(testHeads12))
-                .thenReturn(Collections.singletonList(testHeadEntity1));
+                .thenReturn(List.of(testHeadEntity1));
 
         when(databaseRepository.findByOrCreateFromName(testSource1))
                 .thenReturn(testDatabaseEntity1);
@@ -546,9 +552,10 @@ class CategoryUpdaterImplTest {
         val testLastUpdated1 = LocalDateTime.now().minusHours(6);
         val testLastUpdated2 = LocalDateTime.now().minusHours(2);
 
-        val categoryMap = new HashMap<String, Set<Categorizable>>();
-        categoryMap.put(testCategoryName1, new HashSet<>(Arrays.asList(testCategorizable11, testCategorizable12)));
-        categoryMap.put(testCategoryName2, Collections.singleton(testCategorizable21));
+        val categoryMap = Map.ofEntries(
+                Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
+                Map.entry(testCategoryName2, Set.of(testCategorizable21))
+        );
 
         val categoryUpdateProperties = new CategoriesProperties.Update();
         categoryUpdateProperties.setInterval(4);
@@ -624,9 +631,10 @@ class CategoryUpdaterImplTest {
         val testLastUpdated1 = LocalDateTime.now().minusHours(6);
         val testLastUpdated2 = LocalDateTime.now().minusHours(2);
 
-        val categoryMap = new HashMap<String, Set<Categorizable>>();
-        categoryMap.put(testCategoryName1, Collections.emptySet());
-        categoryMap.put(testCategoryName2, Collections.emptySet());
+        val categoryMap = Map.ofEntries(
+                Map.entry(testCategoryName1, Collections.<Categorizable>emptySet()),
+                Map.entry(testCategoryName2, Collections.<Categorizable>emptySet())
+        );
 
         val categoryUpdateProperties = new CategoriesProperties.Update();
         categoryUpdateProperties.setInterval(4);
@@ -689,9 +697,10 @@ class CategoryUpdaterImplTest {
         val testCategorizable1 = Mockito.mock(Categorizable.class);
         val testCategorizable2 = Mockito.mock(Categorizable.class);
 
-        val categoryMap = new HashMap<String, Set<Categorizable>>();
-        categoryMap.put(testCategoryName1, Collections.singleton(testCategorizable1));
-        categoryMap.put(testCategoryName2, Collections.singleton(testCategorizable2));
+        val categoryMap = Map.ofEntries(
+                Map.entry(testCategoryName1, Set.of(testCategorizable1)),
+                Map.entry(testCategoryName2, Set.of(testCategorizable2))
+        );
 
         when(categoryUtils.getCategoryMap())
                 .thenReturn(categoryMap);
@@ -716,9 +725,10 @@ class CategoryUpdaterImplTest {
         val testLastUpdated1 = LocalDateTime.now().minusHours(6);
         val testLastUpdated2 = LocalDateTime.now().minusHours(2);
 
-        val categoryMap = new HashMap<String, Set<Categorizable>>();
-        categoryMap.put(testCategoryName1, Collections.singleton(testCategorizable1));
-        categoryMap.put(testCategoryName2, Collections.singleton(testCategorizable2));
+        val categoryMap = Map.ofEntries(
+                Map.entry(testCategoryName1, Set.of(testCategorizable1)),
+                Map.entry(testCategoryName2, Set.of(testCategorizable2))
+        );
 
         val categoryUpdateProperties = new CategoriesProperties.Update();
         categoryUpdateProperties.setInterval(4);

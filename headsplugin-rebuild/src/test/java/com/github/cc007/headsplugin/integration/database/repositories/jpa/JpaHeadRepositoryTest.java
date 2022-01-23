@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -88,7 +88,7 @@ class JpaHeadRepositoryTest {
             val headRepository = headsPluginComponent.headRepository();
 
             // execute
-            val actual = headRepository.findAllByHeadOwnerIn(Arrays.asList(
+            val actual = headRepository.findAllByHeadOwnerIn(List.of(
                     headOwner1_2,
                     headOwner2_1,
                     UUID.randomUUID().toString()
@@ -106,7 +106,7 @@ class JpaHeadRepositoryTest {
             val headRepository = headsPluginComponent.headRepository();
 
             // execute
-            val actual = headRepository.findAllHeadOwnersByHeadOwnerIn(Arrays.asList(
+            val actual = headRepository.findAllHeadOwnersByHeadOwnerIn(List.of(
                     headOwner1_2,
                     headOwner2_1,
                     UUID.randomUUID().toString()
@@ -126,7 +126,7 @@ class JpaHeadRepositoryTest {
             // execute
             val actual = headRepository.findAllByDatabases_NameAndHeadOwnerIn(
                     "Database2",
-                    Arrays.asList(
+                    List.of(
                             headOwner1_2,
                             headOwner2_1,
                             UUID.randomUUID().toString()

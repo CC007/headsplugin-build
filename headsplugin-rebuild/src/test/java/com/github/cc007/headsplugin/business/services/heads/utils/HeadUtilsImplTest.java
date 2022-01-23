@@ -7,7 +7,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -30,7 +29,7 @@ class HeadUtilsImplTest {
         val head2_1 = Head.builder().name("Head2_1").headOwner(UUID.randomUUID()).build();
         val head2_2 = Head.builder().name("Head2_2").headOwner(UUID.randomUUID()).build();
 
-        val heads = Arrays.asList(head1_1, head1_2, head2_1, head2_2);
+        val heads = List.of(head1_1, head1_2, head2_1, head2_2);
 
         // execute
         val actual = headUtils.getHeadOwnerStrings(heads);

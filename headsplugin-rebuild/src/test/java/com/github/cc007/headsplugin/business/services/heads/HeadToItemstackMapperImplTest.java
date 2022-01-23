@@ -25,8 +25,8 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -84,7 +84,7 @@ class HeadToItemstackMapperImplTest {
                 .when(headToItemstackMapper).getItemStack(head2, 1);
 
         // execute
-        val actual = headToItemstackMapper.getItemStacks(Arrays.asList(head1, head2));
+        val actual = headToItemstackMapper.getItemStacks(List.of(head1, head2));
 
         // verify
         verify(headToItemstackMapper).getItemStack(head1, 1);
@@ -137,7 +137,7 @@ class HeadToItemstackMapperImplTest {
                 .when(headToItemstackMapper).getItemStack(head2, 42);
 
         // execute
-        val actual = headToItemstackMapper.getItemStacks(Arrays.asList(head1, head2), 42);
+        val actual = headToItemstackMapper.getItemStacks(List.of(head1, head2), 42);
 
         // verify
         verify(headToItemstackMapper).getItemStack(head1, 42);

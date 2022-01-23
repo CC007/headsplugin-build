@@ -7,8 +7,7 @@ import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -42,9 +41,7 @@ class HeadEntityToHeadMapperTest {
                 HeadEntity.class,
                 "databases",
                 headEntity,
-                new HashSet<>(Arrays.asList(
-                        databaseEntity1, databaseEntity2
-                ))
+                Set.of(databaseEntity1, databaseEntity2)
         );
 
         // execute

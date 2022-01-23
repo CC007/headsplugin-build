@@ -10,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,14 +33,14 @@ class CategorizableTest {
         val testCategoryHead31 = Head.builder().name("CategoryHead31").build();
 
         when(categorizable.getCategoryNames())
-                .thenReturn(Arrays.asList(testCategoryName1, testCategoryName2, testCategoryName3));
+                .thenReturn(List.of(testCategoryName1, testCategoryName2, testCategoryName3));
 
         when(categorizable.getCategoryHeads(testCategoryName1))
-                .thenReturn(Arrays.asList(testCategoryHead11, testCategoryHead12));
+                .thenReturn(List.of(testCategoryHead11, testCategoryHead12));
         when(categorizable.getCategoryHeads(testCategoryName2))
                 .thenReturn(Collections.emptyList());
         when(categorizable.getCategoryHeads(testCategoryName3))
-                .thenReturn(Collections.singletonList(testCategoryHead31));
+                .thenReturn(List.of(testCategoryHead31));
 
         // execute
         val actual = categorizable.getAllCategoryHeads();
@@ -58,12 +57,12 @@ class CategorizableTest {
         val testCategoryHeadShared = Head.builder().name("CategoryHeadShared").build();
 
         when(categorizable.getCategoryNames())
-                .thenReturn(Arrays.asList(testCategoryName1, testCategoryName2));
+                .thenReturn(List.of(testCategoryName1, testCategoryName2));
 
         when(categorizable.getCategoryHeads(testCategoryName1))
-                .thenReturn(Collections.singletonList(testCategoryHeadShared));
+                .thenReturn(List.of(testCategoryHeadShared));
         when(categorizable.getCategoryHeads(testCategoryName2))
-                .thenReturn(Collections.singletonList(testCategoryHeadShared));
+                .thenReturn(List.of(testCategoryHeadShared));
 
         // execute
         val actual = categorizable.getAllCategoryHeads();

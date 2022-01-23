@@ -16,7 +16,6 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.Transformer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,7 +53,7 @@ public class FreshCoalDao implements PredefinedCategorizable, Searchable {
 
     @Override
     public List<String> getCategoryNames() {
-        return Arrays.asList(
+        return List.of(
                 "food",
                 "devices",
                 "misc",

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,7 +32,7 @@ class SearchableTest {
         val expected = Head.builder().name("expected").build();
 
         when(searchable.getHeads(testSearchTerm))
-                .thenReturn(Collections.singletonList(expected));
+                .thenReturn(List.of(expected));
 
         // execute
         val actual = searchable.getFirstHead(testSearchTerm);
@@ -51,7 +50,7 @@ class SearchableTest {
         val third = Head.builder().name("third").build();
 
         when(searchable.getHeads(testSearchTerm))
-                .thenReturn(Arrays.asList(expected, second, third));
+                .thenReturn(List.of(expected, second, third));
 
         // execute
         val actual = searchable.getFirstHead(testSearchTerm);

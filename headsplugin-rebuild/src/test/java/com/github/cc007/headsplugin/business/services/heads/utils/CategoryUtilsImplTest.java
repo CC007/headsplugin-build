@@ -10,8 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,10 +38,10 @@ class CategoryUtilsImplTest {
         val testCategorizable = Mockito.mock(Categorizable.class);
 
         when(categorizables.iterator())
-                .thenReturn(Collections.singletonList(testCategorizable).iterator());
+                .thenReturn(List.of(testCategorizable).iterator());
 
         when(testCategorizable.getCategoryNames())
-                .thenReturn(Arrays.asList(testCategoryName1, testCategoryName2));
+                .thenReturn(List.of(testCategoryName1, testCategoryName2));
 
         // execute
         val actual1 = categorizableUtils.getCategoryMap();
@@ -67,15 +66,15 @@ class CategoryUtilsImplTest {
         //noinspection unchecked
         when(categorizables.iterator())
                 .thenReturn(
-                        Collections.singletonList(testCategorizable).iterator(),
-                        Collections.singletonList(testCategorizable).iterator()
+                        List.of(testCategorizable).iterator(),
+                        List.of(testCategorizable).iterator()
                 );
 
         //noinspection unchecked
         when(testCategorizable.getCategoryNames())
                 .thenReturn(
-                        Arrays.asList(testCategoryName1, testCategoryName2),
-                        Arrays.asList(testCategoryName2, testCategoryName3)
+                        List.of(testCategoryName1, testCategoryName2),
+                        List.of(testCategoryName2, testCategoryName3)
                 );
 
         // execute
@@ -105,12 +104,12 @@ class CategoryUtilsImplTest {
         val testCategorizable2 = Mockito.mock(Categorizable.class);
 
         when(categorizables.iterator())
-                .thenReturn(Arrays.asList(testCategorizable1, testCategorizable2).iterator());
+                .thenReturn(List.of(testCategorizable1, testCategorizable2).iterator());
 
         when(testCategorizable1.getCategoryNames())
-                .thenReturn(Arrays.asList(testCategoryName1, testCategoryName2));
+                .thenReturn(List.of(testCategoryName1, testCategoryName2));
         when(testCategorizable2.getCategoryNames())
-                .thenReturn(Arrays.asList(testCategoryName2, testCategoryName3));
+                .thenReturn(List.of(testCategoryName2, testCategoryName3));
 
         // execute
         val actual = categorizableUtils.getCategoryMap();

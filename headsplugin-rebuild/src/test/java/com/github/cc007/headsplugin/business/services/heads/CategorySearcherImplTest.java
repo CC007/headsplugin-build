@@ -17,8 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -74,7 +73,7 @@ class CategorySearcherImplTest {
                 });
 
         when(categoryRepository.findAll())
-                .thenReturn(Arrays.asList(testCategoryEntity1, testCategoryEntity2));
+                .thenReturn(List.of(testCategoryEntity1, testCategoryEntity2));
 
         when(categoryEntityToCategoryMapper.transform(testCategoryEntity1))
                 .thenReturn(testCategory1);
@@ -110,7 +109,7 @@ class CategorySearcherImplTest {
                 .thenReturn(Optional.of(testCategoryEntity));
 
         when(testCategoryEntity.getHeads())
-                .thenReturn(new HashSet<>(Arrays.asList(testHeadEntity1, testHeadEntity2)));
+                .thenReturn(Set.of(testHeadEntity1, testHeadEntity2));
 
         when(headEntityToHeadMapper.transform(testHeadEntity1))
                 .thenReturn(testHead1);

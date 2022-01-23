@@ -7,8 +7,7 @@ import com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -37,9 +36,7 @@ class CategoryEntityToCategoryMapperTest {
                 CategoryEntity.class,
                 "databases",
                 categoryEntity,
-                new HashSet<>(Arrays.asList(
-                        databaseEntity1, databaseEntity2
-                ))
+                Set.of(databaseEntity1, databaseEntity2)
         );
 
         // execute
