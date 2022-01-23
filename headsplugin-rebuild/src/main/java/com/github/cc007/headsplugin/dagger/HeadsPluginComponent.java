@@ -41,4 +41,6 @@ public interface HeadsPluginComponent extends HeadsPluginServices {
     EntityManager entityManager();
 
     Transaction transaction();
+
+    //StartupCategoryUpdater startupCategoryUpdater();
 }
