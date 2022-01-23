@@ -3,6 +3,7 @@ package com.github.cc007.headsplugin.dagger.modules;
 import com.github.cc007.headsplugin.HeadsPlugin;
 import com.github.cc007.headsplugin.config.properties.CategoriesProperties;
 import com.github.cc007.headsplugin.config.properties.ConfigProperties;
+import com.github.cc007.headsplugin.config.properties.HeadspluginProperties;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,13 +14,13 @@ import javax.inject.Singleton;
 import java.util.Optional;
 
 @Module
-public abstract class HeadsPluginModule {
+public abstract class ConfigModule {
 
     @Provides
     @Singleton
     static HeadsPlugin provideHeadsPlugin() {
         Optional<HeadsPlugin> headsPluginOptional = HeadsPlugin.getPlugin();
-        if (!headsPluginOptional.isPresent()) {
+        if (headsPluginOptional.isEmpty()) {
             throw new IllegalStateException("HeadsPluginAPI has not been enabled yet");
         }
         return headsPluginOptional.get();
@@ -36,43 +37,13 @@ public abstract class HeadsPluginModule {
 
     @Provides
     @Singleton
-    static CategoriesProperties provideCategoriesProperties(ConfigProperties configProperties) {
-        return configProperties.getHeadsplugin().getCategories();
+    static HeadspluginProperties provideHeadspluginProperties(ConfigProperties configProperties) {
+        return configProperties.getHeadsplugin();
     }
 
-//
-//    @Binds
-//    public abstract HeadCreator bindHeadCreator(HeadCreatorImpl headCreatorImpl);
-//
-//    @Provides
-//    @ElementsIntoSet
-//    public static Set<DatabaseSource> provideDatabaseSources(
-//            FreshCoalDao freshCoalDao,
-//            MinecraftHeadsDao minecraftHeadsDao
-//    ) {
-//        return new HashSet<>(Arrays.asList(
-//                freshCoalDao,
-//                minecraftHeadsDao
-//        ));
-//    }
-//
-//    @Provides
-//    @ElementsIntoSet
-//    public static Set<Searchable> provideSearchables(
-//            FreshCoalDao freshCoalDao,
-//            MineSkinDao mineSkinDao
-//    ) {
-//        return new HashSet<>(Arrays.asList(
-//                freshCoalDao,
-//                mineSkinDao
-//        ));
-//    }
-//
-//    @Provides
-//    @ElementsIntoSet
-//    public static Set<Creatable> provideCreatables(MineSkinDao mineSkinDao) {
-//        return new HashSet<>(Collections.singletonList(
-//                mineSkinDao
-//        ));
-//    }
+    @Provides
+    @Singleton
+    static CategoriesProperties provideCategoriesProperties(HeadspluginProperties headspluginProperties) {
+        return headspluginProperties.getCategories();
+    }
 }
