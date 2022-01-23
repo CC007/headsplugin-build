@@ -3,12 +3,13 @@ package com.github.cc007.headsplugin.business.services.heads;
 import com.github.cc007.headsplugin.api.business.domain.Category;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.CategorySearcher;
-import com.github.cc007.headsplugin.integration.database.mappers.from_entity.CategoryEntityToCategoryMapper;
-import com.github.cc007.headsplugin.integration.database.mappers.from_entity.HeadEntityToHeadMapper;
+import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
+import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.Transformer;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,8 +21,8 @@ public class CategorySearcherImpl implements CategorySearcher {
             = "Unknown category specified. Use getCategories() to find possible categories.";
 
     private final CategoryRepository categoryRepository;
-    private final CategoryEntityToCategoryMapper categoryEntityToCategoryMapper;
-    private final HeadEntityToHeadMapper headEntityToHeadMapper;
+    private final Transformer<CategoryEntity, Category> categoryEntityToCategoryMapper;
+    private final Transformer<HeadEntity, Head> headEntityToHeadMapper;
     private final Transaction transaction;
 
     @Override

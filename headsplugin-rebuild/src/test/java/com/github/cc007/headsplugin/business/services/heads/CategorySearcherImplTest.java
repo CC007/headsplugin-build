@@ -4,13 +4,13 @@ import com.github.cc007.headsplugin.api.business.domain.Category;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
-import com.github.cc007.headsplugin.integration.database.mappers.from_entity.CategoryEntityToCategoryMapper;
-import com.github.cc007.headsplugin.integration.database.mappers.from_entity.HeadEntityToHeadMapper;
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
 import lombok.val;
+import org.apache.commons.collections4.Transformer;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,16 +39,25 @@ class CategorySearcherImplTest {
     CategoryRepository categoryRepository;
 
     @Mock
-    CategoryEntityToCategoryMapper categoryEntityToCategoryMapper;
+    Transformer<CategoryEntity, Category> categoryEntityToCategoryMapper;
 
     @Mock
-    HeadEntityToHeadMapper headEntityToHeadMapper;
+    Transformer<HeadEntity, Head> headEntityToHeadMapper;
 
     @Mock
     Transaction transaction;
 
-    @InjectMocks
     CategorySearcherImpl categorySearcher;
+
+    /**
+     * Use setUp method to create the object under test,
+     * because @{@link InjectMocks} doesn't inject the right Transformer into the right field.
+     * It doesn't take generic type arguments into account.
+     */
+    @BeforeEach
+    void setUp() {
+        categorySearcher = new CategorySearcherImpl(categoryRepository, categoryEntityToCategoryMapper, headEntityToHeadMapper, transaction);
+    }
 
     @Test
     void getCategories() {

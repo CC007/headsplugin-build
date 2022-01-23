@@ -8,8 +8,8 @@ import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
 import com.github.cc007.headsplugin.config.properties.HeadspluginProperties;
 import com.github.cc007.headsplugin.integration.daos.interfaces.DatabaseClientDao;
 import com.github.cc007.headsplugin.integration.daos.interfaces.Searchable;
+import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.entities.SearchEntity;
-import com.github.cc007.headsplugin.integration.database.mappers.from_entity.HeadEntityToHeadMapper;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.SearchRepository;
@@ -19,6 +19,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
+import org.apache.commons.collections4.Transformer;
 import org.apache.logging.log4j.Level;
 
 import java.time.LocalDateTime;
@@ -37,7 +38,7 @@ public class HeadSearcherImpl implements HeadSearcher {
     private final HeadUpdater headUpdater;
     private final HeadUtils headUtils;
 
-    private final HeadEntityToHeadMapper headEntityToHeadMapper;
+    private final Transformer<HeadEntity, Head> headEntityToHeadMapper;
 
     private final HeadRepository headRepository;
     private final SearchRepository searchRepository;

@@ -10,13 +10,13 @@ import com.github.cc007.headsplugin.integration.daos.interfaces.Searchable;
 import com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.entities.SearchEntity;
-import com.github.cc007.headsplugin.integration.database.mappers.from_entity.HeadEntityToHeadMapper;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.SearchRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
 import lombok.val;
+import org.apache.commons.collections4.Transformer;
 import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -63,7 +63,7 @@ class HeadSearcherImplTest {
     HeadUtils headUtils = new HeadUtilsImpl();
 
     @Mock
-    HeadEntityToHeadMapper headEntityToHeadMapper;
+    Transformer<HeadEntity, Head> headEntityToHeadMapper;
 
     @Mock
     HeadRepository headRepository;
