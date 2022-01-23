@@ -1,11 +1,15 @@
 package com.github.cc007.headsplugin.dagger;
 
 import com.github.cc007.headsplugin.api.HeadsPluginServices;
+import com.github.cc007.headsplugin.dagger.modules.ConfigModule;
 import com.github.cc007.headsplugin.dagger.modules.FeignModule;
-import com.github.cc007.headsplugin.dagger.modules.HeadsPluginModule;
-import com.github.cc007.headsplugin.dagger.modules.JpaModule;
-import com.github.cc007.headsplugin.dagger.modules.MapperModule;
 import com.github.cc007.headsplugin.dagger.modules.ServiceModule;
+import com.github.cc007.headsplugin.dagger.modules.api.ApiServiceModule;
+import com.github.cc007.headsplugin.dagger.modules.jpa.EntityModule;
+import com.github.cc007.headsplugin.dagger.modules.jpa.RepositoryModule;
+import com.github.cc007.headsplugin.dagger.modules.source.FreshCoalModule;
+import com.github.cc007.headsplugin.dagger.modules.source.MineSkinModule;
+import com.github.cc007.headsplugin.dagger.modules.source.MinecraftHeadsModule;
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
@@ -20,11 +24,15 @@ import javax.persistence.EntityManager;
 
 @Singleton
 @Component(modules = {
-        HeadsPluginModule.class,
+        ApiServiceModule.class,
+        ConfigModule.class,
         FeignModule.class,
-        JpaModule.class,
+        RepositoryModule.class,
         ServiceModule.class,
-        MapperModule.class
+        EntityModule.class,
+        FreshCoalModule.class,
+        MineSkinModule.class,
+        MinecraftHeadsModule.class
 })
 public interface HeadsPluginComponent extends HeadsPluginServices {
 
