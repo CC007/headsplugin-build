@@ -1,6 +1,6 @@
 package com.github.cc007.headsplugin.dagger.modules;
 
-import com.github.cc007.headsplugin.HeadsPlugin;
+import com.github.cc007.headsplugin.api.HeadsPluginApi;
 import com.github.cc007.headsplugin.config.properties.CategoriesProperties;
 import com.github.cc007.headsplugin.config.properties.ConfigProperties;
 import com.github.cc007.headsplugin.config.properties.HeadspluginProperties;
@@ -21,7 +21,7 @@ public abstract class ConfigModule {
     @Provides
     @Singleton
     static Plugin providePlugin() {
-        Optional<HeadsPlugin> headsPluginOptional = HeadsPlugin.getPlugin();
+        Optional<Plugin> headsPluginOptional = HeadsPluginApi.getPlugin();
         if (headsPluginOptional.isEmpty()) {
             throw new IllegalStateException("HeadsPluginAPI has not been enabled yet");
         }
