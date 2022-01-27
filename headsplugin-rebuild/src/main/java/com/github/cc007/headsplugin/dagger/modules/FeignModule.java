@@ -38,24 +38,14 @@ public abstract class FeignModule {
     @Singleton
     @IntoSet
     static Capability provideStatusCodeHandlerDecoderCapability() {
-        return new Capability() {
-            @Override
-            public Decoder enrich(Decoder decoder) {
-                return new StatusCodeHandlerDecoder(decoder);
-            }
-        };
+        return new StatusCodeHandlerDecoderCapability();
     }
 
     @Provides
     @Singleton
     @IntoSet
     static Capability provideHtmlAwareDecoderCapability() {
-        return new Capability() {
-            @Override
-            public Decoder enrich(Decoder decoder) {
-                return new HtmlAwareDecoder(decoder);
-            }
-        };
+        return new HtmlAwareDecoderCapability();
     }
 
     @Provides
@@ -102,5 +92,19 @@ public abstract class FeignModule {
             feignBuilder.addCapability(capability);
         }
         return feignBuilder;
+    }
+
+    public static class StatusCodeHandlerDecoderCapability implements Capability {
+        @Override
+        public Decoder enrich(Decoder decoder) {
+            return new StatusCodeHandlerDecoder(decoder);
+        }
+    }
+
+    public static class HtmlAwareDecoderCapability implements Capability {
+        @Override
+        public Decoder enrich(Decoder decoder) {
+            return new HtmlAwareDecoder(decoder);
+        }
     }
 }
