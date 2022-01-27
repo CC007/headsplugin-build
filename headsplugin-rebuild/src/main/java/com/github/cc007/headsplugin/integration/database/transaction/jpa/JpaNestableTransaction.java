@@ -98,6 +98,11 @@ public class JpaNestableTransaction implements Transaction {
 
     @Override
     public void runTransacted(Runnable runnable, Consumer<RollbackException> exceptionHandler, boolean clearCache) {
+        if (Thread.currentThread().equals(mainThread)) {
+            lock = lockManager.tryAcquiringLock().orElseThrow(LockingException::new);
+        } else {
+            lock = lockManager.acquireLock();
+        }
         try {
             exceptionHandlerStack.push(exceptionHandler);
             begin();
@@ -105,16 +110,13 @@ public class JpaNestableTransaction implements Transaction {
             commit(clearCache);
         } catch (RollbackException e) {
             handleExceptions(e);
+        } finally {
+            lock.release();
         }
     }
 
     private void begin() throws LockingException {
         if (depth == 0) {
-            if (Thread.currentThread().equals(mainThread)) {
-                lock = lockManager.tryAcquiringLock().orElseThrow(LockingException::new);
-            } else {
-                lock = lockManager.acquireLock();
-            }
             entityManager.getTransaction().begin();
         }
         depth++;
@@ -130,7 +132,6 @@ public class JpaNestableTransaction implements Transaction {
                 entityManager.clear();
                 this.clearCache = false;
             }
-            lock.release();
         }
     }
 
@@ -190,15 +191,16 @@ public class JpaNestableTransaction implements Transaction {
 
 class LockManager {
     private final ReentrantLock lockContainer = new ReentrantLock();
+    private final Lock lock = new Lock(lockContainer::unlock);
 
     public Lock acquireLock() {
         lockContainer.lock();
-        return new Lock(lockContainer::unlock);
+        return lock;
     }
 
     public Optional<Lock> tryAcquiringLock() {
         val lockAquired = lockContainer.tryLock();
-        return Optional.of(new Lock(lockContainer::unlock)).filter(l -> lockAquired);
+        return Optional.of(lock).filter(l -> lockAquired);
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
