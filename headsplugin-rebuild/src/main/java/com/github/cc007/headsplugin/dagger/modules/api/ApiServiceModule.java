@@ -35,6 +35,7 @@ import com.github.cc007.headsplugin.integration.database.transaction.Transaction
 import dagger.Module;
 import dagger.Provides;
 import org.apache.commons.collections4.Transformer;
+import org.bukkit.plugin.Plugin;
 
 import javax.inject.Singleton;
 import java.util.Set;
@@ -61,11 +62,12 @@ public abstract class ApiServiceModule {
             HeadUtils headUtils,
             CategoryRepository categoryRepository,
             DatabaseRepository databaseRepository,
+            Plugin plugin,
             CategoriesProperties categoriesProperties,
             Transaction transaction,
             Profiler profiler
     ) {
-        return new CategoryUpdaterImpl(headUpdater, categoryUtils, headUtils, categoryRepository, databaseRepository, categoriesProperties, transaction, profiler);
+        return new CategoryUpdaterImpl(headUpdater, categoryUtils, headUtils, categoryRepository, databaseRepository, plugin, categoriesProperties, transaction, profiler);
     }
 
     @Provides

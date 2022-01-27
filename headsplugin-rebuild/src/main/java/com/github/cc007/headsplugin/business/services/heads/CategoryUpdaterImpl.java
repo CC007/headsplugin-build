@@ -16,12 +16,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.apache.logging.log4j.Level;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
     private final HeadUtils headUtils;
     private final CategoryRepository categoryRepository;
     private final DatabaseRepository databaseRepository;
+    private final Plugin plugin;
     private final CategoriesProperties categoriesProperties;
     private final Transaction transaction;
     private final Profiler profiler;
@@ -66,15 +68,21 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
             val categoryMap = categoryUtils.getCategoryMap();
             transaction.runTransacted(() -> {
                 val categoriesToBeUpdated = getCategoriesToBeUpdated(categoryMap.keySet());
-                log.debug("Found categories to be updated: " + categoriesToBeUpdated);
+                log.info("Found categories to be updated: " + categoriesToBeUpdated);
                 updateCategories(categoriesToBeUpdated);
             });
         });
     }
 
     @Override
+    public void updateCategoriesIfNecessaryAsync() {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, this::updateCategoriesIfNecessary);
+        log.info("All categories updates are now scheduled (asynchronously).");
+    }
+
+    @Override
     public Collection<String> getUpdatableCategoryNames(boolean necessaryOnly) {
-        Set<String> categoryNames = categoryUtils.getCategoryMap().keySet();
+        val categoryNames = categoryUtils.getCategoryMap().keySet();
         return necessaryOnly ? getCategoriesToBeUpdated(categoryNames) : categoryNames;
     }
 
@@ -85,7 +93,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
      * @return the filtered set of category names
      */
     private Collection<String> getCategoriesToBeUpdated(Collection<String> categoryNames) {
-        int categoryUpdateInterval = categoriesProperties.getUpdate().getInterval();
+        val categoryUpdateInterval = categoriesProperties.getUpdate().getInterval();
         return profiler.runProfiled("Done filtering categories to be updated", () ->
                 categoryNames.stream()
                         .filter(categoryName -> categoryRepository.findByOrCreateFromName(categoryName)
