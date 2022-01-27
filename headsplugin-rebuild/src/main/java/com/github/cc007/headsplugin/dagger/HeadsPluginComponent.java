@@ -17,6 +17,7 @@ import com.github.cc007.headsplugin.integration.database.repositories.SearchRepo
 import com.github.cc007.headsplugin.integration.database.repositories.TagRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
+import dagger.BindsInstance;
 import dagger.Component;
 
 import javax.inject.Singleton;
@@ -50,5 +51,10 @@ public interface HeadsPluginComponent extends HeadsPluginServices {
 
     Transaction transaction();
 
-    //StartupCategoryUpdater startupCategoryUpdater();
+    @Component.Builder
+    interface Builder {
+        @BindsInstance
+        Builder mainThread(Thread mainThread);
+        HeadsPluginComponent build();
+    }
 }

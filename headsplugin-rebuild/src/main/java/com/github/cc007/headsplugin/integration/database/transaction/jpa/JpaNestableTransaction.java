@@ -1,7 +1,9 @@
 package com.github.cc007.headsplugin.integration.database.transaction.jpa;
 
+import com.github.cc007.headsplugin.api.business.domain.exceptions.LockingException;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
@@ -9,7 +11,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.RollbackException;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -18,6 +22,8 @@ import java.util.function.Supplier;
 public class JpaNestableTransaction implements Transaction {
 
     private final EntityManager entityManager;
+    private final Thread mainThread;
+    private final LockManager lockManager = new LockManager();
 
     /**
      * Depth of the transaction to be able to handle nested transactions.
@@ -35,6 +41,7 @@ public class JpaNestableTransaction implements Transaction {
      * Stack of exception handlers
      */
     private Stack<Consumer<RollbackException>> exceptionHandlerStack = Stack.fromDeque(new LinkedList<>());
+    private LockManager.Lock lock;
 
 
     @Override
@@ -101,8 +108,13 @@ public class JpaNestableTransaction implements Transaction {
         }
     }
 
-    private void begin() {
+    private void begin() throws LockingException {
         if (depth == 0) {
+            if (Thread.currentThread().equals(mainThread)) {
+                lock = lockManager.tryAcquiringLock().orElseThrow(LockingException::new);
+            } else {
+                lock = lockManager.acquireLock();
+            }
             entityManager.getTransaction().begin();
         }
         depth++;
@@ -110,15 +122,16 @@ public class JpaNestableTransaction implements Transaction {
 
     private void commit(boolean clearCache) {
         this.clearCache |= clearCache;
-        if (depth == 1) {
+        depth--;
+        if (depth == 0) {
             entityManager.getTransaction().commit();
             exceptionHandlerStack.clear();
             if (this.clearCache) {
                 entityManager.clear();
                 this.clearCache = false;
             }
+            lock.release();
         }
-        depth--;
     }
 
     private void handleExceptions(RollbackException e) {
@@ -173,4 +186,27 @@ public class JpaNestableTransaction implements Transaction {
         }
     }
 
+}
+
+class LockManager {
+    private final ReentrantLock lockContainer = new ReentrantLock();
+
+    public Lock acquireLock() {
+        lockContainer.lock();
+        return new Lock(lockContainer::unlock);
+    }
+
+    public Optional<Lock> tryAcquiringLock() {
+        val lockAquired = lockContainer.tryLock();
+        return Optional.of(new Lock(lockContainer::unlock)).filter(l -> lockAquired);
+    }
+
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    static class Lock {
+        private final Runnable lockReleaser;
+
+        public void release() {
+            lockReleaser.run();
+        }
+    }
 }

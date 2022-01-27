@@ -1,6 +1,7 @@
 package com.github.cc007.headsplugin;
 
 import com.github.cc007.headsplugin.api.HeadsPluginApi;
+import com.github.cc007.headsplugin.api.business.services.heads.CategoryUpdater;
 import com.github.cc007.headsplugin.dagger.DaggerHeadsPluginComponent;
 import com.github.cc007.headsplugin.dagger.HeadsPluginComponent;
 
@@ -31,13 +32,16 @@ public class HeadsPlugin extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
 
-        defaultClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(getClassLoader());
-        headsPluginComponent = DaggerHeadsPluginComponent.create();
+        val mainThread = Thread.currentThread();
+        defaultClassLoader = mainThread.getContextClassLoader();
+        mainThread.setContextClassLoader(getClassLoader());
+        headsPluginComponent = DaggerHeadsPluginComponent.builder()
+                .mainThread(mainThread)
+                .build();
         HeadsPluginApi.setHeadsPluginServices(headsPluginComponent);
 
-        //StartupCategoryUpdater startupCategoryUpdater = headsPluginComponent.startupCategoryUpdater();
-        //startupCategoryUpdater.update();
+        CategoryUpdater categoryUpdater = headsPluginComponent.categoryUpdater();
+        categoryUpdater.updateCategoriesIfNecessaryAsync();
     }
 
     @Override

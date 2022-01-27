@@ -21,7 +21,7 @@ public class DummyDatabase {
     private static HeadsPluginComponent headsPluginComponent;
 
     static {
-        headsPluginComponent = DaggerHeadsPluginComponent.create();
+        headsPluginComponent = DaggerHeadsPluginComponent.builder().mainThread(Thread.currentThread()).build();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> tearDownDB(headsPluginComponent, true)));
         System.out.println(LocalTime.now().format(DateTimeFormatter.ISO_TIME) + ": Database teardown hook added");
     }

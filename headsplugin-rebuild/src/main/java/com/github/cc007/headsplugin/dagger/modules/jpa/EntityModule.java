@@ -51,8 +51,8 @@ public abstract class EntityModule {
 
     @Provides
     @Singleton
-    static Transaction provideTransaction(EntityManager entityManager) {
-        return new JpaNestableTransaction(entityManager);
+    static Transaction provideTransaction(EntityManager entityManager, Thread mainThread) {
+        return new JpaNestableTransaction(entityManager, mainThread);
     }
 
     @Provides
