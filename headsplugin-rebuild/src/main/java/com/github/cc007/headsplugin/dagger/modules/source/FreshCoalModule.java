@@ -14,7 +14,7 @@ import org.apache.commons.collections4.Transformer;
 import javax.inject.Singleton;
 
 @Module
-public class FreshCoalModule {
+public abstract class FreshCoalModule {
 
     @Provides
     @Singleton

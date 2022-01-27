@@ -40,7 +40,7 @@ import javax.inject.Singleton;
 import java.util.Set;
 
 @Module
-public class ApiServiceModule {
+public abstract class ApiServiceModule {
 
     @Provides
     @Singleton

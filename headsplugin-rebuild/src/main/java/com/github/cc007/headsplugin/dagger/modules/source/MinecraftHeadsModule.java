@@ -14,7 +14,7 @@ import org.apache.commons.collections4.Transformer;
 import javax.inject.Singleton;
 
 @Module
-public class MinecraftHeadsModule {
+public abstract class MinecraftHeadsModule {
 
     @Provides
     @Singleton

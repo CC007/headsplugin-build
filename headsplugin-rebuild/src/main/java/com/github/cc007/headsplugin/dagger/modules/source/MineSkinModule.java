@@ -14,7 +14,7 @@ import org.apache.commons.collections4.Transformer;
 import javax.inject.Singleton;
 
 @Module
-public class MineSkinModule {
+public abstract class MineSkinModule {
 
     @Provides
     @Singleton
