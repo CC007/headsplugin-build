@@ -1,6 +1,7 @@
 # used for new version detection
 version: ${project.version}
-profiler.defaultLogLevel: DEBUG
+profiler:
+  defaultLogLevel: DEBUG
 
 headsplugin:
   # define which heads database should be enabled.
@@ -28,8 +29,6 @@ headsplugin:
     update:
       # category update interval in hours
       interval: 168 # 1 week
-      # the delay between category updates when updating all categories
-      delay: 10
   search:
     update:
       # search update interval in minutes

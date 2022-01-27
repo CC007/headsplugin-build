@@ -20,8 +20,6 @@ public class CategoriesProperties {
 
     @Data
     public static class Update {
-
         private int interval = 5;
-        private int delay = 10;
     }
 }
