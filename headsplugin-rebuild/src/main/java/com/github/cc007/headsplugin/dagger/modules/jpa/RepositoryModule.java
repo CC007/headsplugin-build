@@ -1,5 +1,6 @@
 package com.github.cc007.headsplugin.dagger.modules.jpa;
 
+import com.github.cc007.headsplugin.config.properties.ConfigProperties;
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
@@ -43,9 +44,10 @@ public abstract class RepositoryModule {
     @Singleton
     static HeadRepository provideHeadRepository(
             QueryService queryService,
-            ManagedEntityService managedEntityService
+            ManagedEntityService managedEntityService,
+            ConfigProperties configProperties
     ) {
-        return new JpaHeadRepository(queryService, managedEntityService);
+        return new JpaHeadRepository(queryService, managedEntityService, configProperties);
     }
 
     @Provides

@@ -2,6 +2,7 @@ package com.github.cc007.headsplugin.dagger.modules.jpa;
 
 import com.github.cc007.headsplugin.api.business.domain.Category;
 import com.github.cc007.headsplugin.api.business.domain.Head;
+import com.github.cc007.headsplugin.config.properties.ConfigProperties;
 import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.mappers.from_entity.CategoryEntityToCategoryMapper;
@@ -39,8 +40,11 @@ public abstract class EntityModule {
 
     @Provides
     @Singleton
-    static QueryService provideQueryService(EntityManager entityManager) {
-        return new JpaQueryService(entityManager);
+    static QueryService provideQueryService(
+            EntityManager entityManager,
+            ConfigProperties configProperties
+    ) {
+        return new JpaQueryService(entityManager, configProperties);
     }
 
     @Provides

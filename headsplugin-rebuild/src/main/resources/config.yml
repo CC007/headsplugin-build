@@ -1,7 +1,5 @@
 # used for new version detection
 version: ${project.version}
-profiler:
-  defaultLogLevel: DEBUG
 
 headsplugin:
   # define which heads database should be enabled.
@@ -10,7 +8,14 @@ headsplugin:
     mineskin: true
     minecraftHeads: true
   suppressHttpClientErrors: true
+  search:
+    update:
+      # search update interval in minutes
+      interval: 1440 # 1 day
   categories:
+    update:
+      # category update interval in hours
+      interval: 168 # 1 week
     # define your custom categories here
     custom:
       - name: pokemon-starters
@@ -26,10 +31,8 @@ headsplugin:
           - cat
           - dog
 
-    update:
-      # category update interval in hours
-      interval: 168 # 1 week
-  search:
-    update:
-      # search update interval in minutes
-      interval: 1440 # 1 day
+profiler:
+  defaultLogLevel: DEBUG
+
+database:
+  chunkSize: 500

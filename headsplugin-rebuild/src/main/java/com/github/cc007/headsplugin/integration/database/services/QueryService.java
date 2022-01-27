@@ -103,4 +103,16 @@ public interface QueryService {
      * @return an optional managed entity for the given query
      */
     <T> Optional<T> getSingleResult(TypedQuery<T> query);
+
+    /**
+     * Get a result list as a mutable list.
+     * Normally the result list that you get from {@link TypedQuery#getResultList()} is immutable.
+     * This method creates a new {@link java.util.ArrayList} with all elements from that result list.
+     * Doing this will probably impact performance, so only do this when needed.
+     *
+     * @param query the query to get the results from.
+     * @param <T> the type of the query result
+     * @return a mutable list of {@link T} typed elements
+     */
+    <T> List<T> getMutableResultList(TypedQuery<T> query);
 }
