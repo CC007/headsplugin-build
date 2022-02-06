@@ -7,6 +7,7 @@ import com.github.cc007.headsplugin.dagger.modules.ServiceModule;
 import com.github.cc007.headsplugin.dagger.modules.api.ApiServiceModule;
 import com.github.cc007.headsplugin.dagger.modules.jpa.EntityModule;
 import com.github.cc007.headsplugin.dagger.modules.jpa.RepositoryModule;
+import com.github.cc007.headsplugin.dagger.modules.source.CustomCategoriesModule;
 import com.github.cc007.headsplugin.dagger.modules.source.FreshCoalModule;
 import com.github.cc007.headsplugin.dagger.modules.source.MineSkinModule;
 import com.github.cc007.headsplugin.dagger.modules.source.MinecraftHeadsModule;
@@ -33,7 +34,8 @@ import javax.persistence.EntityManager;
         EntityModule.class,
         FreshCoalModule.class,
         MineSkinModule.class,
-        MinecraftHeadsModule.class
+        MinecraftHeadsModule.class,
+        CustomCategoriesModule.class
 })
 public interface HeadsPluginComponent extends HeadsPluginServices {
 

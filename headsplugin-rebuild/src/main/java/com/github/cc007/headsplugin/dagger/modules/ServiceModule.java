@@ -8,6 +8,7 @@ import com.github.cc007.headsplugin.business.services.ProfilerImpl;
 import com.github.cc007.headsplugin.business.services.heads.utils.CategoryUtilsImpl;
 import com.github.cc007.headsplugin.business.services.heads.utils.HeadUtilsImpl;
 import com.github.cc007.headsplugin.config.properties.ConfigProperties;
+import com.github.cc007.headsplugin.integration.daos.CustomCategoriesDao;
 import com.github.cc007.headsplugin.integration.daos.FreshCoalDao;
 import com.github.cc007.headsplugin.integration.daos.MineSkinDao;
 import com.github.cc007.headsplugin.integration.daos.MinecraftHeadsDao;
@@ -55,9 +56,10 @@ public abstract class ServiceModule {
     @ElementsIntoSet
     static Set<Categorizable> provideCategorizables(
             FreshCoalDao freshCoalDao,
-            MinecraftHeadsDao minecraftHeadsDao
+            MinecraftHeadsDao minecraftHeadsDao,
+            CustomCategoriesDao customCategoriesDao
     ) {
-        return Set.of(freshCoalDao, minecraftHeadsDao);
+        return Set.of(freshCoalDao, minecraftHeadsDao, customCategoriesDao);
     }
 
     @Provides
