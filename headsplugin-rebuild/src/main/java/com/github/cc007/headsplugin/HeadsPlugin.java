@@ -7,6 +7,7 @@ import com.github.cc007.headsplugin.dagger.HeadsPluginComponent;
 
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Optional;
@@ -31,6 +32,9 @@ public class HeadsPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+
+        // Configure BStats metrics
+        Metrics metrics = new Metrics(this, 5874);
 
         val mainThread = Thread.currentThread();
         defaultClassLoader = mainThread.getContextClassLoader();

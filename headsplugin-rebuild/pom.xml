@@ -97,6 +97,10 @@
 
         <!-- other dependencies -->
         <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
         </dependency>
@@ -248,7 +252,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.3.0-SNAPSHOT</version>
                 
                 <executions>
                     <execution>
@@ -260,7 +264,17 @@
                 </executions>
                 <configuration>
                     <finalName>${jar.name}</finalName>
-<!--                    <minimizeJar>true</minimizeJar>-->
+                    <minimizeJar>true</minimizeJar>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>com.github.cc007.headsplugin.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>de.tr7zw.changeme.nbtapi</pattern>
+                            <shadedPattern>com.github.cc007.headsplugin.nbtapi</shadedPattern>
+                        </relocation>
+                    </relocations>
                     <transformers>
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
@@ -273,6 +287,18 @@
                                 <exclude>META-INF/*.DSA</exclude>
                                 <exclude>META-INF/*.RSA</exclude>
                             </excludes>
+                        </filter>
+                        <filter>
+                            <artifact>org.apache.openjpa:openjpa</artifact>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                        </filter>
+                        <filter>
+                            <artifact>org.hsqldb:hsqldb</artifact>
+                            <includes>
+                                <include>**</include>
+                            </includes>
                         </filter>
                     </filters>
                 </configuration>

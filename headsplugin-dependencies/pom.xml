@@ -60,8 +60,16 @@
             <id>hpa</id>
             <url>https://maven.pkg.github.com/CC007/HeadsPluginAPI</url>
         </repository>
-
     </repositories>
+
+    <pluginRepositories>
+        <!-- repo for maven-shade-plugin snapshot -->
+        <pluginRepository>
+            <id>maven-snapshots</id>
+            <url>https://repository.apache.org/content/repositories/snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <profiles>
         <profile>
             <id>old</id>
