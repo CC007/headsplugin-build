@@ -21,7 +21,7 @@
         <spring-cloud.version>2020.0.3</spring-cloud.version>
         <switchyard.version>2.1.0.Final</switchyard.version>
         <dagger2.version>2.40.5</dagger2.version>
-        <log4j.version>2.16.0</log4j.version>
+        <log4j.version>2.17.1</log4j.version>
         <openjpa.version>3.2.0</openjpa.version>
         <jpa.version>1.0-SNAPSHOT</jpa.version>
         <feign.version>11.2</feign.version>
