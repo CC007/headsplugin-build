@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="default" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>com.github.cc007.headsplugin.integration.database.entities.CategoryEntity</class>
+    <class>com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity</class>
+    <class>com.github.cc007.headsplugin.integration.database.entities.HeadEntity</class>
+    <class>com.github.cc007.headsplugin.integration.database.entities.SearchEntity</class>
+    <class>com.github.cc007.headsplugin.integration.database.entities.TagEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='add', ForeignKeys=true)"/>
+      <property name="openjpa.ConnectionURL" value="jdbc:hsqldb:file:plugins/HeadsPluginAPI/data/heads;hsqldb.lock_file=false"/>
+      <property name="openjpa.ConnectionDriverName" value="org.hsqldb.jdbcDriver"/>
+      <property name="openjpa.ConnectionUserName" value="sa"/>
+      <property name="openjpa.ConnectionPassword" value=""/>
+      <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
+<!--      <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO, SQL=TRACE"/>-->
+    </properties>
+  </persistence-unit>
+</persistence>
