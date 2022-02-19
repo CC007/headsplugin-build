@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.cc007</groupId>
         <artifactId>headsplugin-parent</artifactId>
-        <version>2.0.11</version>
+        <version>3.0.0</version>
         <relativePath>../headsplugin-parent</relativePath>
     </parent>
 

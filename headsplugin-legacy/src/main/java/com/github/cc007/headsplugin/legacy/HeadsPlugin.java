@@ -234,7 +234,7 @@ public class HeadsPlugin extends JavaPlugin {
     /**
      * Method to get YML content of the config.yml config file
      *
-     * @return YML content of the catagories.yml config file
+     * @return YML content of the categories.yml config file
      */
     @Override
     public FileConfiguration getConfig() {
@@ -294,7 +294,7 @@ public class HeadsPlugin extends JavaPlugin {
     }
 
     /**
-     * Method to save the catagories.yml config file
+     * Method to save the categories.yml config file
      */
     public void saveCategoriesConfig() {
         if (categoriesConfig == null || categoriesConfigFile == null) {

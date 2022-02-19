@@ -5,14 +5,15 @@
 
     <groupId>com.github.cc007</groupId>
     <artifactId>headsplugin-build</artifactId>
-    <version>2.0.11</version>
+    <version>3.0.0</version>
 
     <packaging>pom</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+<!--        <maven.compiler.release>14</maven.compiler.release>-->
     </properties>
 
     <licenses>
@@ -36,14 +37,39 @@
         </developer>
     </developers>
 
-    <modules>
-        <module>headsplugin-api</module>
-        <module>headsplugin-core</module>
-        <module>headsplugin-dependencies</module>
-        <module>headsplugin-dummy</module>
-        <module>headsplugin-files</module>
-        <module>headsplugin-parent</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>java-8-api</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <maven.compiler.release>8</maven.compiler.release>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>old</id>
+            <modules>
+                <module>headsplugin-core</module>
+                <module>headsplugin-dependencies</module>
+                <module>headsplugin-dummy</module>
+                <module>headsplugin-parent</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>new</id>
+            <properties>
+                <maven.compiler.release>17</maven.compiler.release>
+            </properties>
+            <modules>
+                <module>headsplugin-dependencies</module>
+<!--                <module>headsplugin-dummy</module>-->
+                <module>headsplugin-parent</module>
+                <module>headsplugin-rebuild</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
