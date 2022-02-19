@@ -3,7 +3,6 @@ package com.github.cc007.headsplugin.integration.database.repositories.jpa;
 import com.github.cc007.headsplugin.integration.database.DummyDatabase;
 import com.github.cc007.headsplugin.integration.database.entities.CategoryEntityMatcher;
 
-import lombok.val;
 import org.junit.jupiter.api.Test;
 
 import static com.github.cc007.headsplugin.integration.database.entities.CategoryEntityMatcher.aCategoryEntityThat;
@@ -21,10 +20,10 @@ class JpaDatabaseRepositoryTest {
     void findByNameDatabase1() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
             // prepare
-            val databaseRepository = headsPluginComponent.databaseRepository();
+            final var databaseRepository = headsPluginComponent.databaseRepository();
 
             // execute
-            val actual = databaseRepository.findByName("Database1");
+            final var actual = databaseRepository.findByName("Database1");
 
             // verify
             assertThat(actual, isPresentAnd(is(aDatabaseEntityThat()
@@ -41,10 +40,10 @@ class JpaDatabaseRepositoryTest {
     void findByNameDatabase2() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
             // prepare
-            val databaseRepository = headsPluginComponent.databaseRepository();
+            final var databaseRepository = headsPluginComponent.databaseRepository();
 
             // execute
-            val actual = databaseRepository.findByName("Database2");
+            final var actual = databaseRepository.findByName("Database2");
 
             // verify
             assertThat(actual, isPresentAnd(is(aDatabaseEntityThat()

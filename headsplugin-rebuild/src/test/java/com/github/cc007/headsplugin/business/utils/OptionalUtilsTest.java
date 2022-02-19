@@ -1,6 +1,5 @@
 package com.github.cc007.headsplugin.business.utils;
 
-import lombok.val;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,13 +19,13 @@ class OptionalUtilsTest {
     @Test
     void peekWhenPresent() {
         // prepare
-        val testString = "TestString";
-        val testOptionalString = Optional.of(testString);
-        val result = new AtomicReference<String>();
-        val testConsumer = (Consumer<String>) result::set;
+        final var testString = "TestString";
+        final var testOptionalString = Optional.of(testString);
+        final var result = new AtomicReference<String>();
+        final var testConsumer = (Consumer<String>) result::set;
 
         // execute
-        val actual = OptionalUtils.peek(testOptionalString, testConsumer);
+        final var actual = OptionalUtils.peek(testOptionalString, testConsumer);
 
         // verify
         assertThat(actual, isPresentAndIs(testString));
@@ -36,12 +35,12 @@ class OptionalUtilsTest {
     @Test
     void peekWhenEmpty() {
         // prepare
-        val testOptionalString = Optional.<String>empty();
-        val result = new AtomicReference<String>();
-        val testConsumer = (Consumer<String>) result::set;
+        final var testOptionalString = Optional.<String>empty();
+        final var result = new AtomicReference<String>();
+        final var testConsumer = (Consumer<String>) result::set;
 
         // execute
-        val actual = OptionalUtils.peek(testOptionalString, testConsumer);
+        final var actual = OptionalUtils.peek(testOptionalString, testConsumer);
 
         // verify
         assertThat(actual, isEmpty());
@@ -51,11 +50,11 @@ class OptionalUtilsTest {
     @Test
     void peekOptionalNull() {
         // prepare
-        val result = new AtomicReference<String>();
-        val testConsumer = (Consumer<String>) result::set;
+        final var result = new AtomicReference<String>();
+        final var testConsumer = (Consumer<String>) result::set;
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+        final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                 OptionalUtils.peek(null, testConsumer)
         );
 
@@ -67,11 +66,11 @@ class OptionalUtilsTest {
     @Test
     void peekConsumerNull() {
         // prepare
-        val testOptionalString = Optional.<String>empty();
-        val result = new AtomicReference<String>();
+        final var testOptionalString = Optional.<String>empty();
+        final var result = new AtomicReference<String>();
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+        final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                 OptionalUtils.peek(testOptionalString, null)
         );
 

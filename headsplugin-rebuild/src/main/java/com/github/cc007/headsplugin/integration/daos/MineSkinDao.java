@@ -15,7 +15,6 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
-import lombok.val;
 import org.apache.commons.collections4.Transformer;
 
 import java.util.Collections;
@@ -42,7 +41,7 @@ public class MineSkinDao implements Searchable, Creatable {
 
     @Override
     public Optional<Head> addHead(UUID playerUuid, String newHeadName) {
-        val createDto = client.create(playerUuid.toString(), newHeadName);
+        final var createDto = client.create(playerUuid.toString(), newHeadName);
         if (createDto instanceof CreateSkinDetailsDto createSkinDetailsDto) {
             return Optional.of(headMapper.transform(createSkinDetailsDto));
         }

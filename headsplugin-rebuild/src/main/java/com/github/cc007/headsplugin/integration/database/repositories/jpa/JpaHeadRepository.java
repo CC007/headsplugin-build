@@ -8,7 +8,6 @@ import com.github.cc007.headsplugin.integration.database.services.ManagedEntityS
 import com.github.cc007.headsplugin.integration.database.services.QueryService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,10 +33,10 @@ public class JpaHeadRepository implements HeadRepository {
 
     @Override
     public List<String> findAllHeadOwnersByHeadOwnerIn(Collection<String> headOwners) {
-        val resultList = new ArrayList<String>();
-        val headOwnerGroups = CollectionUtils.partitionCollection(headOwners, configProperties.getDatabase().getChunkSize());
-        for (val headOwnerGroup : headOwnerGroups) {
-            val query = queryService.querySelectionByCondition(HeadEntity.class,
+        final var resultList = new ArrayList<String>();
+        final var headOwnerGroups = CollectionUtils.partitionCollection(headOwners, configProperties.getDatabase().getChunkSize());
+        for (final var headOwnerGroup : headOwnerGroups) {
+            final var query = queryService.querySelectionByCondition(HeadEntity.class,
                     root -> root.get("headOwner"), String.class,
                     (criteriaBuilder, root) -> root.get("headOwner").in(headOwnerGroup)
             );
@@ -48,10 +47,10 @@ public class JpaHeadRepository implements HeadRepository {
 
     @Override
     public List<HeadEntity> findAllByDatabases_NameAndHeadOwnerIn(String databaseName, Collection<String> headOwners) {
-        val resultList = new ArrayList<HeadEntity>();
-        val headOwnerGroups = CollectionUtils.partitionCollection(headOwners, configProperties.getDatabase().getChunkSize());
-        for (val headOwnerGroup : headOwnerGroups) {
-            val query = queryService.queryByCondition(HeadEntity.class, ((criteriaBuilder, headEntityRoot) -> criteriaBuilder.and(
+        final var resultList = new ArrayList<HeadEntity>();
+        final var headOwnerGroups = CollectionUtils.partitionCollection(headOwners, configProperties.getDatabase().getChunkSize());
+        for (final var headOwnerGroup : headOwnerGroups) {
+            final var query = queryService.queryByCondition(HeadEntity.class, ((criteriaBuilder, headEntityRoot) -> criteriaBuilder.and(
                     criteriaBuilder.equal(
                             headEntityRoot.get("databases").get("name"),
                             databaseName
@@ -65,7 +64,7 @@ public class JpaHeadRepository implements HeadRepository {
 
     @Override
     public List<HeadEntity> findAllByNameIgnoreCaseContaining(String name) {
-        val query = queryService.queryByCondition(HeadEntity.class, (criteriaBuilder, root) -> criteriaBuilder.like(
+        final var query = queryService.queryByCondition(HeadEntity.class, (criteriaBuilder, root) -> criteriaBuilder.like(
                 criteriaBuilder.lower(root.get("name")),
                 "%" + name.toLowerCase() + "%"
         ));

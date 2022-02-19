@@ -3,7 +3,6 @@ package com.github.cc007.headsplugin.integration.daos.interfaces;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 
 import lombok.NonNull;
-import lombok.val;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,12 +24,12 @@ class CategorizableTest {
     @Test
     void getAllCategoryHeads() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategoryName3 = "CategoryName3";
-        val testCategoryHead11 = Head.builder().name("CategoryHead11").build();
-        val testCategoryHead12 = Head.builder().name("CategoryHead12").build();
-        val testCategoryHead31 = Head.builder().name("CategoryHead31").build();
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategoryName3 = "CategoryName3";
+        final var testCategoryHead11 = Head.builder().name("CategoryHead11").build();
+        final var testCategoryHead12 = Head.builder().name("CategoryHead12").build();
+        final var testCategoryHead31 = Head.builder().name("CategoryHead31").build();
 
         when(categorizable.getCategoryNames())
                 .thenReturn(List.of(testCategoryName1, testCategoryName2, testCategoryName3));
@@ -43,7 +42,7 @@ class CategorizableTest {
                 .thenReturn(List.of(testCategoryHead31));
 
         // execute
-        val actual = categorizable.getAllCategoryHeads();
+        final var actual = categorizable.getAllCategoryHeads();
 
         // verify
         assertThat(actual, Matchers.containsInAnyOrder(testCategoryHead11, testCategoryHead12, testCategoryHead31));
@@ -52,9 +51,9 @@ class CategorizableTest {
     @Test
     void getAllCategoryHeadsWithSharedHead() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategoryHeadShared = Head.builder().name("CategoryHeadShared").build();
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategoryHeadShared = Head.builder().name("CategoryHeadShared").build();
 
         when(categorizable.getCategoryNames())
                 .thenReturn(List.of(testCategoryName1, testCategoryName2));
@@ -65,7 +64,7 @@ class CategorizableTest {
                 .thenReturn(List.of(testCategoryHeadShared));
 
         // execute
-        val actual = categorizable.getAllCategoryHeads();
+        final var actual = categorizable.getAllCategoryHeads();
 
         // verify
         assertThat(actual, Matchers.contains(testCategoryHeadShared));

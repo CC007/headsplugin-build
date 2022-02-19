@@ -15,7 +15,6 @@ import com.github.cc007.headsplugin.integration.database.repositories.CategoryRe
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
-import lombok.val;
 import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,24 +76,24 @@ class CategoryUpdaterImplTest {
     @Test
     void updateCategory() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategorizable11 = Mockito.mock(Categorizable.class);
-        val testCategorizable12 = Mockito.mock(Categorizable.class);
-        val testCategorizable21 = Mockito.mock(Categorizable.class);
-        val testSource1 = "Source1";
-        val testSource2 = "Source2";
-        val testHead1 = Head.builder().name("Head1").build();
-        val testHead2 = Head.builder().name("Head2").build();
-        val testHeads11 = List.of(testHead1, testHead2);
-        val testHeads12 = List.of(testHead1);
-        val testCategoryEntity = Mockito.mock(CategoryEntity.class);
-        val testHeadEntity1 = Mockito.mock(HeadEntity.class);
-        val testHeadEntity2 = Mockito.mock(HeadEntity.class);
-        val testDatabaseEntity1 = Mockito.mock(DatabaseEntity.class);
-        val testDatabaseEntity2 = Mockito.mock(DatabaseEntity.class);
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategorizable11 = Mockito.mock(Categorizable.class);
+        final var testCategorizable12 = Mockito.mock(Categorizable.class);
+        final var testCategorizable21 = Mockito.mock(Categorizable.class);
+        final var testSource1 = "Source1";
+        final var testSource2 = "Source2";
+        final var testHead1 = Head.builder().name("Head1").build();
+        final var testHead2 = Head.builder().name("Head2").build();
+        final var testHeads11 = List.of(testHead1, testHead2);
+        final var testHeads12 = List.of(testHead1);
+        final var testCategoryEntity = Mockito.mock(CategoryEntity.class);
+        final var testHeadEntity1 = Mockito.mock(HeadEntity.class);
+        final var testHeadEntity2 = Mockito.mock(HeadEntity.class);
+        final var testDatabaseEntity1 = Mockito.mock(DatabaseEntity.class);
+        final var testDatabaseEntity2 = Mockito.mock(DatabaseEntity.class);
 
-        val categoryMap = Map.ofEntries(
+        final var categoryMap = Map.ofEntries(
                 Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
                 Map.entry(testCategoryName2, Set.of(testCategorizable21))
         );
@@ -155,17 +154,17 @@ class CategoryUpdaterImplTest {
     @Test
     void updateCategoryNoHeadsFound() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategorizable11 = Mockito.mock(Categorizable.class);
-        val testCategorizable12 = Mockito.mock(Categorizable.class);
-        val testCategorizable21 = Mockito.mock(Categorizable.class);
-        val testSource1 = "Source1";
-        val testSource2 = "Source2";
-        val testHead1 = Head.builder().name("Head1").build();
-        val testHead2 = Head.builder().name("Head2").build();
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategorizable11 = Mockito.mock(Categorizable.class);
+        final var testCategorizable12 = Mockito.mock(Categorizable.class);
+        final var testCategorizable21 = Mockito.mock(Categorizable.class);
+        final var testSource1 = "Source1";
+        final var testSource2 = "Source2";
+        final var testHead1 = Head.builder().name("Head1").build();
+        final var testHead2 = Head.builder().name("Head2").build();
 
-        val categoryMap = Map.ofEntries(
+        final var categoryMap = Map.ofEntries(
                 Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
                 Map.entry(testCategoryName2, Set.of(testCategorizable21))
         );
@@ -200,10 +199,10 @@ class CategoryUpdaterImplTest {
     @Test
     void updateCategoryNoCategorizablesFound() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
 
-        val categoryMap = Map.ofEntries(
+        final var categoryMap = Map.ofEntries(
                 Map.entry(testCategoryName1, Collections.<Categorizable>emptySet()),
                 Map.entry(testCategoryName2, Collections.<Categorizable>emptySet())
         );
@@ -227,28 +226,28 @@ class CategoryUpdaterImplTest {
     @Test
     void updateCategories() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategorizable11 = Mockito.mock(Categorizable.class);
-        val testCategorizable12 = Mockito.mock(Categorizable.class);
-        val testCategorizable21 = Mockito.mock(Categorizable.class);
-        val testSource11 = "Source11";
-        val testSource12 = "Source12";
-        val testSource21 = "Source21";
-        val testHead1 = Head.builder().name("Head1").build();
-        val testHead2 = Head.builder().name("Head2").build();
-        val testHeads11 = List.of(testHead1, testHead2);
-        val testHeads12 = List.of(testHead1);
-        val testHeads21 = List.of(testHead2);
-        val testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
-        val testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
-        val testHeadEntity1 = Mockito.mock(HeadEntity.class);
-        val testHeadEntity2 = Mockito.mock(HeadEntity.class);
-        val testDatabaseEntity11 = Mockito.mock(DatabaseEntity.class);
-        val testDatabaseEntity12 = Mockito.mock(DatabaseEntity.class);
-        val testDatabaseEntity21 = Mockito.mock(DatabaseEntity.class);
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategorizable11 = Mockito.mock(Categorizable.class);
+        final var testCategorizable12 = Mockito.mock(Categorizable.class);
+        final var testCategorizable21 = Mockito.mock(Categorizable.class);
+        final var testSource11 = "Source11";
+        final var testSource12 = "Source12";
+        final var testSource21 = "Source21";
+        final var testHead1 = Head.builder().name("Head1").build();
+        final var testHead2 = Head.builder().name("Head2").build();
+        final var testHeads11 = List.of(testHead1, testHead2);
+        final var testHeads12 = List.of(testHead1);
+        final var testHeads21 = List.of(testHead2);
+        final var testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
+        final var testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
+        final var testHeadEntity1 = Mockito.mock(HeadEntity.class);
+        final var testHeadEntity2 = Mockito.mock(HeadEntity.class);
+        final var testDatabaseEntity11 = Mockito.mock(DatabaseEntity.class);
+        final var testDatabaseEntity12 = Mockito.mock(DatabaseEntity.class);
+        final var testDatabaseEntity21 = Mockito.mock(DatabaseEntity.class);
 
-        val categoryMap = Map.ofEntries(
+        final var categoryMap = Map.ofEntries(
                 Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
                 Map.entry(testCategoryName2, Set.of(testCategorizable21))
         );
@@ -333,18 +332,18 @@ class CategoryUpdaterImplTest {
     @Test
     void updateCategoriesNoHeadsFound() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategorizable11 = Mockito.mock(Categorizable.class);
-        val testCategorizable12 = Mockito.mock(Categorizable.class);
-        val testCategorizable21 = Mockito.mock(Categorizable.class);
-        val testSource11 = "Source11";
-        val testSource12 = "Source12";
-        val testSource21 = "Source21";
-        val testHead1 = Head.builder().name("Head1").build();
-        val testHead2 = Head.builder().name("Head2").build();
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategorizable11 = Mockito.mock(Categorizable.class);
+        final var testCategorizable12 = Mockito.mock(Categorizable.class);
+        final var testCategorizable21 = Mockito.mock(Categorizable.class);
+        final var testSource11 = "Source11";
+        final var testSource12 = "Source12";
+        final var testSource21 = "Source21";
+        final var testHead1 = Head.builder().name("Head1").build();
+        final var testHead2 = Head.builder().name("Head2").build();
 
-        val categoryMap = Map.ofEntries(
+        final var categoryMap = Map.ofEntries(
                 Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
                 Map.entry(testCategoryName2, Set.of(testCategorizable21))
         );
@@ -389,10 +388,10 @@ class CategoryUpdaterImplTest {
     @Test
     void updateCategoriesNoCategorizablesFound() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
 
-        val categoryMap = Map.ofEntries(
+        final var categoryMap = Map.ofEntries(
                 Map.entry(testCategoryName1, Collections.<Categorizable>emptySet()),
                 Map.entry(testCategoryName2, Collections.<Categorizable>emptySet())
         );
@@ -423,32 +422,32 @@ class CategoryUpdaterImplTest {
     @Test
     void updateCategoriesIfNecessary() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategorizable11 = Mockito.mock(Categorizable.class);
-        val testCategorizable12 = Mockito.mock(Categorizable.class);
-        val testCategorizable21 = Mockito.mock(Categorizable.class);
-        val testSource1 = "Source1";
-        val testSource2 = "Source2";
-        val testHead1 = Head.builder().name("Head1").build();
-        val testHead2 = Head.builder().name("Head2").build();
-        val testHeads11 = List.of(testHead1, testHead2);
-        val testHeads12 = List.of(testHead1);
-        val testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
-        val testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
-        val testHeadEntity1 = Mockito.mock(HeadEntity.class);
-        val testHeadEntity2 = Mockito.mock(HeadEntity.class);
-        val testDatabaseEntity1 = Mockito.mock(DatabaseEntity.class);
-        val testDatabaseEntity2 = Mockito.mock(DatabaseEntity.class);
-        val testLastUpdated1 = LocalDateTime.now().minusHours(6);
-        val testLastUpdated2 = LocalDateTime.now().minusHours(2);
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategorizable11 = Mockito.mock(Categorizable.class);
+        final var testCategorizable12 = Mockito.mock(Categorizable.class);
+        final var testCategorizable21 = Mockito.mock(Categorizable.class);
+        final var testSource1 = "Source1";
+        final var testSource2 = "Source2";
+        final var testHead1 = Head.builder().name("Head1").build();
+        final var testHead2 = Head.builder().name("Head2").build();
+        final var testHeads11 = List.of(testHead1, testHead2);
+        final var testHeads12 = List.of(testHead1);
+        final var testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
+        final var testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
+        final var testHeadEntity1 = Mockito.mock(HeadEntity.class);
+        final var testHeadEntity2 = Mockito.mock(HeadEntity.class);
+        final var testDatabaseEntity1 = Mockito.mock(DatabaseEntity.class);
+        final var testDatabaseEntity2 = Mockito.mock(DatabaseEntity.class);
+        final var testLastUpdated1 = LocalDateTime.now().minusHours(6);
+        final var testLastUpdated2 = LocalDateTime.now().minusHours(2);
 
-        val categoryMap = Map.ofEntries(
+        final var categoryMap = Map.ofEntries(
                 Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
                 Map.entry(testCategoryName2, Set.of(testCategorizable21))
         );
 
-        val categoryUpdateProperties = new CategoriesProperties.Update();
+        final var categoryUpdateProperties = new CategoriesProperties.Update();
         categoryUpdateProperties.setInterval(4);
 
         doAnswer(invocation -> {
@@ -538,26 +537,26 @@ class CategoryUpdaterImplTest {
     @Test
     void updateCategoriesIfNecessaryNoHeadsFound() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategorizable11 = Mockito.mock(Categorizable.class);
-        val testCategorizable12 = Mockito.mock(Categorizable.class);
-        val testCategorizable21 = Mockito.mock(Categorizable.class);
-        val testSource1 = "Source1";
-        val testSource2 = "Source2";
-        val testHead1 = Head.builder().name("Head1").build();
-        val testHead2 = Head.builder().name("Head2").build();
-        val testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
-        val testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
-        val testLastUpdated1 = LocalDateTime.now().minusHours(6);
-        val testLastUpdated2 = LocalDateTime.now().minusHours(2);
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategorizable11 = Mockito.mock(Categorizable.class);
+        final var testCategorizable12 = Mockito.mock(Categorizable.class);
+        final var testCategorizable21 = Mockito.mock(Categorizable.class);
+        final var testSource1 = "Source1";
+        final var testSource2 = "Source2";
+        final var testHead1 = Head.builder().name("Head1").build();
+        final var testHead2 = Head.builder().name("Head2").build();
+        final var testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
+        final var testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
+        final var testLastUpdated1 = LocalDateTime.now().minusHours(6);
+        final var testLastUpdated2 = LocalDateTime.now().minusHours(2);
 
-        val categoryMap = Map.ofEntries(
+        final var categoryMap = Map.ofEntries(
                 Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
                 Map.entry(testCategoryName2, Set.of(testCategorizable21))
         );
 
-        val categoryUpdateProperties = new CategoriesProperties.Update();
+        final var categoryUpdateProperties = new CategoriesProperties.Update();
         categoryUpdateProperties.setInterval(4);
 
         doAnswer(invocation -> {
@@ -624,19 +623,19 @@ class CategoryUpdaterImplTest {
     @Test
     void updateCategoriesIfNecessaryNoCategorizablesFound() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
-        val testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
-        val testLastUpdated1 = LocalDateTime.now().minusHours(6);
-        val testLastUpdated2 = LocalDateTime.now().minusHours(2);
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
+        final var testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
+        final var testLastUpdated1 = LocalDateTime.now().minusHours(6);
+        final var testLastUpdated2 = LocalDateTime.now().minusHours(2);
 
-        val categoryMap = Map.ofEntries(
+        final var categoryMap = Map.ofEntries(
                 Map.entry(testCategoryName1, Collections.<Categorizable>emptySet()),
                 Map.entry(testCategoryName2, Collections.<Categorizable>emptySet())
         );
 
-        val categoryUpdateProperties = new CategoriesProperties.Update();
+        final var categoryUpdateProperties = new CategoriesProperties.Update();
         categoryUpdateProperties.setInterval(4);
 
         doAnswer(invocation -> {
@@ -692,12 +691,12 @@ class CategoryUpdaterImplTest {
     @Test
     void getUpdatableCategoryNames() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategorizable1 = Mockito.mock(Categorizable.class);
-        val testCategorizable2 = Mockito.mock(Categorizable.class);
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategorizable1 = Mockito.mock(Categorizable.class);
+        final var testCategorizable2 = Mockito.mock(Categorizable.class);
 
-        val categoryMap = Map.ofEntries(
+        final var categoryMap = Map.ofEntries(
                 Map.entry(testCategoryName1, Set.of(testCategorizable1)),
                 Map.entry(testCategoryName2, Set.of(testCategorizable2))
         );
@@ -706,7 +705,7 @@ class CategoryUpdaterImplTest {
                 .thenReturn(categoryMap);
 
         // execute
-        val actual = categoryUpdater.getUpdatableCategoryNames(false);
+        final var actual = categoryUpdater.getUpdatableCategoryNames(false);
 
         // verify
         verifyNoMoreInteractions(categoryUtils);
@@ -716,21 +715,21 @@ class CategoryUpdaterImplTest {
     @Test
     void getUpdatableCategoryNamesNecessaryOnly() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategorizable1 = Mockito.mock(Categorizable.class);
-        val testCategorizable2 = Mockito.mock(Categorizable.class);
-        val testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
-        val testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
-        val testLastUpdated1 = LocalDateTime.now().minusHours(6);
-        val testLastUpdated2 = LocalDateTime.now().minusHours(2);
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategorizable1 = Mockito.mock(Categorizable.class);
+        final var testCategorizable2 = Mockito.mock(Categorizable.class);
+        final var testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
+        final var testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
+        final var testLastUpdated1 = LocalDateTime.now().minusHours(6);
+        final var testLastUpdated2 = LocalDateTime.now().minusHours(2);
 
-        val categoryMap = Map.ofEntries(
+        final var categoryMap = Map.ofEntries(
                 Map.entry(testCategoryName1, Set.of(testCategorizable1)),
                 Map.entry(testCategoryName2, Set.of(testCategorizable2))
         );
 
-        val categoryUpdateProperties = new CategoriesProperties.Update();
+        final var categoryUpdateProperties = new CategoriesProperties.Update();
         categoryUpdateProperties.setInterval(4);
 
         when(categoriesProperties.getUpdate())
@@ -755,7 +754,7 @@ class CategoryUpdaterImplTest {
                 .thenReturn(testLastUpdated2);
 
         // execute
-        val actual = categoryUpdater.getUpdatableCategoryNames(true);
+        final var actual = categoryUpdater.getUpdatableCategoryNames(true);
 
         // verify
         verifyNoMoreInteractions(categoryUtils, categoryRepository, categoriesProperties);

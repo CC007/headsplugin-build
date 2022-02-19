@@ -9,7 +9,6 @@ import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTContainer;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import de.tr7zw.changeme.nbtapi.NBTTileEntity;
-import lombok.val;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -59,7 +58,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+            final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                     headPlacer.placeHead((ItemStack) null, new Location(null, 0, 0, 0), BlockFace.NORTH)
             );
 
@@ -72,7 +71,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+            final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                     headPlacer.placeHead(new ItemStack(Material.PLAYER_HEAD), null, BlockFace.NORTH)
             );
 
@@ -85,7 +84,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+            final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                     headPlacer.placeHead(new ItemStack(Material.PLAYER_HEAD), new Location(null, 0, 0, 0), null)
             );
 
@@ -98,7 +97,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+            final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                     headPlacer.placeHead((Head) null, new Location(null, 0, 0, 0), BlockFace.NORTH)
             );
 
@@ -111,7 +110,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+            final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                     headPlacer.placeHead(Head.builder().build(), null, BlockFace.NORTH)
             );
 
@@ -124,7 +123,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+            final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                     headPlacer.placeHead(Head.builder().build(), new Location(null, 0, 0, 0), null)
             );
 
@@ -137,7 +136,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+            final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                     headPlacer.placeWallHead((ItemStack) null, new Location(null, 0, 0, 0), BlockFace.NORTH)
             );
 
@@ -150,7 +149,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+            final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                     headPlacer.placeWallHead(new ItemStack(Material.PLAYER_HEAD), null, BlockFace.NORTH)
             );
 
@@ -163,7 +162,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+            final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                     headPlacer.placeWallHead(new ItemStack(Material.PLAYER_HEAD), new Location(null, 0, 0, 0), null)
             );
 
@@ -176,7 +175,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+            final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                     headPlacer.placeWallHead((Head) null, new Location(null, 0, 0, 0), BlockFace.NORTH)
             );
 
@@ -189,7 +188,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+            final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                     headPlacer.placeWallHead(Head.builder().build(), null, BlockFace.NORTH)
             );
 
@@ -202,7 +201,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+            final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                     headPlacer.placeWallHead(Head.builder().build(), new Location(null, 0, 0, 0), null)
             );
 
@@ -218,7 +217,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(IllegalArgumentException.class, () ->
+            final var actualException = Assertions.assertThrows(IllegalArgumentException.class, () ->
                     headPlacer.placeHead(new ItemStack(Material.DIRT), new Location(null, 0, 0, 0), BlockFace.NORTH)
             );
 
@@ -231,7 +230,7 @@ class HeadPlacerImplTest {
             // prepare
 
             // execute
-            val actualException = Assertions.assertThrows(IllegalArgumentException.class, () ->
+            final var actualException = Assertions.assertThrows(IllegalArgumentException.class, () ->
                     headPlacer.placeWallHead(new ItemStack(Material.DIRT), new Location(null, 0, 0, 0), BlockFace.NORTH)
             );
 
@@ -243,17 +242,17 @@ class HeadPlacerImplTest {
     @Test
     void placeHeadILB() {
         // prepare
-        val testHeadItemStack = mock(ItemStack.class);
-        val testWorld = mock(World.class);
-        val testLocation = new Location(testWorld, 0, 0, 0);
-        val testRotation = BlockFace.NORTH;
-        val testBlock = mock(Block.class);
-        val testRotatable = mock(Rotatable.class);
-        val testNBTItem = mock(NBTItem.class);
-        val testSkullOwnerCompound = mock(NBTCompound.class);
-        val testNBTTileEntity = mock(NBTTileEntity.class);
-        val testNBTContainer = mock(NBTContainer.class);
-        val testSkullOwner = "{Id:[I;19088743,-1985229329,-19088744,1985229328],Properties:{textures:[{Value:\"TestValue\"}]},Name:\"TestName\"}";
+        final var testHeadItemStack = mock(ItemStack.class);
+        final var testWorld = mock(World.class);
+        final var testLocation = new Location(testWorld, 0, 0, 0);
+        final var testRotation = BlockFace.NORTH;
+        final var testBlock = mock(Block.class);
+        final var testRotatable = mock(Rotatable.class);
+        final var testNBTItem = mock(NBTItem.class);
+        final var testSkullOwnerCompound = mock(NBTCompound.class);
+        final var testNBTTileEntity = mock(NBTTileEntity.class);
+        final var testNBTContainer = mock(NBTContainer.class);
+        final var testSkullOwner = "{Id:[I;19088743,-1985229329,-19088744,1985229328],Properties:{textures:[{Value:\"TestValue\"}]},Name:\"TestName\"}";
 
         when(testHeadItemStack.getType())
                 .thenReturn(Material.PLAYER_HEAD);
@@ -292,19 +291,19 @@ class HeadPlacerImplTest {
     @Test
     void placeHeadHLB() {
         // prepare
-        val testHead = Head.builder()
+        final var testHead = Head.builder()
                 .headOwner(UUID.fromString("01234567-89ab-cdef-fedc-ba9876543210"))
                 .name("TestName")
                 .value("TestValue")
                 .build();
-        val testWorld = mock(World.class);
-        val testLocation = new Location(testWorld, 0, 0, 0);
-        val testRotation = BlockFace.NORTH;
-        val testBlock = mock(Block.class);
-        val testRotatable = mock(Rotatable.class);
-        val testNBTTileEntity = mock(NBTTileEntity.class);
-        val testNBTContainer = mock(NBTContainer.class);
-        val testSkullOwner = "{Id:[I;19088743,-1985229329,-19088744,1985229328],Properties:{textures:[{Value:\"TestValue\"}]},Name:\"TestName\"}";
+        final var testWorld = mock(World.class);
+        final var testLocation = new Location(testWorld, 0, 0, 0);
+        final var testRotation = BlockFace.NORTH;
+        final var testBlock = mock(Block.class);
+        final var testRotatable = mock(Rotatable.class);
+        final var testNBTTileEntity = mock(NBTTileEntity.class);
+        final var testNBTContainer = mock(NBTContainer.class);
+        final var testSkullOwner = "{Id:[I;19088743,-1985229329,-19088744,1985229328],Properties:{textures:[{Value:\"TestValue\"}]},Name:\"TestName\"}";
 
         when(testWorld.getBlockAt(testLocation))
                 .thenReturn(testBlock);
@@ -336,17 +335,17 @@ class HeadPlacerImplTest {
     @Test
     void placeWallHeadILB() {
         // prepare
-        val testHeadItemStack = mock(ItemStack.class);
-        val testWorld = mock(World.class);
-        val testLocation = new Location(testWorld, 0, 0, 0);
-        val testDirection = BlockFace.NORTH;
-        val testBlock = mock(Block.class);
-        val testDirectional = mock(Directional.class);
-        val testNBTItem = mock(NBTItem.class);
-        val testSkullOwnerCompound = mock(NBTCompound.class);
-        val testNBTTileEntity = mock(NBTTileEntity.class);
-        val testNBTContainer = mock(NBTContainer.class);
-        val testSkullOwner = "{Id:[I;19088743,-1985229329,-19088744,1985229328],Properties:{textures:[{Value:\"TestValue\"}]},Name:\"TestName\"}";
+        final var testHeadItemStack = mock(ItemStack.class);
+        final var testWorld = mock(World.class);
+        final var testLocation = new Location(testWorld, 0, 0, 0);
+        final var testDirection = BlockFace.NORTH;
+        final var testBlock = mock(Block.class);
+        final var testDirectional = mock(Directional.class);
+        final var testNBTItem = mock(NBTItem.class);
+        final var testSkullOwnerCompound = mock(NBTCompound.class);
+        final var testNBTTileEntity = mock(NBTTileEntity.class);
+        final var testNBTContainer = mock(NBTContainer.class);
+        final var testSkullOwner = "{Id:[I;19088743,-1985229329,-19088744,1985229328],Properties:{textures:[{Value:\"TestValue\"}]},Name:\"TestName\"}";
 
         when(testHeadItemStack.getType())
                 .thenReturn(Material.PLAYER_HEAD);
@@ -385,19 +384,19 @@ class HeadPlacerImplTest {
     @Test
     void placeWallHeadHLB() {
         // prepare
-        val testHead = Head.builder()
+        final var testHead = Head.builder()
                 .headOwner(UUID.fromString("01234567-89ab-cdef-fedc-ba9876543210"))
                 .name("TestName")
                 .value("TestValue")
                 .build();
-        val testWorld = mock(World.class);
-        val testLocation = new Location(testWorld, 0, 0, 0);
-        val testDirection = BlockFace.NORTH;
-        val testBlock = mock(Block.class);
-        val testDirectional = mock(Directional.class);
-        val testNBTTileEntity = mock(NBTTileEntity.class);
-        val testNBTContainer = mock(NBTContainer.class);
-        val testSkullOwner = "{Id:[I;19088743,-1985229329,-19088744,1985229328],Properties:{textures:[{Value:\"TestValue\"}]},Name:\"TestName\"}";
+        final var testWorld = mock(World.class);
+        final var testLocation = new Location(testWorld, 0, 0, 0);
+        final var testDirection = BlockFace.NORTH;
+        final var testBlock = mock(Block.class);
+        final var testDirectional = mock(Directional.class);
+        final var testNBTTileEntity = mock(NBTTileEntity.class);
+        final var testNBTContainer = mock(NBTContainer.class);
+        final var testSkullOwner = "{Id:[I;19088743,-1985229329,-19088744,1985229328],Properties:{textures:[{Value:\"TestValue\"}]},Name:\"TestName\"}";
 
         when(testWorld.getBlockAt(testLocation))
                 .thenReturn(testBlock);

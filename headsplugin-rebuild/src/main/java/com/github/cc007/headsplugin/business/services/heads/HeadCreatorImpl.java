@@ -10,7 +10,6 @@ import com.github.cc007.headsplugin.integration.database.transaction.Transaction
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
-import lombok.val;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -29,11 +28,11 @@ public class HeadCreatorImpl implements HeadCreator {
 
     @Override
     public Map<String, Head> createHead(Player player, String newHeadName) {
-        val headOwner = player.getUniqueId();
-        val newHeadsMap = new HashMap<String, Head>();
+        final var headOwner = player.getUniqueId();
+        final var newHeadsMap = new HashMap<String, Head>();
         transaction.runTransacted(() -> {
             for (Creatable creatable : creatables) {
-                val databaseName = creatable.getDatabaseName();
+                final var databaseName = creatable.getDatabaseName();
                 creatable.addHead(headOwner, newHeadName)
                         .peek(newHead -> storeHead(databaseName, newHead))
                         .ifPresent(newHead -> newHeadsMap.put(databaseName, newHead));
@@ -43,8 +42,8 @@ public class HeadCreatorImpl implements HeadCreator {
     }
 
     private void storeHead(String databaseName, Head newHead) {
-        val headEntities = headUpdater.updateHeads(List.of(newHead));
-        val database = databaseRepository.findByOrCreateFromName(databaseName);
+        final var headEntities = headUpdater.updateHeads(List.of(newHead));
+        final var database = databaseRepository.findByOrCreateFromName(databaseName);
         headEntities.forEach(database::addhead);
     }
 }

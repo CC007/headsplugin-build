@@ -8,7 +8,6 @@ import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
-import lombok.val;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,15 +53,15 @@ class HeadCreatorImplTest {
     @Test
     void createHeadSuccessfulCreation() {
         // prepare
-        val testHeadName = "TestHeadName";
-        val testDatabaseName = "TestDatabaseName";
-        val testHeadOwner = UUID.randomUUID();
-        val testPlayer = mock(Player.class);
-        val testCreatable = mock(Creatable.class);
-        val testHead = Head.builder().headOwner(testHeadOwner).name(testHeadName).build();
-        val headEntity1 = mock(HeadEntity.class);
-        val headEntity2 = mock(HeadEntity.class);
-        val databaseEntity = mock(DatabaseEntity.class);
+        final var testHeadName = "TestHeadName";
+        final var testDatabaseName = "TestDatabaseName";
+        final var testHeadOwner = UUID.randomUUID();
+        final var testPlayer = mock(Player.class);
+        final var testCreatable = mock(Creatable.class);
+        final var testHead = Head.builder().headOwner(testHeadOwner).name(testHeadName).build();
+        final var headEntity1 = mock(HeadEntity.class);
+        final var headEntity2 = mock(HeadEntity.class);
+        final var databaseEntity = mock(DatabaseEntity.class);
 
         when(testPlayer.getUniqueId())
                 .thenReturn(testHeadOwner);
@@ -86,7 +85,7 @@ class HeadCreatorImplTest {
         doNothing().when(databaseEntity).addhead(headEntity2);
 
         // execute
-        val actual = headCreator.createHead(testPlayer, testHeadName);
+        final var actual = headCreator.createHead(testPlayer, testHeadName);
 
         // verify
         assertThat(actual, aMapWithSize(1));
@@ -100,15 +99,15 @@ class HeadCreatorImplTest {
     @Test
     void createHeadUnsuccessfulCreation() {
         // prepare
-        val testHeadName = "TestHeadName";
-        val testDatabaseName = "TestDatabaseName";
-        val testHeadOwner = UUID.randomUUID();
-        val testPlayer = mock(Player.class);
-        val testCreatable = mock(Creatable.class);
-        val testHead = Head.builder().headOwner(testHeadOwner).name(testHeadName).build();
-        val headEntity1 = mock(HeadEntity.class);
-        val headEntity2 = mock(HeadEntity.class);
-        val databaseEntity = mock(DatabaseEntity.class);
+        final var testHeadName = "TestHeadName";
+        final var testDatabaseName = "TestDatabaseName";
+        final var testHeadOwner = UUID.randomUUID();
+        final var testPlayer = mock(Player.class);
+        final var testCreatable = mock(Creatable.class);
+        final var testHead = Head.builder().headOwner(testHeadOwner).name(testHeadName).build();
+        final var headEntity1 = mock(HeadEntity.class);
+        final var headEntity2 = mock(HeadEntity.class);
+        final var databaseEntity = mock(DatabaseEntity.class);
 
         when(testPlayer.getUniqueId())
                 .thenReturn(testHeadOwner);
@@ -126,7 +125,7 @@ class HeadCreatorImplTest {
                 .thenReturn(Optional.empty());
 
         // execute
-        val actual = headCreator.createHead(testPlayer, testHeadName);
+        final var actual = headCreator.createHead(testPlayer, testHeadName);
 
         // verify
         assertThat(actual, aMapWithSize(0));

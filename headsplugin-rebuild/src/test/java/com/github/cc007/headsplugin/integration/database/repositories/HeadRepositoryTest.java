@@ -3,7 +3,6 @@ package com.github.cc007.headsplugin.integration.database.repositories;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 
-import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -28,11 +27,11 @@ class HeadRepositoryTest {
     @Test
     void createFromHead() {
         // prepare
-        val testHeadOwner = UUID.randomUUID();
-        val testName = "Name";
-        val testValue = "Value";
-        val testHeadDatabase = "HeadDatabase";
-        val head = Head.builder()
+        final var testHeadOwner = UUID.randomUUID();
+        final var testName = "Name";
+        final var testValue = "Value";
+        final var testHeadDatabase = "HeadDatabase";
+        final var head = Head.builder()
                 .name(testName)
                 .value(testValue)
                 .headOwner(testHeadOwner)
@@ -43,7 +42,7 @@ class HeadRepositoryTest {
                 .thenReturn(new HeadEntity());
 
         // execute
-        val actual = headRepository.createFromHead(head);
+        final var actual = headRepository.createFromHead(head);
 
         // verify
         assertThat(actual, is(aHeadEntityThat()

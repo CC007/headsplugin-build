@@ -6,7 +6,6 @@ import feign.FeignException;
 import feign.Response;
 import feign.codec.Decoder;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -26,7 +25,7 @@ public class HtmlAwareDecoder implements Decoder {
         }
 
         String body = getBodyFromHtml(response.body().asInputStream());
-        val headers = response.headers();
+        final var headers = response.headers();
         headers.get(HttpHeaders.CONTENT_TYPE).remove("text/html");
         headers.get(HttpHeaders.CONTENT_TYPE).add("application/json");
 

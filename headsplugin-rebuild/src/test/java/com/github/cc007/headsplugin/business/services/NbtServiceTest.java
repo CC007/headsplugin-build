@@ -2,7 +2,6 @@ package com.github.cc007.headsplugin.business.services;
 
 import de.tr7zw.changeme.nbtapi.NBTContainer;
 import de.tr7zw.changeme.nbtapi.NBTTileEntity;
-import lombok.val;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +22,7 @@ class NbtServiceTest {
     @Test
     void getNbtItem() {
         // prepare
-        val expected = mock(ItemStack.class);
+        final var expected = mock(ItemStack.class);
 
         try (MockedConstruction<NBTContainer> nbtTileEntity = mockConstruction(NBTContainer.class,
                 (mock, context) -> {
@@ -43,8 +42,8 @@ class NbtServiceTest {
     @Test
     void getNbtTileEntity() {
         // prepare
-        val testBlock = mock(Block.class);
-        val expected = mock(BlockState.class);
+        final var testBlock = mock(Block.class);
+        final var expected = mock(BlockState.class);
 
         when(testBlock.getState())
                 .thenReturn(expected);
@@ -65,7 +64,7 @@ class NbtServiceTest {
     @Test
     void getNbtContainer() {
         // prepare
-        val expected = "NbtString";
+        final var expected = "NbtString";
 
         try (MockedConstruction<NBTContainer> nbtTileEntity = mockConstruction(NBTContainer.class,
                 (mock, context) -> {

@@ -15,7 +15,6 @@ import com.github.cc007.headsplugin.integration.database.repositories.HeadReposi
 import com.github.cc007.headsplugin.integration.database.repositories.SearchRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
-import lombok.val;
 import org.apache.commons.collections4.Transformer;
 import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.Assertions;
@@ -89,9 +88,9 @@ class HeadSearcherImplTest {
     @Test
     void getSearchCount() {
         // prepare
-        val existingSearchTerm = "ExistingSearchTerm";
+        final var existingSearchTerm = "ExistingSearchTerm";
 
-        val searchEntity = new SearchEntity();
+        final var searchEntity = new SearchEntity();
         searchEntity.incrementSearchCount();
         searchEntity.incrementSearchCount();
 
@@ -104,7 +103,7 @@ class HeadSearcherImplTest {
                 .thenReturn(Optional.of(searchEntity));
 
         // execute
-        val actual = headSearcher.getSearchCount(existingSearchTerm);
+        final var actual = headSearcher.getSearchCount(existingSearchTerm);
 
         // verify
         assertThat(actual, is(2L));
@@ -114,7 +113,7 @@ class HeadSearcherImplTest {
     @Test
     void getSearchCountSearchTermNotFound() {
         // prepare
-        val newSearchTerm = "NewSearchTerm";
+        final var newSearchTerm = "NewSearchTerm";
 
         when(transaction.runTransacted(isA(Supplier.class)))
                 .thenAnswer(invocation -> {
@@ -125,7 +124,7 @@ class HeadSearcherImplTest {
                 .thenReturn(Optional.empty());
 
         // execute
-        val actual = headSearcher.getSearchCount(newSearchTerm);
+        final var actual = headSearcher.getSearchCount(newSearchTerm);
 
         // verify
         assertThat(actual, is(0L));
@@ -137,7 +136,7 @@ class HeadSearcherImplTest {
         // prepare
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class,
+        final var actualException = Assertions.assertThrows(NullPointerException.class,
                 () -> headSearcher.getSearchCount(null)
         );
 
@@ -149,9 +148,9 @@ class HeadSearcherImplTest {
     @Test
     void getHead() {
         // prepare
-        val testHeadOwner = UUID.randomUUID();
-        val testHeadEntity = mock(HeadEntity.class);
-        val testHead = Head.builder().headOwner(testHeadOwner).build();
+        final var testHeadOwner = UUID.randomUUID();
+        final var testHeadEntity = mock(HeadEntity.class);
+        final var testHead = Head.builder().headOwner(testHeadOwner).build();
 
         when(transaction.runTransacted(isA(Supplier.class)))
                 .thenAnswer(invocation -> {
@@ -164,7 +163,7 @@ class HeadSearcherImplTest {
                 .thenReturn(testHead);
 
         // execute
-        val actual = headSearcher.getHead(testHeadOwner);
+        final var actual = headSearcher.getHead(testHeadOwner);
 
         // verify
         assertThat(actual, isPresentAndIs(testHead));
@@ -174,7 +173,7 @@ class HeadSearcherImplTest {
     @Test
     void getHeadHeadOwnerNotFound() {
         // prepare
-        val testHeadOwner = UUID.randomUUID();
+        final var testHeadOwner = UUID.randomUUID();
 
         when(transaction.runTransacted(isA(Supplier.class)))
                 .thenAnswer(invocation -> {
@@ -185,7 +184,7 @@ class HeadSearcherImplTest {
                 .thenReturn(Optional.empty());
 
         // execute
-        val actual = headSearcher.getHead(testHeadOwner);
+        final var actual = headSearcher.getHead(testHeadOwner);
 
         // verify
         assertThat(actual, isEmpty());
@@ -197,7 +196,7 @@ class HeadSearcherImplTest {
         // prepare
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class,
+        final var actualException = Assertions.assertThrows(NullPointerException.class,
                 () -> headSearcher.getHead(null)
         );
 
@@ -209,15 +208,15 @@ class HeadSearcherImplTest {
     @Test
     void getHeadsSearchTermFound() {
         // prepare
-        val testSearchTerm = "SearchTerm";
+        final var testSearchTerm = "SearchTerm";
 
-        val testSearchEntity = mock(SearchEntity.class);
-        val testSearchProperties = new HeadspluginProperties.Search();
+        final var testSearchEntity = mock(SearchEntity.class);
+        final var testSearchProperties = new HeadspluginProperties.Search();
         testSearchProperties.getUpdate().setInterval(4);
-        val testHeadEntity1 = mock(HeadEntity.class);
-        val testHeadEntity2 = mock(HeadEntity.class);
-        val testHead1 = Head.builder().name("Head1").build();
-        val testHead2 = Head.builder().name("Head2").build();
+        final var testHeadEntity1 = mock(HeadEntity.class);
+        final var testHeadEntity2 = mock(HeadEntity.class);
+        final var testHead1 = Head.builder().name("Head1").build();
+        final var testHead2 = Head.builder().name("Head2").build();
 
         when(profiler.runProfiled(eq(Level.INFO), contains(testSearchTerm), isA(Supplier.class)))
                 .thenAnswer(invocation -> {
@@ -247,7 +246,7 @@ class HeadSearcherImplTest {
                 .thenReturn(testHead2);
 
         // execute
-        val actual = headSearcher.getHeads(testSearchTerm);
+        final var actual = headSearcher.getHeads(testSearchTerm);
 
         // verify
         assertThat(actual, containsInAnyOrder(testHead1, testHead2));
@@ -259,17 +258,17 @@ class HeadSearcherImplTest {
     @Test
     void getHeadsSearchTermNeedsUpdateHeadsNotFound() {
         // prepare
-        val testSearchTerm = "SearchTerm";
-        val testDatabaseName = "DatabaseName";
+        final var testSearchTerm = "SearchTerm";
+        final var testDatabaseName = "DatabaseName";
 
-        val testSearchEntity = mock(SearchEntity.class);
-        val testSearchProperties = new HeadspluginProperties.Search();
+        final var testSearchEntity = mock(SearchEntity.class);
+        final var testSearchProperties = new HeadspluginProperties.Search();
         testSearchProperties.getUpdate().setInterval(4);
-        val testSearchable = mock(Searchable.class);
-        val testHeadEntity1 = mock(HeadEntity.class);
-        val testHeadEntity2 = mock(HeadEntity.class);
-        val testHead1 = Head.builder().name("Head1").build();
-        val testHead2 = Head.builder().name("Head2").build();
+        final var testSearchable = mock(Searchable.class);
+        final var testHeadEntity1 = mock(HeadEntity.class);
+        final var testHeadEntity2 = mock(HeadEntity.class);
+        final var testHead1 = Head.builder().name("Head1").build();
+        final var testHead2 = Head.builder().name("Head2").build();
 
         when(profiler.runProfiled(eq(Level.INFO), contains(testSearchTerm), isA(Supplier.class)))
                 .thenAnswer(invocation -> {
@@ -306,7 +305,7 @@ class HeadSearcherImplTest {
                 .thenReturn(testHead2);
 
         // execute
-        val actual = headSearcher.getHeads(testSearchTerm);
+        final var actual = headSearcher.getHeads(testSearchTerm);
 
         // verify
         assertThat(actual, containsInAnyOrder(testHead1, testHead2));
@@ -319,25 +318,25 @@ class HeadSearcherImplTest {
     @Test
     void getHeadsSearchTermNeedsUpdateHeadsFound() {
         // prepare
-        val testSearchTerm = "SearchTerm";
-        val testDatabaseName = "DatabaseName";
+        final var testSearchTerm = "SearchTerm";
+        final var testDatabaseName = "DatabaseName";
 
-        val testSearchEntity = mock(SearchEntity.class);
-        val testSearchProperties = new HeadspluginProperties.Search();
+        final var testSearchEntity = mock(SearchEntity.class);
+        final var testSearchProperties = new HeadspluginProperties.Search();
         testSearchProperties.getUpdate().setInterval(4);
-        val testSearchable = mock(Searchable.class);
-        val testHeadEntity1 = mock(HeadEntity.class);
-        val testHeadEntity2 = mock(HeadEntity.class);
-        val testNewHeadEntity1 = mock(HeadEntity.class);
-        val testNewHeadEntity2 = mock(HeadEntity.class);
-        val testDatabaseEntity = mock(DatabaseEntity.class);
-        val testSearchTermHeadEntity = mock(HeadEntity.class);
-        val testHead1 = Head.builder().name("Head1").build();
-        val testHead2 = Head.builder().name("Head2").build();
-        val testNewHead1 = Head.builder().name("NewHead1").build();
-        val testNewHead2 = Head.builder().name("NewHead2").build();
-        val testNewHeads = List.of(testNewHead1, testNewHead2);
-        val testSearchTermHead = Head.builder().name("SearchTermHead").build();
+        final var testSearchable = mock(Searchable.class);
+        final var testHeadEntity1 = mock(HeadEntity.class);
+        final var testHeadEntity2 = mock(HeadEntity.class);
+        final var testNewHeadEntity1 = mock(HeadEntity.class);
+        final var testNewHeadEntity2 = mock(HeadEntity.class);
+        final var testDatabaseEntity = mock(DatabaseEntity.class);
+        final var testSearchTermHeadEntity = mock(HeadEntity.class);
+        final var testHead1 = Head.builder().name("Head1").build();
+        final var testHead2 = Head.builder().name("Head2").build();
+        final var testNewHead1 = Head.builder().name("NewHead1").build();
+        final var testNewHead2 = Head.builder().name("NewHead2").build();
+        final var testNewHeads = List.of(testNewHead1, testNewHead2);
+        final var testSearchTermHead = Head.builder().name("SearchTermHead").build();
 
         when(profiler.runProfiled(eq(Level.INFO), contains(testSearchTerm), isA(Supplier.class)))
                 .thenAnswer(invocation -> {
@@ -400,7 +399,7 @@ class HeadSearcherImplTest {
                 .thenReturn(testSearchTermHead);
 
         // execute
-        val actual = headSearcher.getHeads(testSearchTerm);
+        final var actual = headSearcher.getHeads(testSearchTerm);
 
         // verify
         assertThat(actual, containsInAnyOrder(testHead1, testHead2, testNewHead1, testNewHead2, testSearchTermHead));
@@ -415,7 +414,7 @@ class HeadSearcherImplTest {
         // prepare
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class,
+        final var actualException = Assertions.assertThrows(NullPointerException.class,
                 () -> headSearcher.getHeads(null)
         );
 

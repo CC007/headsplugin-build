@@ -7,12 +7,16 @@ import com.github.cc007.headsplugin.config.properties.HeadspluginProperties;
 
 import dagger.Module;
 import dagger.Provides;
+import lombok.SneakyThrows;
 import org.bukkit.plugin.Plugin;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.representer.Representer;
 
 import javax.inject.Singleton;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Optional;
 
 @Module
@@ -36,7 +40,12 @@ public abstract class ConfigModule {
         Representer representer = new Representer();
         representer.getPropertyUtils().setSkipMissingProperties(true);
         Yaml yaml = new Yaml(configPropertiesClassLoader, representer);
-        return yaml.loadAs(plugin.getResource("config.yml"), ConfigProperties.class);
+        return yaml.loadAs(getConfigInputStream(plugin), ConfigProperties.class);
+    }
+
+    @SneakyThrows(FileNotFoundException.class)
+    private static FileInputStream getConfigInputStream(Plugin plugin) {
+        return new FileInputStream(new File(plugin.getDataFolder(), "config.yml"));
     }
 
     @Provides
