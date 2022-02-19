@@ -10,6 +10,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.mockito.MockedStatic;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -192,6 +193,7 @@ public class DummyDatabase {
         final var server = mock(Server.class);
         final var pluginManager = mock(PluginManager.class);
         final var plugin = mock(Plugin.class);
+        final var dataFolder = new File("src" + File.separator + "main" + File.separator + "resources");
 
         bukkit.when(Bukkit::getServer)
                 .thenReturn(server);
@@ -201,8 +203,8 @@ public class DummyDatabase {
                 .thenReturn(plugin);
         when(plugin.isEnabled())
                 .thenReturn(true);
-        when(plugin.getResource("config.yml"))
-                .then(invocation -> DummyDatabase.class.getClassLoader().getResourceAsStream("config.yml"));
+        when(plugin.getDataFolder())
+                .thenReturn(dataFolder);
     }
 
     public static boolean isUp() {
