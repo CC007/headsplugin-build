@@ -19,12 +19,14 @@ import com.github.cc007.headsplugin.integration.daos.interfaces.Searchable;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.ElementsIntoSet;
+import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 
 import javax.inject.Singleton;
 import java.util.Set;
 
 @Module
+@Log4j2
 public abstract class ServiceModule {
 
     @Provides
@@ -36,7 +38,9 @@ public abstract class ServiceModule {
     @Provides
     @Singleton
     static Profiler provideProfiler(ConfigProperties configProperties) {
-        return new ProfilerImpl(Level.toLevel(configProperties.getProfiler().getDefaultLogLevel(), Level.DEBUG));
+        String defaultLogLevelName = configProperties.getProfiler().getDefaultLogLevel();
+        Level defaultLogLevel = Level.toLevel(defaultLogLevelName, Level.DEBUG);
+        return new ProfilerImpl(defaultLogLevel);
     }
 
     @Provides

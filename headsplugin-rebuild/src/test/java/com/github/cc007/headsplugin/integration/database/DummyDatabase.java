@@ -3,15 +3,14 @@ package com.github.cc007.headsplugin.integration.database;
 import com.github.cc007.headsplugin.dagger.DaggerHeadsPluginComponent;
 import com.github.cc007.headsplugin.dagger.HeadsPluginComponent;
 
-import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
-import lombok.val;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.mockito.MockedStatic;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -22,10 +21,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-@Log4j2
 public class DummyDatabase {
 
-    @Getter
+    private static final Logger log = org.apache.logging.log4j.LogManager.getLogger(DummyDatabase.class);
     private static boolean up = false;
     private static HeadsPluginComponent headsPluginComponent;
 
@@ -47,52 +45,52 @@ public class DummyDatabase {
             setupBukkitExpectations(bukkit);
             if (!isUp()) {
                 System.out.println(LocalTime.now().format(DateTimeFormatter.ISO_TIME) + ": Database setup started...");
-                val transaction = headsPluginComponent.transaction();
-                val categoryRepository = headsPluginComponent.categoryRepository();
-                val databaseRepository = headsPluginComponent.databaseRepository();
-                val searchRepository = headsPluginComponent.searchRepository();
-                val tagRepository = headsPluginComponent.tagRepository();
-                val headRepository = headsPluginComponent.headRepository();
+                final var transaction = headsPluginComponent.transaction();
+                final var categoryRepository = headsPluginComponent.categoryRepository();
+                final var databaseRepository = headsPluginComponent.databaseRepository();
+                final var searchRepository = headsPluginComponent.searchRepository();
+                final var tagRepository = headsPluginComponent.tagRepository();
+                final var headRepository = headsPluginComponent.headRepository();
 
                 transaction.runTransacted(() -> {
-                    val head1_1 = headRepository.manageNew();
+                    final var head1_1 = headRepository.manageNew();
                     head1_1.setName("Head1_1");
                     head1_1.setHeadOwner(UUID.randomUUID().toString());
                     head1_1.setValue("Value1_1");
 
-                    val head1_2 = headRepository.manageNew();
+                    final var head1_2 = headRepository.manageNew();
                     head1_2.setName("Head1_2");
                     head1_2.setHeadOwner(UUID.randomUUID().toString());
                     head1_2.setValue("Value1_2");
 
-                    val category1 = categoryRepository.manageNew();
+                    final var category1 = categoryRepository.manageNew();
                     category1.setName("Category1");
                     category1.setLastUpdated(LocalDateTime.now());
                     category1.addhead(head1_1);
                     category1.addhead(head1_2);
 
-                    val head2_1 = headRepository.manageNew();
+                    final var head2_1 = headRepository.manageNew();
                     head2_1.setName("Head2_1");
                     head2_1.setHeadOwner(UUID.randomUUID().toString());
                     head2_1.setValue("Value2_1");
 
-                    val head2_2 = headRepository.manageNew();
+                    final var head2_2 = headRepository.manageNew();
                     head2_2.setName("Head2_2");
                     head2_2.setHeadOwner(UUID.randomUUID().toString());
                     head2_2.setValue("Value2_2");
 
-                    val category2 = categoryRepository.manageNew();
+                    final var category2 = categoryRepository.manageNew();
                     category2.setName("Category2");
                     category2.setLastUpdated(LocalDateTime.now());
                     category2.addhead(head2_1);
                     category2.addhead(head2_2);
 
-                    val tag = tagRepository.manageNew();
+                    final var tag = tagRepository.manageNew();
                     tag.setName("Tag1");
                     tag.addhead(head1_1);
                     tag.addhead(head2_2);
 
-                    val database1 = databaseRepository.manageNew();
+                    final var database1 = databaseRepository.manageNew();
                     database1.setName("Database1");
                     database1.addCategory(category1);
                     database1.addCategory(category2);
@@ -102,13 +100,13 @@ public class DummyDatabase {
                     database1.addhead(head2_1);
                     database1.addhead(head2_2);
 
-                    val database2 = databaseRepository.manageNew();
+                    final var database2 = databaseRepository.manageNew();
                     database2.setName("Database2");
                     database2.addCategory(category1);
                     database2.addhead(head1_1);
                     database2.addhead(head1_2);
 
-                    val search = searchRepository.manageNew();
+                    final var search = searchRepository.manageNew();
                     search.setSearchTerm("Search1");
                     search.addhead(head1_2);
                     search.addhead(head2_2);
@@ -130,8 +128,8 @@ public class DummyDatabase {
     public static void tearDownDB(HeadsPluginComponent headsPluginComponent, boolean checkpoint) {
         if (isUp()) {
             System.out.println(LocalTime.now().format(DateTimeFormatter.ISO_TIME) + ": Database teardown started...");
-            val transaction = headsPluginComponent.transaction();
-            val entityManager = headsPluginComponent.entityManager();
+            final var transaction = headsPluginComponent.transaction();
+            final var entityManager = headsPluginComponent.entityManager();
 
             transaction.runTransacted(() -> {
                 entityManager.createNativeQuery("DROP SCHEMA \"PUBLIC\" CASCADE;").executeUpdate();
@@ -192,9 +190,10 @@ public class DummyDatabase {
      * @param bukkit the static mock of the {@link Bukkit} class
      */
     private static void setupBukkitExpectations(MockedStatic<Bukkit> bukkit) {
-        val server = mock(Server.class);
-        val pluginManager = mock(PluginManager.class);
-        val plugin = mock(Plugin.class);
+        final var server = mock(Server.class);
+        final var pluginManager = mock(PluginManager.class);
+        final var plugin = mock(Plugin.class);
+        final var dataFolder = new File("src" + File.separator + "main" + File.separator + "resources");
 
         bukkit.when(Bukkit::getServer)
                 .thenReturn(server);
@@ -204,7 +203,11 @@ public class DummyDatabase {
                 .thenReturn(plugin);
         when(plugin.isEnabled())
                 .thenReturn(true);
-        when(plugin.getResource("config.yml"))
-                .then(invocation -> DummyDatabase.class.getClassLoader().getResourceAsStream("config.yml"));
+        when(plugin.getDataFolder())
+                .thenReturn(dataFolder);
+    }
+
+    public static boolean isUp() {
+        return DummyDatabase.up;
     }
 }

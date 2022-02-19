@@ -14,7 +14,6 @@ import feign.Feign;
 import feign.codec.Decoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
-import lombok.val;
 
 import javax.inject.Singleton;
 import java.util.Set;
@@ -85,7 +84,7 @@ public abstract class FeignModule {
             GsonDecoder gsonDecoder,
             GsonEncoder gsonEncoder,
             Set<Capability> capabilities) {
-        val feignBuilder = Feign.builder()
+        final var feignBuilder = Feign.builder()
                 .decoder(gsonDecoder)
                 .encoder(gsonEncoder);
         for (Capability capability : capabilities) {

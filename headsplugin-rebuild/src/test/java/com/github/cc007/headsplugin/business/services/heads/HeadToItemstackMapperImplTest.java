@@ -8,7 +8,6 @@ import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTCompoundList;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import de.tr7zw.changeme.nbtapi.NBTListCompound;
-import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -57,22 +56,22 @@ class HeadToItemstackMapperImplTest {
     @Test
     void getItemStacksHeads() {
         // prepare
-        val name1 = "TestHead1";
-        val name2 = "TestHead2";
-        val uuid1 = UUID.randomUUID();
-        val uuid2 = UUID.randomUUID();
-        val value1 = "TestValue1";
-        val value2 = "TestValue2";
+        final var name1 = "TestHead1";
+        final var name2 = "TestHead2";
+        final var uuid1 = UUID.randomUUID();
+        final var uuid2 = UUID.randomUUID();
+        final var value1 = "TestValue1";
+        final var value2 = "TestValue2";
 
-        val expected1 = Mockito.mock(ItemStack.class);
-        val expected2 = Mockito.mock(ItemStack.class);
+        final var expected1 = Mockito.mock(ItemStack.class);
+        final var expected2 = Mockito.mock(ItemStack.class);
 
-        val head1 = Head.builder()
+        final var head1 = Head.builder()
                 .name(name1)
                 .headOwner(uuid1)
                 .value(value1)
                 .build();
-        val head2 = Head.builder()
+        final var head2 = Head.builder()
                 .name(name2)
                 .headOwner(uuid2)
                 .value(value2)
@@ -84,7 +83,7 @@ class HeadToItemstackMapperImplTest {
                 .when(headToItemstackMapper).getItemStack(head2, 1);
 
         // execute
-        val actual = headToItemstackMapper.getItemStacks(List.of(head1, head2));
+        final var actual = headToItemstackMapper.getItemStacks(List.of(head1, head2));
 
         // verify
         verify(headToItemstackMapper).getItemStack(head1, 1);
@@ -98,7 +97,7 @@ class HeadToItemstackMapperImplTest {
         // prepare
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+        final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                 headToItemstackMapper.getItemStacks(null)
         );
 
@@ -109,23 +108,23 @@ class HeadToItemstackMapperImplTest {
     @Test
     void getItemStacksHeadsQuantity() {
         // prepare
-        val name1 = "TestHead1";
-        val name2 = "TestHead2";
-        val uuid1 = UUID.randomUUID();
-        val uuid2 = UUID.randomUUID();
-        val value1 = "TestValue1";
-        val value2 = "TestValue2";
-        val quantity = 42;
+        final var name1 = "TestHead1";
+        final var name2 = "TestHead2";
+        final var uuid1 = UUID.randomUUID();
+        final var uuid2 = UUID.randomUUID();
+        final var value1 = "TestValue1";
+        final var value2 = "TestValue2";
+        final var quantity = 42;
 
-        val expected1 = Mockito.mock(ItemStack.class);
-        val expected2 = Mockito.mock(ItemStack.class);
+        final var expected1 = Mockito.mock(ItemStack.class);
+        final var expected2 = Mockito.mock(ItemStack.class);
 
-        val head1 = Head.builder()
+        final var head1 = Head.builder()
                 .name(name1)
                 .headOwner(uuid1)
                 .value(value1)
                 .build();
-        val head2 = Head.builder()
+        final var head2 = Head.builder()
                 .name(name2)
                 .headOwner(uuid2)
                 .value(value2)
@@ -137,7 +136,7 @@ class HeadToItemstackMapperImplTest {
                 .when(headToItemstackMapper).getItemStack(head2, 42);
 
         // execute
-        val actual = headToItemstackMapper.getItemStacks(List.of(head1, head2), 42);
+        final var actual = headToItemstackMapper.getItemStacks(List.of(head1, head2), 42);
 
         // verify
         verify(headToItemstackMapper).getItemStack(head1, 42);
@@ -151,7 +150,7 @@ class HeadToItemstackMapperImplTest {
         // prepare
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+        final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                 headToItemstackMapper.getItemStacks(null, 42)
         );
 
@@ -162,13 +161,13 @@ class HeadToItemstackMapperImplTest {
     @Test
     void getItemStackHead() {
         // prepare
-        val name = "TestHead";
-        val uuid = UUID.randomUUID();
-        val value = "TestValue";
+        final var name = "TestHead";
+        final var uuid = UUID.randomUUID();
+        final var value = "TestValue";
 
-        val expected = Mockito.mock(ItemStack.class);
+        final var expected = Mockito.mock(ItemStack.class);
 
-        val head = Head.builder()
+        final var head = Head.builder()
                 .name(name)
                 .headOwner(uuid)
                 .value(value)
@@ -178,7 +177,7 @@ class HeadToItemstackMapperImplTest {
                 .when(headToItemstackMapper).getItemStack(head, 1);
 
         // execute
-        val actual = headToItemstackMapper.getItemStack(head);
+        final var actual = headToItemstackMapper.getItemStack(head);
 
         // verify
         verify(headToItemstackMapper).getItemStack(head, 1);
@@ -191,7 +190,7 @@ class HeadToItemstackMapperImplTest {
         // prepare
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+        final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                 headToItemstackMapper.getItemStack(null)
         );
 
@@ -205,32 +204,32 @@ class HeadToItemstackMapperImplTest {
         try (
                 MockedStatic<Bukkit> bukkit = Mockito.mockStatic(Bukkit.class);
         ) {
-            val encoder = Base64.getEncoder();
-            val notchUuid = UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5");
-            val name = "TestHead";
-            val uuid = UUID.randomUUID();
-            val uuidIntArray = new int[]{1, 2, 3, 4};
+            final var encoder = Base64.getEncoder();
+            final var notchUuid = UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5");
+            final var name = "TestHead";
+            final var uuid = UUID.randomUUID();
+            final var uuidIntArray = new int[]{1, 2, 3, 4};
 
             // Base64 encoded version of {"textures":{"SKIN":{"url":"http://textures.minecraft.net/texture/74e9c6e98582ffd8ff8feb3322cd1849c43fb16b158abb11ca7b42eda7743eb"}}}
-            val value = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzRlOWM2ZTk4NTgyZmZkOGZmOGZlYjMzMjJjZDE4NDljNDNmYjE2YjE1OGFiYjExY2E3YjQyZWRhNzc0M2ViIn19fQ";
-            val quantity = 42;
-            val head = Head.builder()
+            final var value = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzRlOWM2ZTk4NTgyZmZkOGZmOGZlYjMzMjJjZDE4NDljNDNmYjE2YjE1OGFiYjExY2E3YjQyZWRhNzc0M2ViIn19fQ";
+            final var quantity = 42;
+            final var head = Head.builder()
                     .name(name)
                     .headOwner(uuid)
                     .value(value)
                     .build();
 
-            val itemFactory = Mockito.mock(ItemFactory.class);
-            val skullMeta = Mockito.mock(SkullMeta.class);
-            val offlinePlayer = Mockito.mock(OfflinePlayer.class);
+            final var itemFactory = Mockito.mock(ItemFactory.class);
+            final var skullMeta = Mockito.mock(SkullMeta.class);
+            final var offlinePlayer = Mockito.mock(OfflinePlayer.class);
 
-            val nbtItem = Mockito.mock(NBTItem.class);
-            val displayCompound = Mockito.mock(NBTCompound.class);
-            val skullOwnerCompound = Mockito.mock(NBTCompound.class);
-            val propertiesCompound = Mockito.mock(NBTCompound.class);
-            val texturesCompoundList = Mockito.mock(NBTCompoundList.class);
-            val textureListCompound = Mockito.mock(NBTListCompound.class);
-            val headItemStack = Mockito.mock(ItemStack.class);
+            final var nbtItem = Mockito.mock(NBTItem.class);
+            final var displayCompound = Mockito.mock(NBTCompound.class);
+            final var skullOwnerCompound = Mockito.mock(NBTCompound.class);
+            final var propertiesCompound = Mockito.mock(NBTCompound.class);
+            final var texturesCompoundList = Mockito.mock(NBTCompoundList.class);
+            final var textureListCompound = Mockito.mock(NBTListCompound.class);
+            final var headItemStack = Mockito.mock(ItemStack.class);
 
             bukkit.when(Bukkit::getItemFactory)
                     .thenReturn(itemFactory);
@@ -266,7 +265,7 @@ class HeadToItemstackMapperImplTest {
 
 
             // execute
-            val actual = headToItemstackMapper.getItemStack(head, quantity);
+            final var actual = headToItemstackMapper.getItemStack(head, quantity);
 
             // verify
             bukkit.verify(Bukkit::getItemFactory, times(4));
@@ -290,7 +289,7 @@ class HeadToItemstackMapperImplTest {
         // prepare
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+        final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                 headToItemstackMapper.getItemStack(null, 42)
         );
 

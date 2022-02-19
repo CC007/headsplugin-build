@@ -2,7 +2,6 @@ package com.github.cc007.headsplugin.integration.database.repositories;
 
 import com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity;
 
-import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -24,8 +23,8 @@ class DatabaseRepositoryTest {
     @Test
     void findByOrCreateFromNameDatabaseNotFound() {
         // prepare
-        val testDatabaseName = "DatabaseName";
-        val testDatabaseEntity = new DatabaseEntity();
+        final var testDatabaseName = "DatabaseName";
+        final var testDatabaseEntity = new DatabaseEntity();
 
         when(databaseRepository.findByName(testDatabaseName))
                 .thenReturn(Optional.empty());
@@ -33,7 +32,7 @@ class DatabaseRepositoryTest {
                 .thenReturn(testDatabaseEntity);
 
         // execute
-        val actual = databaseRepository.findByOrCreateFromName(testDatabaseName);
+        final var actual = databaseRepository.findByOrCreateFromName(testDatabaseName);
 
         // verify
         assertThat(actual, is(aDatabaseEntityThat()
@@ -43,16 +42,16 @@ class DatabaseRepositoryTest {
     @Test
     void findByOrCreateFromNameDatabaseFound() {
         // prepare
-        val testDatabaseName = "DatabaseName";
+        final var testDatabaseName = "DatabaseName";
 
-        val testDatabaseEntity = new DatabaseEntity();
+        final var testDatabaseEntity = new DatabaseEntity();
         testDatabaseEntity.setName(testDatabaseName);
 
         when(databaseRepository.findByName(testDatabaseName))
                 .thenReturn(Optional.of(testDatabaseEntity));
 
         // execute
-        val actual = databaseRepository.findByOrCreateFromName(testDatabaseName);
+        final var actual = databaseRepository.findByOrCreateFromName(testDatabaseName);
 
         // verify
         assertThat(actual, is(aDatabaseEntityThat()

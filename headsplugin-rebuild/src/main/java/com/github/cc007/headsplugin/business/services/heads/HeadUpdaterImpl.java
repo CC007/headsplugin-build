@@ -10,7 +10,6 @@ import com.github.cc007.headsplugin.integration.database.transaction.Transaction
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.val;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,22 +28,22 @@ public class HeadUpdaterImpl implements HeadUpdater {
     @Override
     public List<HeadEntity> updateHeads(Collection<Head> foundHeads) {
         return transaction.runTransacted(() -> {
-            val foundHeadOwnerStrings = headUtils.getHeadOwnerStrings(foundHeads);
-            val storedHeadOwnerStrings = headRepository.findAllHeadOwnersByHeadOwnerIn(foundHeadOwnerStrings);
-            val newHeads = getNewHeads(foundHeads, storedHeadOwnerStrings);
-            val newHeadEntities = newHeads.stream()
+            final var foundHeadOwnerStrings = headUtils.getHeadOwnerStrings(foundHeads);
+            final var storedHeadOwnerStrings = headRepository.findAllHeadOwnersByHeadOwnerIn(foundHeadOwnerStrings);
+            final var newHeads = getNewHeads(foundHeads, storedHeadOwnerStrings);
+            final var newHeadEntities = newHeads.stream()
                     .map(headRepository::createFromHead)
                     .collect(Collectors.toList());
 
-            val storedHeads = headRepository.findAllByHeadOwnerIn(foundHeadOwnerStrings);
+            final var storedHeads = headRepository.findAllByHeadOwnerIn(foundHeadOwnerStrings);
             storedHeads.addAll(newHeadEntities);
             return storedHeads;
         });
     }
 
     private ArrayList<Head> getNewHeads(Collection<Head> foundHeads, List<String> storedHeadOwnerStrings) {
-        val newHeads = new ArrayList<Head>();
-        val newHeadOwnerStrings = new ArrayList<String>();
+        final var newHeads = new ArrayList<Head>();
+        final var newHeadOwnerStrings = new ArrayList<String>();
         foundHeads.stream()
                 .filter(foundHead -> !storedHeadOwnerStrings.contains(foundHead.getHeadOwner().toString()))
                 .filter(foundHead -> !newHeadOwnerStrings.contains(foundHead.getHeadOwner().toString()))

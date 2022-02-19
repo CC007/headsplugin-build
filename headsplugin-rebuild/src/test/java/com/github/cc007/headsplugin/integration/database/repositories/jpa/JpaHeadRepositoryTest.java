@@ -5,7 +5,6 @@ import com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntityMatcher;
 
-import lombok.val;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,7 @@ class JpaHeadRepositoryTest {
     @BeforeAll
     static void beforeAll() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
-            val databaseRepository = headsPluginComponent.databaseRepository();
+            final var databaseRepository = headsPluginComponent.databaseRepository();
 
             Optional<DatabaseEntity> database1Optional = databaseRepository.findByName("Database1");
             Assumptions.assumeTrue(database1Optional.isPresent());
@@ -56,10 +55,10 @@ class JpaHeadRepositoryTest {
     void findByHeadOwner1_2() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
             // prepare
-            val headRepository = headsPluginComponent.headRepository();
+            final var headRepository = headsPluginComponent.headRepository();
 
             // execute
-            val actual = headRepository.findByHeadOwner(headOwner1_2);
+            final var actual = headRepository.findByHeadOwner(headOwner1_2);
 
             // verify
             assertThat(actual, isPresentAnd(is(head1_2())));
@@ -70,10 +69,10 @@ class JpaHeadRepositoryTest {
     void findByHeadOwner2_1() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
             // prepare
-            val headRepository = headsPluginComponent.headRepository();
+            final var headRepository = headsPluginComponent.headRepository();
 
             // execute
-            val actual = headRepository.findByHeadOwner(headOwner2_1);
+            final var actual = headRepository.findByHeadOwner(headOwner2_1);
 
             // verify
             assertThat(actual, isPresentAnd(is(head2_1())));
@@ -85,10 +84,10 @@ class JpaHeadRepositoryTest {
     void findAllByHeadOwnerIn() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
             // prepare
-            val headRepository = headsPluginComponent.headRepository();
+            final var headRepository = headsPluginComponent.headRepository();
 
             // execute
-            val actual = headRepository.findAllByHeadOwnerIn(List.of(
+            final var actual = headRepository.findAllByHeadOwnerIn(List.of(
                     headOwner1_2,
                     headOwner2_1,
                     UUID.randomUUID().toString()
@@ -103,10 +102,10 @@ class JpaHeadRepositoryTest {
     void findAllHeadOwnersByHeadOwnerIn() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
             // prepare
-            val headRepository = headsPluginComponent.headRepository();
+            final var headRepository = headsPluginComponent.headRepository();
 
             // execute
-            val actual = headRepository.findAllHeadOwnersByHeadOwnerIn(List.of(
+            final var actual = headRepository.findAllHeadOwnersByHeadOwnerIn(List.of(
                     headOwner1_2,
                     headOwner2_1,
                     UUID.randomUUID().toString()
@@ -121,10 +120,10 @@ class JpaHeadRepositoryTest {
     void findAllByDatabases_NameAndHeadOwnerIn() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
             // prepare
-            val headRepository = headsPluginComponent.headRepository();
+            final var headRepository = headsPluginComponent.headRepository();
 
             // execute
-            val actual = headRepository.findAllByDatabases_NameAndHeadOwnerIn(
+            final var actual = headRepository.findAllByDatabases_NameAndHeadOwnerIn(
                     "Database2",
                     List.of(
                             headOwner1_2,
@@ -142,10 +141,10 @@ class JpaHeadRepositoryTest {
     void findAllByNameIgnoreCaseContainingHead2() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
             // prepare
-            val headRepository = headsPluginComponent.headRepository();
+            final var headRepository = headsPluginComponent.headRepository();
 
             // execute
-            val actual = headRepository.findAllByNameIgnoreCaseContaining("head2");
+            final var actual = headRepository.findAllByNameIgnoreCaseContaining("head2");
 
             // verify
             assertThat(actual, containsInAnyOrder(head2_1(), head2_2()));
@@ -156,10 +155,10 @@ class JpaHeadRepositoryTest {
     void findAllByNameIgnoreCaseContainingHead() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
             // prepare
-            val headRepository = headsPluginComponent.headRepository();
+            final var headRepository = headsPluginComponent.headRepository();
 
             // execute
-            val actual = headRepository.findAllByNameIgnoreCaseContaining("head");
+            final var actual = headRepository.findAllByNameIgnoreCaseContaining("head");
 
             // verify
             assertThat(actual, containsInAnyOrder(head1_1(), head1_2(), head2_1(), head2_2()));

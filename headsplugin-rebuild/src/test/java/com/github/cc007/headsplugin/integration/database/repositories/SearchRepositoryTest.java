@@ -2,7 +2,6 @@ package com.github.cc007.headsplugin.integration.database.repositories;
 
 import com.github.cc007.headsplugin.integration.database.entities.SearchEntity;
 
-import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -26,8 +25,8 @@ class SearchRepositoryTest {
     @Test
     void findByOrCreateFromSearchTermSearchNotFound() {
         // prepare
-        val testSearchTerm = "SearchTerm";
-        val testSearchEntity = new SearchEntity();
+        final var testSearchTerm = "SearchTerm";
+        final var testSearchEntity = new SearchEntity();
 
         when(searchRepository.findBySearchTerm(testSearchTerm))
                 .thenReturn(Optional.empty());
@@ -35,7 +34,7 @@ class SearchRepositoryTest {
                 .thenReturn(testSearchEntity);
 
         // execute
-        val actual = searchRepository.findByOrCreateFromSearchTerm(testSearchTerm);
+        final var actual = searchRepository.findByOrCreateFromSearchTerm(testSearchTerm);
 
         // verify
         assertThat(actual, is(aSearchEntityThat()
@@ -47,10 +46,10 @@ class SearchRepositoryTest {
     @Test
     void findByOrCreateFromSearchTermSearchFound() {
         // prepare
-        val testSearchTerm = "SearchTerm";
-        val testLastUpdated = LocalDateTime.now();
+        final var testSearchTerm = "SearchTerm";
+        final var testLastUpdated = LocalDateTime.now();
 
-        val testSearchEntity = new SearchEntity();
+        final var testSearchEntity = new SearchEntity();
         testSearchEntity.setSearchTerm(testSearchTerm);
         testSearchEntity.incrementSearchCount();
         testSearchEntity.incrementSearchCount();
@@ -60,7 +59,7 @@ class SearchRepositoryTest {
                 .thenReturn(Optional.of(testSearchEntity));
 
         // execute
-        val actual = searchRepository.findByOrCreateFromSearchTerm(testSearchTerm);
+        final var actual = searchRepository.findByOrCreateFromSearchTerm(testSearchTerm);
 
         // verify
         assertThat(actual, is(aSearchEntityThat()

@@ -2,7 +2,6 @@ package com.github.cc007.headsplugin.integration.database.repositories.jpa;
 
 import com.github.cc007.headsplugin.integration.database.DummyDatabase;
 
-import lombok.val;
 import org.junit.jupiter.api.Test;
 
 import static com.github.cc007.headsplugin.integration.database.entities.HeadEntityMatcher.aHeadEntityThat;
@@ -18,10 +17,10 @@ class JpaSearchRepositoryTest {
     void findBySearchTermSearch1() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
             // prepare
-            val searchRepository = headsPluginComponent.searchRepository();
+            final var searchRepository = headsPluginComponent.searchRepository();
 
             // execute
-            val actual = searchRepository.findBySearchTerm("Search1");
+            final var actual = searchRepository.findBySearchTerm("Search1");
 
             // verify
             assertThat(actual, isPresentAnd(is(aSearchEntityThat()

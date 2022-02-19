@@ -55,7 +55,7 @@ public class HeadEntity {
 
     @ToString.Exclude
     @ManyToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "heads"
     )
@@ -65,7 +65,7 @@ public class HeadEntity {
 
     @ToString.Exclude
     @ManyToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "heads"
     )
@@ -75,7 +75,7 @@ public class HeadEntity {
 
     @ToString.Exclude
     @ManyToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "heads"
     )

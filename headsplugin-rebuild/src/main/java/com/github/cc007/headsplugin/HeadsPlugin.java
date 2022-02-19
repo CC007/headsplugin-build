@@ -6,7 +6,6 @@ import com.github.cc007.headsplugin.dagger.DaggerHeadsPluginComponent;
 import com.github.cc007.headsplugin.dagger.HeadsPluginComponent;
 
 import lombok.extern.log4j.Log4j2;
-import lombok.val;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -36,7 +35,7 @@ public class HeadsPlugin extends JavaPlugin {
         // Configure BStats metrics
         Metrics metrics = new Metrics(this, 5874);
 
-        val mainThread = Thread.currentThread();
+        final var mainThread = Thread.currentThread();
         defaultClassLoader = mainThread.getContextClassLoader();
         mainThread.setContextClassLoader(getClassLoader());
         headsPluginComponent = DaggerHeadsPluginComponent.builder()
@@ -55,7 +54,7 @@ public class HeadsPlugin extends JavaPlugin {
     }
 
     private void shutdownDatabase() {
-        val entityManager = headsPluginComponent.entityManager();
+        final var entityManager = headsPluginComponent.entityManager();
         entityManager.getTransaction().begin();
         entityManager.createNativeQuery("CHECKPOINT;").executeUpdate();
         entityManager.createNativeQuery("SHUTDOWN;").executeUpdate();

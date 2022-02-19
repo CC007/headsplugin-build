@@ -2,7 +2,6 @@ package com.github.cc007.headsplugin.integration.database.repositories;
 
 import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
 
-import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -27,8 +26,8 @@ class CategoryRepositoryTest {
     @Test
     void findByOrCreateFromNameCategoryNotFound() {
         // prepare
-        val testCategoryName = "CategoryName";
-        val testCategoryEntity = new CategoryEntity();
+        final var testCategoryName = "CategoryName";
+        final var testCategoryEntity = new CategoryEntity();
 
         when(categoryRepository.findByName(testCategoryName))
                 .thenReturn(Optional.empty());
@@ -36,7 +35,7 @@ class CategoryRepositoryTest {
                 .thenReturn(testCategoryEntity);
 
         // execute
-        val actual = categoryRepository.findByOrCreateFromName(testCategoryName);
+        final var actual = categoryRepository.findByOrCreateFromName(testCategoryName);
 
         // verify
         assertThat(actual, is(aCategoryEntityThat()
@@ -47,10 +46,10 @@ class CategoryRepositoryTest {
     @Test
     void findByOrCreateFromNameCategoryFound() {
         // prepare
-        val testCategoryName = "CategoryName";
-        val testLastUpdated = LocalDateTime.now();
+        final var testCategoryName = "CategoryName";
+        final var testLastUpdated = LocalDateTime.now();
 
-        val testCategoryEntity = new CategoryEntity();
+        final var testCategoryEntity = new CategoryEntity();
         testCategoryEntity.setName(testCategoryName);
         testCategoryEntity.setLastUpdated(testLastUpdated);
 
@@ -58,7 +57,7 @@ class CategoryRepositoryTest {
                 .thenReturn(Optional.of(testCategoryEntity));
 
         // execute
-        val actual = categoryRepository.findByOrCreateFromName(testCategoryName);
+        final var actual = categoryRepository.findByOrCreateFromName(testCategoryName);
 
         // verify
         assertThat(actual, is(aCategoryEntityThat()

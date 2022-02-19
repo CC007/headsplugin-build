@@ -2,7 +2,6 @@ package com.github.cc007.headsplugin.business.services.heads.utils;
 
 import com.github.cc007.headsplugin.integration.daos.interfaces.Categorizable;
 
-import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,9 +32,9 @@ class CategoryUtilsImplTest {
     @Test
     void getCategoryMap() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategorizable = Mockito.mock(Categorizable.class);
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategorizable = Mockito.mock(Categorizable.class);
 
         when(categorizables.iterator())
                 .thenReturn(List.of(testCategorizable).iterator());
@@ -44,8 +43,8 @@ class CategoryUtilsImplTest {
                 .thenReturn(List.of(testCategoryName1, testCategoryName2));
 
         // execute
-        val actual1 = categorizableUtils.getCategoryMap();
-        val actual2 = categorizableUtils.getCategoryMap();
+        final var actual1 = categorizableUtils.getCategoryMap();
+        final var actual2 = categorizableUtils.getCategoryMap();
 
         // verify
         assertThat(actual1, is(sameInstance(actual2)));
@@ -58,10 +57,10 @@ class CategoryUtilsImplTest {
     @Test
     void getCategoryMapWithClear() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategoryName3 = "CategoryName3";
-        val testCategorizable = Mockito.mock(Categorizable.class);
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategoryName3 = "CategoryName3";
+        final var testCategorizable = Mockito.mock(Categorizable.class);
 
         //noinspection unchecked
         when(categorizables.iterator())
@@ -78,9 +77,9 @@ class CategoryUtilsImplTest {
                 );
 
         // execute
-        val actual1 = categorizableUtils.getCategoryMap();
+        final var actual1 = categorizableUtils.getCategoryMap();
         categorizableUtils.clearCategoryMap();
-        val actual2 = categorizableUtils.getCategoryMap();
+        final var actual2 = categorizableUtils.getCategoryMap();
 
         // verify
         assertThat(actual1, is(not(sameInstance(actual2))));
@@ -97,11 +96,11 @@ class CategoryUtilsImplTest {
     @Test
     void getCategoryMapWithCommonCategoryName() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategoryName3 = "CategoryName3";
-        val testCategorizable1 = Mockito.mock(Categorizable.class);
-        val testCategorizable2 = Mockito.mock(Categorizable.class);
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategoryName3 = "CategoryName3";
+        final var testCategorizable1 = Mockito.mock(Categorizable.class);
+        final var testCategorizable2 = Mockito.mock(Categorizable.class);
 
         when(categorizables.iterator())
                 .thenReturn(List.of(testCategorizable1, testCategorizable2).iterator());
@@ -112,7 +111,7 @@ class CategoryUtilsImplTest {
                 .thenReturn(List.of(testCategoryName2, testCategoryName3));
 
         // execute
-        val actual = categorizableUtils.getCategoryMap();
+        final var actual = categorizableUtils.getCategoryMap();
 
         // verify
         assertThat(actual.keySet(), containsInAnyOrder(testCategoryName1, testCategoryName2, testCategoryName3));

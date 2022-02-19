@@ -1,7 +1,6 @@
 package com.github.cc007.headsplugin.api;
 
 import com.github.npathai.hamcrestopt.OptionalMatchers;
-import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
@@ -26,7 +25,7 @@ class HeadsPluginApiTest {
     void getPlugin() {
         try (MockedStatic<HeadsPluginApi> headsPluginApi = mockStatic(HeadsPluginApi.class)) {
             // prepare
-            val plugin = mock(Plugin.class);
+            final var plugin = mock(Plugin.class);
 
             headsPluginApi.when(() -> HeadsPluginApi.getPlugin("HeadsPluginAPI"))
                     .thenReturn(Optional.of(plugin));
@@ -34,7 +33,7 @@ class HeadsPluginApiTest {
                     .thenCallRealMethod();
 
             // execute
-            val actual = HeadsPluginApi.getPlugin();
+            final var actual = HeadsPluginApi.getPlugin();
 
             // verify
             assertThat(actual, OptionalMatchers.isPresentAndIs(plugin));
@@ -51,7 +50,7 @@ class HeadsPluginApiTest {
                     .thenCallRealMethod();
 
             // execute
-            val actual = HeadsPluginApi.getPlugin();
+            final var actual = HeadsPluginApi.getPlugin();
 
             // verify
             assertThat(actual, isEmpty());
@@ -62,11 +61,11 @@ class HeadsPluginApiTest {
     void getPluginWithName() {
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
             // prepare
-            val pluginName = "TestPluginName";
+            final var pluginName = "TestPluginName";
 
-            val server = mock(Server.class);
-            val pluginManager = mock(PluginManager.class);
-            val plugin = mock(Plugin.class);
+            final var server = mock(Server.class);
+            final var pluginManager = mock(PluginManager.class);
+            final var plugin = mock(Plugin.class);
 
             bukkit.when(Bukkit::getServer)
                     .thenReturn(server);
@@ -79,7 +78,7 @@ class HeadsPluginApiTest {
 
 
             // execute
-            val actual = HeadsPluginApi.getPlugin(pluginName);
+            final var actual = HeadsPluginApi.getPlugin(pluginName);
 
             // verify
             assertThat(actual, OptionalMatchers.isPresentAndIs(plugin));
@@ -90,11 +89,11 @@ class HeadsPluginApiTest {
     void getPluginWithNameNotEnabled() {
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
             // prepare
-            val pluginName = "TestPluginName";
+            final var pluginName = "TestPluginName";
 
-            val server = mock(Server.class);
-            val pluginManager = mock(PluginManager.class);
-            val plugin = mock(Plugin.class);
+            final var server = mock(Server.class);
+            final var pluginManager = mock(PluginManager.class);
+            final var plugin = mock(Plugin.class);
 
             bukkit.when(Bukkit::getServer)
                     .thenReturn(server);
@@ -107,7 +106,7 @@ class HeadsPluginApiTest {
 
 
             // execute
-            val actual = HeadsPluginApi.getPlugin(pluginName);
+            final var actual = HeadsPluginApi.getPlugin(pluginName);
 
             // verify
             assertThat(actual, isEmpty());
@@ -118,10 +117,10 @@ class HeadsPluginApiTest {
     void getPluginWithNameNotFound() {
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
             // prepare
-            val pluginName = "TestPluginName";
+            final var pluginName = "TestPluginName";
 
-            val server = mock(Server.class);
-            val pluginManager = mock(PluginManager.class);
+            final var server = mock(Server.class);
+            final var pluginManager = mock(PluginManager.class);
 
             bukkit.when(Bukkit::getServer)
                     .thenReturn(server);
@@ -132,7 +131,7 @@ class HeadsPluginApiTest {
 
 
             // execute
-            val actual = HeadsPluginApi.getPlugin(pluginName);
+            final var actual = HeadsPluginApi.getPlugin(pluginName);
 
             // verify
             assertThat(actual, isEmpty());
@@ -142,12 +141,12 @@ class HeadsPluginApiTest {
     @Test
     void getAndSetHeadsPluginServices() {
         // prepare
-        val headsPluginServices = mock(HeadsPluginServices.class);
+        final var headsPluginServices = mock(HeadsPluginServices.class);
 
         // execute
-        val actual1 = HeadsPluginApi.getHeadsPluginServices();
+        final var actual1 = HeadsPluginApi.getHeadsPluginServices();
         HeadsPluginApi.setHeadsPluginServices(headsPluginServices);
-        val actual2 = HeadsPluginApi.getHeadsPluginServices();
+        final var actual2 = HeadsPluginApi.getHeadsPluginServices();
 
         // verify
         assertThat(actual1, isEmpty());
@@ -159,7 +158,7 @@ class HeadsPluginApiTest {
         // prepare
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class,
+        final var actualException = Assertions.assertThrows(NullPointerException.class,
                 () -> HeadsPluginApi.setHeadsPluginServices(null)
         );
 

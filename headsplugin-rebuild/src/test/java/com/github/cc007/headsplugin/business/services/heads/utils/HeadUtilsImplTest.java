@@ -2,7 +2,6 @@ package com.github.cc007.headsplugin.business.services.heads.utils;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 
-import lombok.val;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -24,15 +23,15 @@ class HeadUtilsImplTest {
     @Test
     void getHeadOwnerStrings() {
         // prepare
-        val head1_1 = Head.builder().name("Head1_1").headOwner(UUID.randomUUID()).build();
-        val head1_2 = Head.builder().name("Head1_2").headOwner(UUID.randomUUID()).build();
-        val head2_1 = Head.builder().name("Head2_1").headOwner(UUID.randomUUID()).build();
-        val head2_2 = Head.builder().name("Head2_2").headOwner(UUID.randomUUID()).build();
+        final var head1_1 = Head.builder().name("Head1_1").headOwner(UUID.randomUUID()).build();
+        final var head1_2 = Head.builder().name("Head1_2").headOwner(UUID.randomUUID()).build();
+        final var head2_1 = Head.builder().name("Head2_1").headOwner(UUID.randomUUID()).build();
+        final var head2_2 = Head.builder().name("Head2_2").headOwner(UUID.randomUUID()).build();
 
-        val heads = List.of(head1_1, head1_2, head2_1, head2_2);
+        final var heads = List.of(head1_1, head1_2, head2_1, head2_2);
 
         // execute
-        val actual = headUtils.getHeadOwnerStrings(heads);
+        final var actual = headUtils.getHeadOwnerStrings(heads);
 
         // verify
         assertThat(actual, contains(
@@ -48,7 +47,7 @@ class HeadUtilsImplTest {
         // prepare
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class,
+        final var actualException = Assertions.assertThrows(NullPointerException.class,
                 () -> headUtils.getHeadOwnerStrings(null)
         );
 
@@ -59,9 +58,9 @@ class HeadUtilsImplTest {
     @Test
     void getIntArrayFromUuid() {
         // prepare
-        val uuid = UUID.fromString("01234567-89ab-cdef-fedc-ba9876543210");
+        final var uuid = UUID.fromString("01234567-89ab-cdef-fedc-ba9876543210");
         // execute
-        val actual = headUtils.getIntArrayFromUuid(uuid);
+        final var actual = headUtils.getIntArrayFromUuid(uuid);
 
         // verify
         assertThat(
@@ -75,7 +74,7 @@ class HeadUtilsImplTest {
         // prepare
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class,
+        final var actualException = Assertions.assertThrows(NullPointerException.class,
                 () -> headUtils.getIntArrayFromUuid(null)
         );
 
@@ -86,10 +85,10 @@ class HeadUtilsImplTest {
     @Test
     void isEmptyForMapWithKeysAndValues() {
         // prepare
-        val testMap = Map.ofEntries(Map.entry("testEntry", List.of(1, 2, 3)));
+        final var testMap = Map.ofEntries(Map.entry("testEntry", List.of(1, 2, 3)));
 
         // execute
-        val actual = headUtils.isEmpty(testMap);
+        final var actual = headUtils.isEmpty(testMap);
 
         // verify
         assertThat(actual, is(false));
@@ -98,10 +97,10 @@ class HeadUtilsImplTest {
     @Test
     void isEmptyForMapWithKeysWithoutValues() {
         // prepare
-        val testMap = Map.<String, List<Integer>>ofEntries(Map.entry("testEntry", List.of()));
+        final var testMap = Map.<String, List<Integer>>ofEntries(Map.entry("testEntry", List.of()));
 
         // execute
-        val actual = headUtils.isEmpty(testMap);
+        final var actual = headUtils.isEmpty(testMap);
 
         // verify
         assertThat(actual, is(true));
@@ -110,10 +109,10 @@ class HeadUtilsImplTest {
     @Test
     void isEmptyForMapWithoutKeys() {
         // prepare
-        val testMap = Map.<String, List<Integer>>of();
+        final var testMap = Map.<String, List<Integer>>of();
 
         // execute
-        val actual = headUtils.isEmpty(testMap);
+        final var actual = headUtils.isEmpty(testMap);
 
         // verify
         assertThat(actual, is(true));
@@ -124,7 +123,7 @@ class HeadUtilsImplTest {
         // prepare
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class,
+        final var actualException = Assertions.assertThrows(NullPointerException.class,
                 () -> headUtils.isEmpty(null)
         );
 
