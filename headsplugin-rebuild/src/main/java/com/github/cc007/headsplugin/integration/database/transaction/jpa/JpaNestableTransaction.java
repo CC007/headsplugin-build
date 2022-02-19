@@ -65,7 +65,7 @@ public class JpaNestableTransaction implements Transaction {
 
     @Override
     public <T> T runTransacted(Supplier<T> supplier, Function<RollbackException, T> exceptionHandler, boolean clearCache) {
-        val value = new AtomicReference<T>();
+        final var value = new AtomicReference<T>();
         //noinspection CodeBlock2Expr
         runTransacted(
                 () -> {

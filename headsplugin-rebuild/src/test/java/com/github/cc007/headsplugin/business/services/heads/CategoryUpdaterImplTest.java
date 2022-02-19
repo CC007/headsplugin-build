@@ -77,13 +77,13 @@ class CategoryUpdaterImplTest {
     @Test
     void updateCategory() {
         // prepare
-        val testCategoryName1 = "CategoryName1";
-        val testCategoryName2 = "CategoryName2";
-        val testCategorizable11 = Mockito.mock(Categorizable.class);
-        val testCategorizable12 = Mockito.mock(Categorizable.class);
-        val testCategorizable21 = Mockito.mock(Categorizable.class);
-        val testSource1 = "Source1";
-        val testSource2 = "Source2";
+        final var testCategoryName1 = "CategoryName1";
+        final var testCategoryName2 = "CategoryName2";
+        final var testCategorizable11 = Mockito.mock(Categorizable.class);
+        final var testCategorizable12 = Mockito.mock(Categorizable.class);
+        final var testCategorizable21 = Mockito.mock(Categorizable.class);
+        final var testSource1 = "Source1";
+        final var testSource2 = "Source2";
         val testHead1 = Head.builder().name("Head1").build();
         val testHead2 = Head.builder().name("Head2").build();
         val testHeads11 = List.of(testHead1, testHead2);

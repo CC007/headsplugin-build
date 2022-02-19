@@ -3,9 +3,8 @@ package com.github.cc007.headsplugin.integration.database;
 import com.github.cc007.headsplugin.dagger.DaggerHeadsPluginComponent;
 import com.github.cc007.headsplugin.dagger.HeadsPluginComponent;
 
-import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
 import lombok.val;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
@@ -22,10 +21,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-@Log4j2
 public class DummyDatabase {
 
-    @Getter
+    private static final Logger log = org.apache.logging.log4j.LogManager.getLogger(DummyDatabase.class);
     private static boolean up = false;
     private static HeadsPluginComponent headsPluginComponent;
 
@@ -47,12 +45,12 @@ public class DummyDatabase {
             setupBukkitExpectations(bukkit);
             if (!isUp()) {
                 System.out.println(LocalTime.now().format(DateTimeFormatter.ISO_TIME) + ": Database setup started...");
-                val transaction = headsPluginComponent.transaction();
-                val categoryRepository = headsPluginComponent.categoryRepository();
-                val databaseRepository = headsPluginComponent.databaseRepository();
-                val searchRepository = headsPluginComponent.searchRepository();
-                val tagRepository = headsPluginComponent.tagRepository();
-                val headRepository = headsPluginComponent.headRepository();
+                final var transaction = headsPluginComponent.transaction();
+                final var categoryRepository = headsPluginComponent.categoryRepository();
+                final var databaseRepository = headsPluginComponent.databaseRepository();
+                final var searchRepository = headsPluginComponent.searchRepository();
+                final var tagRepository = headsPluginComponent.tagRepository();
+                final var headRepository = headsPluginComponent.headRepository();
 
                 transaction.runTransacted(() -> {
                     val head1_1 = headRepository.manageNew();
@@ -206,5 +204,9 @@ public class DummyDatabase {
                 .thenReturn(true);
         when(plugin.getResource("config.yml"))
                 .then(invocation -> DummyDatabase.class.getClassLoader().getResourceAsStream("config.yml"));
+    }
+
+    public static boolean isUp() {
+        return DummyDatabase.up;
     }
 }

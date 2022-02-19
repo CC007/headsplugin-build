@@ -4,7 +4,6 @@ import com.github.cc007.headsplugin.api.business.services.heads.utils.CategoryUt
 import com.github.cc007.headsplugin.integration.daos.interfaces.Categorizable;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,9 +21,9 @@ public class CategoryUtilsImpl implements CategoryUtils {
     public Map<String, Set<Categorizable>> getCategoryMap() {
         if (categoryMap == null) {
             categoryMap = new HashMap<>();
-            for (val categorizable : categorizables) {
-                for (val categoryName : categorizable.getCategoryNames()) {
-                    val categoryNameCategorizables = categoryMap.computeIfAbsent(categoryName, (key) -> new HashSet<>());
+            for (final var categorizable : categorizables) {
+                for (final var categoryName : categorizable.getCategoryNames()) {
+                    final var categoryNameCategorizables = categoryMap.computeIfAbsent(categoryName, (key) -> new HashSet<>());
                     categoryNameCategorizables.add(categorizable);
                 }
             }

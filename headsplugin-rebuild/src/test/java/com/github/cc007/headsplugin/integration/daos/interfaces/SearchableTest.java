@@ -28,14 +28,14 @@ class SearchableTest {
     @Test
     void getFirstHeadWithOneHead() {
         // prepare
-        val testSearchTerm = "SearchTerm";
-        val expected = Head.builder().name("expected").build();
+        final var testSearchTerm = "SearchTerm";
+        final var expected = Head.builder().name("expected").build();
 
         when(searchable.getHeads(testSearchTerm))
                 .thenReturn(List.of(expected));
 
         // execute
-        val actual = searchable.getFirstHead(testSearchTerm);
+        final var actual = searchable.getFirstHead(testSearchTerm);
 
         // verify
         assertThat(actual, isPresentAndIs(expected));

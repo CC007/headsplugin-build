@@ -30,12 +30,12 @@ public class JpaQueryService implements QueryService {
 
     @Override
     public <E> List<E> findAll(Class<E> entityType) {
-        val criteriaBuilder = entityManager.getCriteriaBuilder();
+        final var criteriaBuilder = entityManager.getCriteriaBuilder();
 
-        val criteriaQuery = criteriaBuilder.createQuery(entityType);
-        val root = criteriaQuery.from(entityType);
+        final var criteriaQuery = criteriaBuilder.createQuery(entityType);
+        final var root = criteriaQuery.from(entityType);
 
-        val query = entityManager.createQuery(criteriaQuery);
+        final var query = entityManager.createQuery(criteriaQuery);
 
         return getMutableResultList(query);
     }

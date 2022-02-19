@@ -26,7 +26,7 @@ class HeadsPluginApiTest {
     void getPlugin() {
         try (MockedStatic<HeadsPluginApi> headsPluginApi = mockStatic(HeadsPluginApi.class)) {
             // prepare
-            val plugin = mock(Plugin.class);
+            final var plugin = mock(Plugin.class);
 
             headsPluginApi.when(() -> HeadsPluginApi.getPlugin("HeadsPluginAPI"))
                     .thenReturn(Optional.of(plugin));
@@ -34,7 +34,7 @@ class HeadsPluginApiTest {
                     .thenCallRealMethod();
 
             // execute
-            val actual = HeadsPluginApi.getPlugin();
+            final var actual = HeadsPluginApi.getPlugin();
 
             // verify
             assertThat(actual, OptionalMatchers.isPresentAndIs(plugin));
@@ -51,7 +51,7 @@ class HeadsPluginApiTest {
                     .thenCallRealMethod();
 
             // execute
-            val actual = HeadsPluginApi.getPlugin();
+            final var actual = HeadsPluginApi.getPlugin();
 
             // verify
             assertThat(actual, isEmpty());
@@ -62,11 +62,11 @@ class HeadsPluginApiTest {
     void getPluginWithName() {
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
             // prepare
-            val pluginName = "TestPluginName";
+            final var pluginName = "TestPluginName";
 
-            val server = mock(Server.class);
-            val pluginManager = mock(PluginManager.class);
-            val plugin = mock(Plugin.class);
+            final var server = mock(Server.class);
+            final var pluginManager = mock(PluginManager.class);
+            final var plugin = mock(Plugin.class);
 
             bukkit.when(Bukkit::getServer)
                     .thenReturn(server);
@@ -79,7 +79,7 @@ class HeadsPluginApiTest {
 
 
             // execute
-            val actual = HeadsPluginApi.getPlugin(pluginName);
+            final var actual = HeadsPluginApi.getPlugin(pluginName);
 
             // verify
             assertThat(actual, OptionalMatchers.isPresentAndIs(plugin));

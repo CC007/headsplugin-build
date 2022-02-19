@@ -70,7 +70,7 @@ public class HeadSearcherImpl implements HeadSearcher {
     public List<Head> getHeads(@NonNull String searchTerm) {
         return profiler.runProfiled(Level.INFO, "Heads for " + searchTerm + " found", () ->
                 transaction.runTransacted(() -> {
-                    val search = searchRepository.findByOrCreateFromSearchTerm(searchTerm);
+                    final var search = searchRepository.findByOrCreateFromSearchTerm(searchTerm);
                     updateHeadsIfNecessary(search);
                     return getStoredHeads(search);
                 })

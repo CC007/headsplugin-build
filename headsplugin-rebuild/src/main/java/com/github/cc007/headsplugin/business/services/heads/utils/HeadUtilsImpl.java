@@ -4,7 +4,6 @@ import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
 
 import lombok.NonNull;
-import lombok.val;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,9 +23,9 @@ public class HeadUtilsImpl implements HeadUtils {
 
     @Override
     public int[] getIntArrayFromUuid(@NonNull UUID uuid) {
-        val intArray = new int[4];
-        val mostSignificantBits = uuid.getMostSignificantBits();
-        val leastSignificantBits = uuid.getLeastSignificantBits();
+        final var intArray = new int[4];
+        final var mostSignificantBits = uuid.getMostSignificantBits();
+        final var leastSignificantBits = uuid.getLeastSignificantBits();
         intArray[0] = (int) (mostSignificantBits >> 32);
         intArray[1] = (int) mostSignificantBits;
         intArray[2] = (int) (leastSignificantBits >> 32);

@@ -24,7 +24,7 @@ class PredefinedCategorizableTest {
     @Test
     void getSource() {
         // prepare
-        val expected = "DatabaseName";
+        final var expected = "DatabaseName";
 
         when(predefinedCategorizable.getDatabaseName())
                 .thenReturn(expected);

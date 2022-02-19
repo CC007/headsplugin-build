@@ -20,13 +20,13 @@ class OptionalUtilsTest {
     @Test
     void peekWhenPresent() {
         // prepare
-        val testString = "TestString";
-        val testOptionalString = Optional.of(testString);
-        val result = new AtomicReference<String>();
-        val testConsumer = (Consumer<String>) result::set;
+        final var testString = "TestString";
+        final var testOptionalString = Optional.of(testString);
+        final var result = new AtomicReference<String>();
+        final var testConsumer = (Consumer<String>) result::set;
 
         // execute
-        val actual = OptionalUtils.peek(testOptionalString, testConsumer);
+        final var actual = OptionalUtils.peek(testOptionalString, testConsumer);
 
         // verify
         assertThat(actual, isPresentAndIs(testString));
@@ -36,12 +36,12 @@ class OptionalUtilsTest {
     @Test
     void peekWhenEmpty() {
         // prepare
-        val testOptionalString = Optional.<String>empty();
-        val result = new AtomicReference<String>();
-        val testConsumer = (Consumer<String>) result::set;
+        final var testOptionalString = Optional.<String>empty();
+        final var result = new AtomicReference<String>();
+        final var testConsumer = (Consumer<String>) result::set;
 
         // execute
-        val actual = OptionalUtils.peek(testOptionalString, testConsumer);
+        final var actual = OptionalUtils.peek(testOptionalString, testConsumer);
 
         // verify
         assertThat(actual, isEmpty());
@@ -51,7 +51,7 @@ class OptionalUtilsTest {
     @Test
     void peekOptionalNull() {
         // prepare
-        val result = new AtomicReference<String>();
+        final var result = new AtomicReference<String>();
         val testConsumer = (Consumer<String>) result::set;
 
         // execute

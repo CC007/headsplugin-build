@@ -29,14 +29,14 @@ public class HeadUpdaterImpl implements HeadUpdater {
     @Override
     public List<HeadEntity> updateHeads(Collection<Head> foundHeads) {
         return transaction.runTransacted(() -> {
-            val foundHeadOwnerStrings = headUtils.getHeadOwnerStrings(foundHeads);
-            val storedHeadOwnerStrings = headRepository.findAllHeadOwnersByHeadOwnerIn(foundHeadOwnerStrings);
-            val newHeads = getNewHeads(foundHeads, storedHeadOwnerStrings);
-            val newHeadEntities = newHeads.stream()
+            final var foundHeadOwnerStrings = headUtils.getHeadOwnerStrings(foundHeads);
+            final var storedHeadOwnerStrings = headRepository.findAllHeadOwnersByHeadOwnerIn(foundHeadOwnerStrings);
+            final var newHeads = getNewHeads(foundHeads, storedHeadOwnerStrings);
+            final var newHeadEntities = newHeads.stream()
                     .map(headRepository::createFromHead)
                     .collect(Collectors.toList());
 
-            val storedHeads = headRepository.findAllByHeadOwnerIn(foundHeadOwnerStrings);
+            final var storedHeads = headRepository.findAllByHeadOwnerIn(foundHeadOwnerStrings);
             storedHeads.addAll(newHeadEntities);
             return storedHeads;
         });

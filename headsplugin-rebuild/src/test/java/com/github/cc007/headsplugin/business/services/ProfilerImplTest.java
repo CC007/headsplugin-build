@@ -65,18 +65,18 @@ class ProfilerImplTest {
     @Test
     void runProfiledWithSupplier() {
         // prepare
-        val expected = "result";
+        final var expected = "result";
 
         // execute
-        val actual = profiler.runProfiled(() -> expected);
+        final var actual = profiler.runProfiled(() -> expected);
 
         // verify
         assertThat(actual, is(expected));
 
         verify(appenderMock).append(captorLoggingEvent.capture());
-        val logEvents = captorLoggingEvent.getAllValues();
+        final var logEvents = captorLoggingEvent.getAllValues();
         assertThat(logEvents.size(), is(1));
-        val logEvent = logEvents.get(0);
+        final var logEvent = logEvents.get(0);
         assertThat(logEvent.getMessage().getFormattedMessage(), startsWith("Done in "));
     }
 

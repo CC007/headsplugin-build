@@ -20,10 +20,10 @@ class JpaCategoryRepositoryTest {
     void findAll() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
             // prepare
-            val categoryRepository = headsPluginComponent.categoryRepository();
+            final var categoryRepository = headsPluginComponent.categoryRepository();
 
             // execute
-            val actual = categoryRepository.findAll();
+            final var actual = categoryRepository.findAll();
 
             // verify
             assertThat(actual, contains(
@@ -62,10 +62,10 @@ class JpaCategoryRepositoryTest {
     void findByNameCategory1() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
             // prepare
-            val categoryRepository = headsPluginComponent.categoryRepository();
+            final var categoryRepository = headsPluginComponent.categoryRepository();
 
             // execute
-            val actual = categoryRepository.findByName("Category1");
+            final var actual = categoryRepository.findByName("Category1");
 
             // verify
             assertThat(actual, isPresentAnd(is(aCategoryEntityThat()

@@ -24,12 +24,12 @@ class HeadUtilsImplTest {
     @Test
     void getHeadOwnerStrings() {
         // prepare
-        val head1_1 = Head.builder().name("Head1_1").headOwner(UUID.randomUUID()).build();
-        val head1_2 = Head.builder().name("Head1_2").headOwner(UUID.randomUUID()).build();
-        val head2_1 = Head.builder().name("Head2_1").headOwner(UUID.randomUUID()).build();
-        val head2_2 = Head.builder().name("Head2_2").headOwner(UUID.randomUUID()).build();
+        final var head1_1 = Head.builder().name("Head1_1").headOwner(UUID.randomUUID()).build();
+        final var head1_2 = Head.builder().name("Head1_2").headOwner(UUID.randomUUID()).build();
+        final var head2_1 = Head.builder().name("Head2_1").headOwner(UUID.randomUUID()).build();
+        final var head2_2 = Head.builder().name("Head2_2").headOwner(UUID.randomUUID()).build();
 
-        val heads = List.of(head1_1, head1_2, head2_1, head2_2);
+        final var heads = List.of(head1_1, head1_2, head2_1, head2_2);
 
         // execute
         val actual = headUtils.getHeadOwnerStrings(heads);
