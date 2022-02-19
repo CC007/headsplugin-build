@@ -5,7 +5,6 @@ import feign.FeignException;
 import feign.Response;
 import feign.codec.Decoder;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -17,7 +16,7 @@ public class StatusCodeHandlerDecoder implements Decoder {
 
     @Override
     public Object decode(Response response, Type defaultType) throws IOException, FeignException {
-        val returnType = getReturnType(response, defaultType);
+        final var returnType = getReturnType(response, defaultType);
         return decoder.decode(response, returnType);
 
     }

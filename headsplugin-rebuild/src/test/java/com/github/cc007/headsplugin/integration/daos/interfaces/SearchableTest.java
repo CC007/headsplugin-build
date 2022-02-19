@@ -2,7 +2,6 @@ package com.github.cc007.headsplugin.integration.daos.interfaces;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 
-import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -44,16 +43,16 @@ class SearchableTest {
     @Test
     void getFirstHeadWithMultipleHeads() {
         // prepare
-        val testSearchTerm = "SearchTerm";
-        val expected = Head.builder().name("expected").build();
-        val second = Head.builder().name("second").build();
-        val third = Head.builder().name("third").build();
+        final var testSearchTerm = "SearchTerm";
+        final var expected = Head.builder().name("expected").build();
+        final var second = Head.builder().name("second").build();
+        final var third = Head.builder().name("third").build();
 
         when(searchable.getHeads(testSearchTerm))
                 .thenReturn(List.of(expected, second, third));
 
         // execute
-        val actual = searchable.getFirstHead(testSearchTerm);
+        final var actual = searchable.getFirstHead(testSearchTerm);
 
         // verify
         assertThat(actual, isPresentAndIs(expected));
@@ -64,13 +63,13 @@ class SearchableTest {
     @Test
     void getFirstHeadWithNoHeads() {
         // prepare
-        val testSearchTerm = "SearchTerm";
+        final var testSearchTerm = "SearchTerm";
 
         when(searchable.getHeads(testSearchTerm))
                 .thenReturn(Collections.emptyList());
 
         // execute
-        val actual = searchable.getFirstHead(testSearchTerm);
+        final var actual = searchable.getFirstHead(testSearchTerm);
 
         // verify
         assertThat(actual, isEmpty());

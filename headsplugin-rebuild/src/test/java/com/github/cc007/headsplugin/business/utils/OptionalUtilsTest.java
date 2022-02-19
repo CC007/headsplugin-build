@@ -1,6 +1,5 @@
 package com.github.cc007.headsplugin.business.utils;
 
-import lombok.val;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -52,10 +51,10 @@ class OptionalUtilsTest {
     void peekOptionalNull() {
         // prepare
         final var result = new AtomicReference<String>();
-        val testConsumer = (Consumer<String>) result::set;
+        final var testConsumer = (Consumer<String>) result::set;
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+        final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                 OptionalUtils.peek(null, testConsumer)
         );
 
@@ -67,11 +66,11 @@ class OptionalUtilsTest {
     @Test
     void peekConsumerNull() {
         // prepare
-        val testOptionalString = Optional.<String>empty();
-        val result = new AtomicReference<String>();
+        final var testOptionalString = Optional.<String>empty();
+        final var result = new AtomicReference<String>();
 
         // execute
-        val actualException = Assertions.assertThrows(NullPointerException.class, () ->
+        final var actualException = Assertions.assertThrows(NullPointerException.class, () ->
                 OptionalUtils.peek(testOptionalString, null)
         );
 

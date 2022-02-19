@@ -14,7 +14,6 @@ import com.github.cc007.headsplugin.integration.database.transaction.Transaction
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.val;
 import org.apache.logging.log4j.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -42,7 +41,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
     @Override
     public void updateCategory(String categoryName) throws IllegalArgumentException {
         transaction.runTransacted(() -> {
-            val foundHeadsBySource = requestCategoryHeads(categoryName);
+            final var foundHeadsBySource = requestCategoryHeads(categoryName);
             if (headUtils.isEmpty(foundHeadsBySource)) {
                 log.warn("No heads found for category " + categoryName + ". Skipping the update");
                 return;
@@ -54,7 +53,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
     @Override
     public void updateCategories() {
         profiler.runProfiled(Level.INFO, "Done updating all categories", () -> {
-            val categoryMap = categoryUtils.getCategoryMap();
+            final var categoryMap = categoryUtils.getCategoryMap();
             //noinspection CodeBlock2Expr
             transaction.runTransacted(() -> {
                 updateCategories(categoryMap.keySet());
@@ -65,9 +64,9 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
     @Override
     public void updateCategoriesIfNecessary() {
         profiler.runProfiled(Level.INFO, "Done updating necessary categories", () -> {
-            val categoryMap = categoryUtils.getCategoryMap();
+            final var categoryMap = categoryUtils.getCategoryMap();
             transaction.runTransacted(() -> {
-                val categoriesToBeUpdated = getCategoriesToBeUpdated(categoryMap.keySet());
+                final var categoriesToBeUpdated = getCategoriesToBeUpdated(categoryMap.keySet());
                 log.info("Found categories to be updated: " + categoriesToBeUpdated);
                 updateCategories(categoriesToBeUpdated);
             });
@@ -82,7 +81,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
 
     @Override
     public Collection<String> getUpdatableCategoryNames(boolean necessaryOnly) {
-        val categoryNames = categoryUtils.getCategoryMap().keySet();
+        final var categoryNames = categoryUtils.getCategoryMap().keySet();
         return necessaryOnly ? getCategoriesToBeUpdated(categoryNames) : categoryNames;
     }
 
@@ -93,7 +92,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
      * @return the filtered set of category names
      */
     private Collection<String> getCategoriesToBeUpdated(Collection<String> categoryNames) {
-        val categoryUpdateInterval = categoriesProperties.getUpdate().getInterval();
+        final var categoryUpdateInterval = categoriesProperties.getUpdate().getInterval();
         return profiler.runProfiled("Done filtering categories to be updated", () ->
                 categoryNames.stream()
                         .filter(categoryName -> categoryRepository.findByOrCreateFromName(categoryName)
@@ -111,7 +110,7 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
      */
     private void updateCategories(Collection<String> categoryNames) {
         categoryNames.forEach(categoryName -> {
-            val foundHeadsBySource = requestCategoryHeads(categoryName);
+            final var foundHeadsBySource = requestCategoryHeads(categoryName);
             if (headUtils.isEmpty(foundHeadsBySource)) {
                 log.warn("No heads found for category " + categoryName + ". Skipping this category");
                 return;
@@ -150,11 +149,11 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
      * @param headsBySource the heads for that category, grouped by source
      */
     private void updateCategory(String categoryName, Map<String, List<Head>> headsBySource) {
-        val category = categoryRepository.findByOrCreateFromName(categoryName);
+        final var category = categoryRepository.findByOrCreateFromName(categoryName);
         headsBySource.forEach((source, heads) -> {
-            val storedHeads = headUpdater.updateHeads(heads);
+            final var storedHeads = headUpdater.updateHeads(heads);
             storedHeads.forEach(category::addhead);
-            val database = databaseRepository.findByOrCreateFromName(source);
+            final var database = databaseRepository.findByOrCreateFromName(source);
             storedHeads.forEach(database::addhead);
             database.addCategory(category);
         });

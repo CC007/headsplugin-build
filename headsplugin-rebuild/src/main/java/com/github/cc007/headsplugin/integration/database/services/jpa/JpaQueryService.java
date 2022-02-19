@@ -5,7 +5,6 @@ import com.github.cc007.headsplugin.config.properties.ConfigProperties;
 import com.github.cc007.headsplugin.integration.database.services.QueryService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -42,7 +41,7 @@ public class JpaQueryService implements QueryService {
 
     @Override
     public <E> Optional<E> findByProperty(Class<E> entityType, String propertyName, String value) {
-        val query = queryByCondition(entityType, (cb, r) -> cb.equal(
+        final var query = queryByCondition(entityType, (cb, r) -> cb.equal(
                 r.get(propertyName),
                 value
         ));
@@ -51,7 +50,7 @@ public class JpaQueryService implements QueryService {
 
     @Override
     public <E> List<E> findAllByProperty(Class<E> entityType, String propertyName, String value) {
-        val query = queryByCondition(entityType, (cb, r) -> cb.equal(
+        final var query = queryByCondition(entityType, (cb, r) -> cb.equal(
                 r.get(propertyName),
                 value
         ));
@@ -60,7 +59,7 @@ public class JpaQueryService implements QueryService {
 
     @Override
     public <E> List<E> findAllByPropertyContaining(Class<E> entityType, String propertyName, String value) {
-        val query = queryByCondition(entityType, (criteriaBuilder, root) -> criteriaBuilder.like(
+        final var query = queryByCondition(entityType, (criteriaBuilder, root) -> criteriaBuilder.like(
                 root.get(propertyName),
                 "%" + value + "%"
         ));
@@ -69,10 +68,10 @@ public class JpaQueryService implements QueryService {
 
     @Override
     public <E> List<E> findAllByPropertyIn(Class<E> entityType, String propertyName, Collection<String> values) {
-        val resultList = new ArrayList<E>();
-        val valueGroups = CollectionUtils.partitionCollection(values, configProperties.getDatabase().getChunkSize());
-        for (val valueGroup : valueGroups) {
-            val query = queryByCondition(entityType, (criteriaBuilder, root) ->
+        final var resultList = new ArrayList<E>();
+        final var valueGroups = CollectionUtils.partitionCollection(values, configProperties.getDatabase().getChunkSize());
+        for (final var valueGroup : valueGroups) {
+            final var query = queryByCondition(entityType, (criteriaBuilder, root) ->
                     root.get(propertyName).in(valueGroup)
             );
             resultList.addAll(getMutableResultList(query));
@@ -93,12 +92,12 @@ public class JpaQueryService implements QueryService {
             Class<T> selectPropertyType,
             BiFunction<CriteriaBuilder, Root<E>, Predicate> whereCondition
     ) {
-        val criteriaBuilder = entityManager.getCriteriaBuilder();
+        final var criteriaBuilder = entityManager.getCriteriaBuilder();
 
-        val criteriaQuery = criteriaBuilder
+        final var criteriaQuery = criteriaBuilder
                 .createQuery(selectPropertyType);
 
-        val root = criteriaQuery.from(entityType);
+        final var root = criteriaQuery.from(entityType);
 
         criteriaQuery.select(selection.apply(root)).where(whereCondition.apply(criteriaBuilder, root));
 

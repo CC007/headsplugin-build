@@ -3,7 +3,6 @@ package com.github.cc007.headsplugin.integration.daos.interfaces;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 
 import lombok.NonNull;
-import lombok.val;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,7 +53,7 @@ class CategorizableTest {
         // prepare
         final var testCategoryName1 = "CategoryName1";
         final var testCategoryName2 = "CategoryName2";
-        val testCategoryHeadShared = Head.builder().name("CategoryHeadShared").build();
+        final var testCategoryHeadShared = Head.builder().name("CategoryHeadShared").build();
 
         when(categorizable.getCategoryNames())
                 .thenReturn(List.of(testCategoryName1, testCategoryName2));
@@ -65,7 +64,7 @@ class CategorizableTest {
                 .thenReturn(List.of(testCategoryHeadShared));
 
         // execute
-        val actual = categorizable.getAllCategoryHeads();
+        final var actual = categorizable.getAllCategoryHeads();
 
         // verify
         assertThat(actual, Matchers.contains(testCategoryHeadShared));

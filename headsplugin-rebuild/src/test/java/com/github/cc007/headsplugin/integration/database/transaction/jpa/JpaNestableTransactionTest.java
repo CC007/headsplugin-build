@@ -1,6 +1,5 @@
 package com.github.cc007.headsplugin.integration.database.transaction.jpa;
 
-import lombok.val;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,8 +41,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransacted() {
         // prepare
-        val runnable = mock(Runnable.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -67,8 +66,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedWithRollbackException() {
         // prepare
-        val runnable = mock(Runnable.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        final var entityTransaction = mock(EntityTransaction.class);
         var testRollbackException = new RollbackException();
 
         when(entityManager.getTransaction())
@@ -93,8 +92,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedNested() {
         // prepare
-        val runnable = mock(Runnable.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -121,8 +120,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedClearCacheTrue() {
         // prepare
-        val runnable = mock(Runnable.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -146,8 +145,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedClearCacheFalse() {
         // prepare
-        val runnable = mock(Runnable.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -169,8 +168,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedClearCacheTrueThenFalse() {
         // prepare
-        val runnable = mock(Runnable.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -195,8 +194,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedClearCacheTrueWithRollbackException() {
         // prepare
-        val runnable = mock(Runnable.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        final var entityTransaction = mock(EntityTransaction.class);
         var testRollbackException = new RollbackException();
 
         when(entityManager.getTransaction())
@@ -221,8 +220,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedClearCacheFalseWithRollbackException() {
         // prepare
-        val runnable = mock(Runnable.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        final var entityTransaction = mock(EntityTransaction.class);
         var testRollbackException = new RollbackException();
 
         when(entityManager.getTransaction())
@@ -247,8 +246,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedClearCacheTrueNested() {
         // prepare
-        val runnable = mock(Runnable.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -275,8 +274,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedClearCacheFalseTrueNested() {
         // prepare
-        val runnable = mock(Runnable.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -301,8 +300,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedClearCacheOuterTrueNested() {
         // prepare
-        val runnable = mock(Runnable.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -329,8 +328,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedClearCacheInnerTrueTrueNested() {
         // prepare
-        val runnable = mock(Runnable.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -357,9 +356,9 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedWithRollackHandler() {
         // prepare
-        val runnable = mock(Runnable.class);
-        @SuppressWarnings("unchecked") val exceptionHandler = (Consumer<RollbackException>) mock(Consumer.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        @SuppressWarnings("unchecked") final var exceptionHandler = (Consumer<RollbackException>) mock(Consumer.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -384,10 +383,10 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedWithRollackHandlerThrowingWithRollbackException() {
         // prepare
-        val runnable = mock(Runnable.class);
-        @SuppressWarnings("unchecked") val exceptionHandler = (Consumer<RollbackException>) mock(Consumer.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException = new RollbackException();
+        final var runnable = mock(Runnable.class);
+        @SuppressWarnings("unchecked") final var exceptionHandler = (Consumer<RollbackException>) mock(Consumer.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException = new RollbackException();
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -413,10 +412,10 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedWithRollackHandlerDoNothingWithRollbackException() {
         // prepare
-        val runnable = mock(Runnable.class);
-        @SuppressWarnings("unchecked") val exceptionHandler = (Consumer<RollbackException>) mock(Consumer.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException = new RollbackException();
+        final var runnable = mock(Runnable.class);
+        @SuppressWarnings("unchecked") final var exceptionHandler = (Consumer<RollbackException>) mock(Consumer.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException = new RollbackException();
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -440,9 +439,9 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedWithRollackHandlerNested() {
         // prepare
-        val runnable = mock(Runnable.class);
-        @SuppressWarnings("unchecked") val exceptionHandler = (Consumer<RollbackException>) mock(Consumer.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        final var runnable = mock(Runnable.class);
+        @SuppressWarnings("unchecked") final var exceptionHandler = (Consumer<RollbackException>) mock(Consumer.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -470,11 +469,11 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedWithRollackHandlerThrowingSameExceptionNestedWithRollbackException() {
         // prepare
-        val runnable = mock(Runnable.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException = new RollbackException("RBE");
+        final var runnable = mock(Runnable.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException = new RollbackException("RBE");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -486,7 +485,7 @@ class JpaNestableTransactionTest {
 
         // execute
         //noinspection CodeBlock2Expr
-        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+        final var actualException = Assertions.assertThrows(RollbackException.class, () ->
                 jpaNestableTransaction.runTransacted(() -> {
                     jpaNestableTransaction.runTransacted(runnable, exceptionHandlerInner);
                 }, exceptionHandlerOuter)
@@ -506,12 +505,12 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedWithRollackHandlerInnerThrowingDifferentExceptionNestedWithRollbackException() {
         // prepare
-        val runnable = mock(Runnable.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException1 = new RollbackException("RBE1");
-        val testRollbackException2 = new RollbackException("RBE2");
+        final var runnable = mock(Runnable.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException1 = new RollbackException("RBE1");
+        final var testRollbackException2 = new RollbackException("RBE2");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -523,7 +522,7 @@ class JpaNestableTransactionTest {
 
         // execute
         //noinspection CodeBlock2Expr
-        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+        final var actualException = Assertions.assertThrows(RollbackException.class, () ->
                 jpaNestableTransaction.runTransacted(() -> {
                     jpaNestableTransaction.runTransacted(runnable, exceptionHandlerInner);
                 }, exceptionHandlerOuter)
@@ -543,12 +542,12 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedWithRollackHandlerOuterThrowingDifferentExceptionNestedWithRollbackException() {
         // prepare
-        val runnable = mock(Runnable.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException1 = new RollbackException("RBE1");
-        val testRollbackException2 = new RollbackException("RBE2");
+        final var runnable = mock(Runnable.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException1 = new RollbackException("RBE1");
+        final var testRollbackException2 = new RollbackException("RBE2");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -560,7 +559,7 @@ class JpaNestableTransactionTest {
 
         // execute
         //noinspection CodeBlock2Expr
-        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+        final var actualException = Assertions.assertThrows(RollbackException.class, () ->
                 jpaNestableTransaction.runTransacted(() -> {
                     jpaNestableTransaction.runTransacted(runnable, exceptionHandlerInner);
                 }, exceptionHandlerOuter)
@@ -580,11 +579,11 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedWithRollackHandlerDoNothingNestedWithRollbackException() {
         // prepare
-        val runnable = mock(Runnable.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException = new RollbackException();
+        final var runnable = mock(Runnable.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException = new RollbackException();
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -613,11 +612,11 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedWithRollackHandlerInnerDoNothingOuterThrowingSameExceptionNestedWithRollbackException() {
         // prepare
-        val runnable = mock(Runnable.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException = new RollbackException("RBE1");
+        final var runnable = mock(Runnable.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException = new RollbackException("RBE1");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -629,7 +628,7 @@ class JpaNestableTransactionTest {
 
         // execute
         //noinspection CodeBlock2Expr
-        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+        final var actualException = Assertions.assertThrows(RollbackException.class, () ->
                 jpaNestableTransaction.runTransacted(() -> {
                     jpaNestableTransaction.runTransacted(runnable, exceptionHandlerInner);
                 }, exceptionHandlerOuter)
@@ -649,12 +648,12 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedWithRollackHandlerInnerDoNothingOuterThrowingDifferentExceptionNestedWithRollbackException() {
         // prepare
-        val runnable = mock(Runnable.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException1 = new RollbackException("RBE1");
-        val testRollbackException2 = new RollbackException("RBE2");
+        final var runnable = mock(Runnable.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException1 = new RollbackException("RBE1");
+        final var testRollbackException2 = new RollbackException("RBE2");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -666,7 +665,7 @@ class JpaNestableTransactionTest {
 
         // execute
         //noinspection CodeBlock2Expr
-        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+        final var actualException = Assertions.assertThrows(RollbackException.class, () ->
                 jpaNestableTransaction.runTransacted(() -> {
                     jpaNestableTransaction.runTransacted(runnable, exceptionHandlerInner);
                 }, exceptionHandlerOuter)
@@ -686,11 +685,11 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedWithRollackHandlerInnerThrowingSameExceptionOuterDoNothingNestedWithRollbackException() {
         // prepare
-        val runnable = mock(Runnable.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException = new RollbackException("RBE1");
+        final var runnable = mock(Runnable.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException = new RollbackException("RBE1");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -719,12 +718,12 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedWithRollackHandlerInnerThrowingDifferentExceptionOuterDoNothingNestedWithRollbackException() {
         // prepare
-        val runnable = mock(Runnable.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException1 = new RollbackException("RBE1");
-        val testRollbackException2 = new RollbackException("RBE2");
+        final var runnable = mock(Runnable.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Consumer<RollbackException>) mock(Consumer.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Consumer<RollbackException>) mock(Consumer.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException1 = new RollbackException("RBE1");
+        final var testRollbackException2 = new RollbackException("RBE2");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -757,8 +756,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValue() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -769,7 +768,7 @@ class JpaNestableTransactionTest {
         doNothing().when(entityManager).clear();
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(supplier);
+        final var actual = jpaNestableTransaction.runTransacted(supplier);
 
         // verify
         assertThat(actual, is(RETURN_VALUE));
@@ -784,8 +783,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueWithRollbackException() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        final var entityTransaction = mock(EntityTransaction.class);
         var testRollbackException = new RollbackException();
 
         when(entityManager.getTransaction())
@@ -811,8 +810,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueNested() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -823,7 +822,7 @@ class JpaNestableTransactionTest {
         doNothing().when(entityManager).clear();
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(() -> jpaNestableTransaction.runTransacted(supplier));
+        final var actual = jpaNestableTransaction.runTransacted(() -> jpaNestableTransaction.runTransacted(supplier));
 
         // verify
         assertThat(actual, is(RETURN_VALUE));
@@ -838,8 +837,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueClearCacheTrue() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -850,7 +849,7 @@ class JpaNestableTransactionTest {
         doNothing().when(entityManager).clear();
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(supplier, true);
+        final var actual = jpaNestableTransaction.runTransacted(supplier, true);
 
         // verify
         assertThat(actual, is(RETURN_VALUE));
@@ -865,8 +864,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueClearCacheFalse() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -876,7 +875,7 @@ class JpaNestableTransactionTest {
         doNothing().when(entityTransaction).commit();
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(supplier, false);
+        final var actual = jpaNestableTransaction.runTransacted(supplier, false);
 
         // verify
         assertThat(actual, is(RETURN_VALUE));
@@ -890,8 +889,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueClearCacheTrueThenFalse() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -902,8 +901,8 @@ class JpaNestableTransactionTest {
         doNothing().when(entityManager).clear();
 
         // execute
-        val actual1 = jpaNestableTransaction.runTransacted(supplier, true);
-        val actual2 = jpaNestableTransaction.runTransacted(supplier, false);
+        final var actual1 = jpaNestableTransaction.runTransacted(supplier, true);
+        final var actual2 = jpaNestableTransaction.runTransacted(supplier, false);
 
         // verify
         assertThat(actual1, is(RETURN_VALUE + 1));
@@ -919,8 +918,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueClearCacheTrueWithRollbackException() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        final var entityTransaction = mock(EntityTransaction.class);
         var testRollbackException = new RollbackException();
 
         when(entityManager.getTransaction())
@@ -946,8 +945,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueClearCacheFalseWithRollbackException() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        final var entityTransaction = mock(EntityTransaction.class);
         var testRollbackException = new RollbackException();
 
         when(entityManager.getTransaction())
@@ -973,8 +972,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueClearCacheTrueNested() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -985,7 +984,7 @@ class JpaNestableTransactionTest {
         doNothing().when(entityManager).clear();
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(
+        final var actual = jpaNestableTransaction.runTransacted(
                 () -> jpaNestableTransaction.runTransacted(supplier, true),
                 true
         );
@@ -1003,8 +1002,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueClearCacheFalseTrueNested() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1014,7 +1013,7 @@ class JpaNestableTransactionTest {
         doNothing().when(entityTransaction).commit();
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(
+        final var actual = jpaNestableTransaction.runTransacted(
                 () -> jpaNestableTransaction.runTransacted(supplier, false),
                 false
         );
@@ -1031,8 +1030,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueClearCacheOuterTrueNested() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1043,7 +1042,7 @@ class JpaNestableTransactionTest {
         doNothing().when(entityManager).clear();
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(
+        final var actual = jpaNestableTransaction.runTransacted(
                 () -> jpaNestableTransaction.runTransacted(supplier, false),
                 true
         );
@@ -1061,8 +1060,8 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueClearCacheInnerTrueTrueNested() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1073,7 +1072,7 @@ class JpaNestableTransactionTest {
         doNothing().when(entityManager).clear();
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(
+        final var actual = jpaNestableTransaction.runTransacted(
                 () -> jpaNestableTransaction.runTransacted(supplier, true),
                 false
         );
@@ -1091,9 +1090,9 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueWithRollackHandler() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        @SuppressWarnings("unchecked") val exceptionHandler = (Function<RollbackException, String>) mock(Function.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") final var exceptionHandler = (Function<RollbackException, String>) mock(Function.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1104,7 +1103,7 @@ class JpaNestableTransactionTest {
         doNothing().when(entityManager).clear();
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(supplier, exceptionHandler);
+        final var actual = jpaNestableTransaction.runTransacted(supplier, exceptionHandler);
 
         // verify
         assertThat(actual, is(RETURN_VALUE));
@@ -1120,10 +1119,10 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueWithRollackHandlerThrowingWithRollbackException() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        @SuppressWarnings("unchecked") val exceptionHandler = (Function<RollbackException, String>) mock(Function.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException = new RollbackException();
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") final var exceptionHandler = (Function<RollbackException, String>) mock(Function.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException = new RollbackException();
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1150,11 +1149,11 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueWithRollackHandlerDoNothingWithRollbackException() {
         // prepare
-        val exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        @SuppressWarnings("unchecked") val exceptionHandler = (Function<RollbackException, String>) mock(Function.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException = new RollbackException();
+        final var exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") final var exceptionHandler = (Function<RollbackException, String>) mock(Function.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException = new RollbackException();
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1166,7 +1165,7 @@ class JpaNestableTransactionTest {
                 .thenReturn(exceptionHandlerReturnValue);
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(supplier, exceptionHandler);
+        final var actual = jpaNestableTransaction.runTransacted(supplier, exceptionHandler);
 
         // verify
         assertThat(actual, is(exceptionHandlerReturnValue));
@@ -1181,9 +1180,9 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueWithRollackHandlerNested() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        @SuppressWarnings("unchecked") val exceptionHandler = (Function<RollbackException, String>) mock(Function.class);
-        val entityTransaction = mock(EntityTransaction.class);
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") final var exceptionHandler = (Function<RollbackException, String>) mock(Function.class);
+        final var entityTransaction = mock(EntityTransaction.class);
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1194,7 +1193,7 @@ class JpaNestableTransactionTest {
         doNothing().when(entityManager).clear();
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(
+        final var actual = jpaNestableTransaction.runTransacted(
                 () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandler),
                 exceptionHandler
         );
@@ -1213,11 +1212,11 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueWithRollackHandlerThrowingSameExceptionNestedWithRollbackException() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException = new RollbackException("RBE");
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException = new RollbackException("RBE");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1229,7 +1228,7 @@ class JpaNestableTransactionTest {
         doThrow(testRollbackException).when(exceptionHandlerOuter).apply(testRollbackException);
 
         // execute
-        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+        final var actualException = Assertions.assertThrows(RollbackException.class, () ->
                 jpaNestableTransaction.runTransacted(
                         () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
                         exceptionHandlerOuter
@@ -1250,12 +1249,12 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueWithRollackHandlerInnerThrowingDifferentExceptionNestedWithRollbackException() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException1 = new RollbackException("RBE1");
-        val testRollbackException2 = new RollbackException("RBE2");
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException1 = new RollbackException("RBE1");
+        final var testRollbackException2 = new RollbackException("RBE2");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1267,7 +1266,7 @@ class JpaNestableTransactionTest {
         doThrow(testRollbackException2).when(exceptionHandlerOuter).apply(testRollbackException2);
 
         // execute
-        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+        final var actualException = Assertions.assertThrows(RollbackException.class, () ->
                 jpaNestableTransaction.runTransacted(
                         () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
                         exceptionHandlerOuter
@@ -1288,12 +1287,12 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueWithRollackHandlerOuterThrowingDifferentExceptionNestedWithRollbackException() {
         // prepare
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException1 = new RollbackException("RBE1");
-        val testRollbackException2 = new RollbackException("RBE2");
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException1 = new RollbackException("RBE1");
+        final var testRollbackException2 = new RollbackException("RBE2");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1305,7 +1304,7 @@ class JpaNestableTransactionTest {
         doThrow(testRollbackException2).when(exceptionHandlerOuter).apply(testRollbackException1);
 
         // execute
-        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+        final var actualException = Assertions.assertThrows(RollbackException.class, () ->
                 jpaNestableTransaction.runTransacted(
                         () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
                         exceptionHandlerOuter
@@ -1326,13 +1325,13 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueWithRollackHandlerDoNothingNestedWithRollbackException() {
         // prepare
-        val exceptionHandlerReturnValue1 = "ExceptionHandlerReturnValue1";
-        val exceptionHandlerReturnValue2 = "ExceptionHandlerReturnValue2";
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException = new RollbackException();
+        final var exceptionHandlerReturnValue1 = "ExceptionHandlerReturnValue1";
+        final var exceptionHandlerReturnValue2 = "ExceptionHandlerReturnValue2";
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException = new RollbackException();
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1346,7 +1345,7 @@ class JpaNestableTransactionTest {
                 .thenReturn(exceptionHandlerReturnValue2);
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(
+        final var actual = jpaNestableTransaction.runTransacted(
                 () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
                 exceptionHandlerOuter
         );
@@ -1365,12 +1364,12 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueWithRollackHandlerInnerDoNothingOuterThrowingSameExceptionNestedWithRollbackException() {
         // prepare
-        val exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException = new RollbackException("RBE1");
+        final var exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException = new RollbackException("RBE1");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1383,7 +1382,7 @@ class JpaNestableTransactionTest {
         doThrow(testRollbackException).when(exceptionHandlerOuter).apply(testRollbackException);
 
         // execute
-        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+        final var actualException = Assertions.assertThrows(RollbackException.class, () ->
                 jpaNestableTransaction.runTransacted(
                         () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
                         exceptionHandlerOuter
@@ -1404,13 +1403,13 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueWithRollackHandlerInnerDoNothingOuterThrowingDifferentExceptionNestedWithRollbackException() {
         // prepare
-        val exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException1 = new RollbackException("RBE1");
-        val testRollbackException2 = new RollbackException("RBE2");
+        final var exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException1 = new RollbackException("RBE1");
+        final var testRollbackException2 = new RollbackException("RBE2");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1423,7 +1422,7 @@ class JpaNestableTransactionTest {
         doThrow(testRollbackException2).when(exceptionHandlerOuter).apply(testRollbackException1);
 
         // execute
-        val actualException = Assertions.assertThrows(RollbackException.class, () ->
+        final var actualException = Assertions.assertThrows(RollbackException.class, () ->
                 jpaNestableTransaction.runTransacted(
                         () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
                         exceptionHandlerOuter
@@ -1444,12 +1443,12 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueWithRollackHandlerInnerThrowingSameExceptionOuterDoNothingNestedWithRollbackException() {
         // prepare
-        val exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException = new RollbackException("RBE1");
+        final var exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException = new RollbackException("RBE1");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1462,7 +1461,7 @@ class JpaNestableTransactionTest {
                 .thenReturn(exceptionHandlerReturnValue);
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(
+        final var actual = jpaNestableTransaction.runTransacted(
                 () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
                 exceptionHandlerOuter
         );
@@ -1481,13 +1480,13 @@ class JpaNestableTransactionTest {
     @Test
     void runTransactedReturningValueWithRollackHandlerInnerThrowingDifferentExceptionOuterDoNothingNestedWithRollbackException() {
         // prepare
-        val exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
-        @SuppressWarnings("unchecked") val supplier = (Supplier<String>) mock(Supplier.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
-        @SuppressWarnings("unchecked") val exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
-        val entityTransaction = mock(EntityTransaction.class);
-        val testRollbackException1 = new RollbackException("RBE1");
-        val testRollbackException2 = new RollbackException("RBE2");
+        final var exceptionHandlerReturnValue = "ExceptionHandlerReturnValue";
+        @SuppressWarnings("unchecked") final var supplier = (Supplier<String>) mock(Supplier.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerInner = (Function<RollbackException, String>) mock(Function.class);
+        @SuppressWarnings("unchecked") final var exceptionHandlerOuter = (Function<RollbackException, String>) mock(Function.class);
+        final var entityTransaction = mock(EntityTransaction.class);
+        final var testRollbackException1 = new RollbackException("RBE1");
+        final var testRollbackException2 = new RollbackException("RBE2");
 
         when(entityManager.getTransaction())
                 .thenReturn(entityTransaction, entityTransaction);
@@ -1500,7 +1499,7 @@ class JpaNestableTransactionTest {
                 .thenReturn(exceptionHandlerReturnValue);
 
         // execute
-        val actual = jpaNestableTransaction.runTransacted(
+        final var actual = jpaNestableTransaction.runTransacted(
                 () -> jpaNestableTransaction.runTransacted(supplier, exceptionHandlerInner),
                 exceptionHandlerOuter
         );

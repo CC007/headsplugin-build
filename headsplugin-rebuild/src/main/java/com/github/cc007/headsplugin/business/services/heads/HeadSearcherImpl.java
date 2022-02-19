@@ -18,7 +18,6 @@ import com.github.cc007.headsplugin.integration.database.transaction.Transaction
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.val;
 import org.apache.commons.collections4.Transformer;
 import org.apache.logging.log4j.Level;
 
@@ -84,12 +83,12 @@ public class HeadSearcherImpl implements HeadSearcher {
      * @param search the search entity associated with the search term
      */
     private void updateHeadsIfNecessary(SearchEntity search) {
-        val searchTerm = search.getSearchTerm();
+        final var searchTerm = search.getSearchTerm();
         if (!needsUpdate(search)) {
             log.info("Use cached heads for: " + searchTerm);
             return;
         }
-        val foundHeadsBySource = requestHeads(searchTerm);
+        final var foundHeadsBySource = requestHeads(searchTerm);
         if (headUtils.isEmpty(foundHeadsBySource)) {
             log.info("No heads found for the search " + searchTerm + ". Skipping the update");
             return;
@@ -140,13 +139,13 @@ public class HeadSearcherImpl implements HeadSearcher {
      */
     private void updateSearch(SearchEntity search, Map<String, List<Head>> headsBySource) {
 
-        val storedHeadEntities = headRepository.findAllByNameIgnoreCaseContaining(search.getSearchTerm());
+        final var storedHeadEntities = headRepository.findAllByNameIgnoreCaseContaining(search.getSearchTerm());
         storedHeadEntities.forEach(search::addhead);
 
         headsBySource.forEach((databaseName, foundHeads) -> {
-            val headEntities = headUpdater.updateHeads(foundHeads);
+            final var headEntities = headUpdater.updateHeads(foundHeads);
             headEntities.forEach(search::addhead);
-            val database = databaseRepository.findByOrCreateFromName(databaseName);
+            final var database = databaseRepository.findByOrCreateFromName(databaseName);
             headEntities.forEach(database::addhead);
         });
 

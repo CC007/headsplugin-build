@@ -8,7 +8,6 @@ import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
-import lombok.val;
 import org.apache.commons.collections4.Transformer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,14 +64,20 @@ class CategorySearcherImplTest {
     @Test
     void getCategories() {
         // prepare
-        val testCategoryEntity1 = mock(CategoryEntity.class);
-        val testCategoryEntity2 = mock(CategoryEntity.class);
-        val testCategory1 = Category.builder().name("Category1").build();
-        val testCategory2 = Category.builder().name("Category2").build();
+        final var testCategoryEntity1 = mock(CategoryEntity.class);
+        final var testCategoryEntity2 = mock(CategoryEntity.class);
+        final var testCategory1 = Category.builder().name("Category1").build();
+        final var testCategory2 = Category.builder().name("Category2").build();
+
+        when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
+                .thenAnswer(invocation -> {
+                    Supplier<?> supplier = invocation.getArgument(1);
+                    return supplier.get();
+                });
 
         when(transaction.runTransacted(isA(Supplier.class)))
                 .thenAnswer(invocation -> {
-                    Supplier<Set<Category>> supplier = invocation.getArgument(0);
+                    Supplier<?> supplier = invocation.getArgument(0);
                     return supplier.get();
                 });
 
@@ -85,7 +90,7 @@ class CategorySearcherImplTest {
                 .thenReturn(testCategory2);
 
         // execute
-        val actual = categorySearcher.getCategories();
+        final var actual = categorySearcher.getCategories();
 
         // verify
         assertThat(actual, containsInAnyOrder(testCategory1, testCategory2));
@@ -96,16 +101,22 @@ class CategorySearcherImplTest {
     @Test
     void getCategoryHeads() {
         // prepare
-        val testCategoryName = "CategoryName";
-        val testCategoryEntity = mock(CategoryEntity.class);
-        val testHeadEntity1 = mock(HeadEntity.class);
-        val testHeadEntity2 = mock(HeadEntity.class);
-        val testHead1 = Head.builder().name("Head1").build();
-        val testHead2 = Head.builder().name("Head2").build();
+        final var testCategoryName = "CategoryName";
+        final var testCategoryEntity = mock(CategoryEntity.class);
+        final var testHeadEntity1 = mock(HeadEntity.class);
+        final var testHeadEntity2 = mock(HeadEntity.class);
+        final var testHead1 = Head.builder().name("Head1").build();
+        final var testHead2 = Head.builder().name("Head2").build();
+
+        when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
+                .thenAnswer(invocation -> {
+                    Supplier<?> supplier = invocation.getArgument(1);
+                    return supplier.get();
+                });
 
         when(transaction.runTransacted(isA(Supplier.class)))
                 .thenAnswer(invocation -> {
-                    Supplier<Set<Category>> supplier = invocation.getArgument(0);
+                    Supplier<?> supplier = invocation.getArgument(0);
                     return supplier.get();
                 });
 
@@ -121,22 +132,28 @@ class CategorySearcherImplTest {
                 .thenReturn(testHead2);
 
         // execute
-        val actual = categorySearcher.getCategoryHeads(testCategoryName);
+        final var actual = categorySearcher.getCategoryHeads(testCategoryName);
 
         // verify
         assertThat(actual, containsInAnyOrder(testHead1, testHead2));
         verifyNoMoreInteractions(testCategoryEntity, testHeadEntity1, testHeadEntity2);
-        verifyNoMoreInteractions(transaction, categoryRepository, categoryEntityToCategoryMapper);
+        verifyNoMoreInteractions(profiler, transaction, categoryRepository, categoryEntityToCategoryMapper);
     }
 
     @Test
     void getCategoryHeadsCategoryNotFound() {
         // prepare
-        val testCategoryName = "CategoryName";
+        final var testCategoryName = "CategoryName";
+
+        when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
+                .thenAnswer(invocation -> {
+                    Supplier<?> supplier = invocation.getArgument(1);
+                    return supplier.get();
+                });
 
         when(transaction.runTransacted(isA(Supplier.class)))
                 .thenAnswer(invocation -> {
-                    Supplier<Set<Category>> supplier = invocation.getArgument(0);
+                    Supplier<?> supplier = invocation.getArgument(0);
                     return supplier.get();
                 });
 
@@ -144,7 +161,7 @@ class CategorySearcherImplTest {
                 .thenReturn(Optional.empty());
 
         // execute
-        val actualException = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        final var actualException = Assertions.assertThrows(IllegalArgumentException.class, () ->
                 categorySearcher.getCategoryHeads(testCategoryName)
         );
 

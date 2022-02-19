@@ -2,7 +2,6 @@ package com.github.cc007.headsplugin.integration.database.repositories.jpa;
 
 import com.github.cc007.headsplugin.integration.database.DummyDatabase;
 
-import lombok.val;
 import org.junit.jupiter.api.Test;
 
 import static com.github.cc007.headsplugin.integration.database.entities.CategoryEntityMatcher.aCategoryEntityThat;
@@ -90,10 +89,10 @@ class JpaCategoryRepositoryTest {
     void findByNameCategory2() {
         DummyDatabase.runWithDB(headsPluginComponent -> {
             // prepare
-            val categoryRepository = headsPluginComponent.categoryRepository();
+            final var categoryRepository = headsPluginComponent.categoryRepository();
 
             // execute
-            val actual = categoryRepository.findByName("Category2");
+            final var actual = categoryRepository.findByName("Category2");
 
             // verify
             assertThat(actual, isPresentAnd(is(aCategoryEntityThat()

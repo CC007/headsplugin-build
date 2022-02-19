@@ -5,7 +5,6 @@ import com.github.cc007.headsplugin.integration.database.transaction.Transaction
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 
 import javax.persistence.EntityManager;
 import javax.persistence.RollbackException;
@@ -199,7 +198,7 @@ class LockManager {
     }
 
     public Optional<Lock> tryAcquiringLock() {
-        val lockAquired = lockContainer.tryLock();
+        final var lockAquired = lockContainer.tryLock();
         return Optional.of(lock).filter(l -> lockAquired);
     }
 

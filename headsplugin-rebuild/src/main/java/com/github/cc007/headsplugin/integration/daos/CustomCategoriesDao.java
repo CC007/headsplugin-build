@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import lombok.val;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class CustomCategoriesDao implements Categorizable {
 
     @Override
     public List<Head> getCategoryHeads(@NonNull String categoryName) {
-        val categoryHeads = new ArrayList<Head>();
+        final var categoryHeads = new ArrayList<Head>();
         for (String searchTerm : getSearchTerms(categoryName)) {
             if (searchTerm.startsWith("uuid:")) {
                 UUID uuid = UUID.fromString(searchTerm.substring(5));

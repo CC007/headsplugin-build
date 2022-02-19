@@ -1,6 +1,5 @@
 package com.github.cc007.headsplugin.business.services;
 
-import lombok.val;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
@@ -83,52 +82,52 @@ class ProfilerImplTest {
     @Test
     void runProfiledWithSupplierAndDoneMessage() {
         // prepare
-        val expected = "result";
-        val testDoneMessage = "DoneMessage";
+        final var expected = "result";
+        final var testDoneMessage = "DoneMessage";
 
         // execute
-        val actual = profiler.runProfiled(testDoneMessage, () -> expected);
+        final var actual = profiler.runProfiled(testDoneMessage, () -> expected);
 
         // verify
         assertThat(actual, is(expected));
 
         verify(appenderMock).append(captorLoggingEvent.capture());
-        val logEvents = captorLoggingEvent.getAllValues();
+        final var logEvents = captorLoggingEvent.getAllValues();
         assertThat(logEvents.size(), is(1));
-        val logEvent = logEvents.get(0);
+        final var logEvent = logEvents.get(0);
         assertThat(logEvent.getMessage().getFormattedMessage(), startsWith(testDoneMessage + " in "));
     }
 
     @Test
     void runProfiledWithSupplierAndLogLevel() {
         // prepare
-        val expected = "result";
-        val testLogLevel = Level.ERROR;
+        final var expected = "result";
+        final var testLogLevel = Level.ERROR;
 
         // execute
-        val actual = profiler.runProfiled(testLogLevel, () -> expected);
+        final var actual = profiler.runProfiled(testLogLevel, () -> expected);
 
         // verify
         assertThat(actual, is(expected));
 
         verify(appenderMock).append(captorLoggingEvent.capture());
-        val logEvents = captorLoggingEvent.getAllValues();
+        final var logEvents = captorLoggingEvent.getAllValues();
         assertThat(logEvents.size(), is(1));
-        val logEvent = logEvents.get(0);
+        final var logEvent = logEvents.get(0);
         assertThat(logEvent.getMessage().getFormattedMessage(), startsWith("Done in "));
     }
 
     @Test
     void runProfiledWithSupplierAndLogLevelWithMinLevelWarn() {
         // prepare
-        val expected = "result";
-        val testLogLevel = Level.INFO;
-        val testMinLogLevel = Level.WARN;
+        final var expected = "result";
+        final var testLogLevel = Level.INFO;
+        final var testMinLogLevel = Level.WARN;
 
         logger.setLevel(testMinLogLevel);
 
         // execute
-        val actual = profiler.runProfiled(testLogLevel, () -> expected);
+        final var actual = profiler.runProfiled(testLogLevel, () -> expected);
 
         // verify
         assertThat(actual, is(expected));
@@ -139,35 +138,35 @@ class ProfilerImplTest {
     @Test
     void runProfiledWithSupplierAndLogLevelAndDoneMessage() {
         // prepare
-        val expected = "result";
-        val testDoneMessage = "DoneMessage";
-        val testLogLevel = Level.ERROR;
+        final var expected = "result";
+        final var testDoneMessage = "DoneMessage";
+        final var testLogLevel = Level.ERROR;
 
         // execute
-        val actual = profiler.runProfiled(testLogLevel, testDoneMessage, () -> expected);
+        final var actual = profiler.runProfiled(testLogLevel, testDoneMessage, () -> expected);
 
         // verify
         assertThat(actual, is(expected));
 
         verify(appenderMock).append(captorLoggingEvent.capture());
-        val logEvents = captorLoggingEvent.getAllValues();
+        final var logEvents = captorLoggingEvent.getAllValues();
         assertThat(logEvents.size(), is(1));
-        val logEvent = logEvents.get(0);
+        final var logEvent = logEvents.get(0);
         assertThat(logEvent.getMessage().getFormattedMessage(), startsWith(testDoneMessage + " in "));
     }
 
     @Test
     void runProfiledWithSupplierAndLogLevelAndDoneMessageWithMinLevelWarn() {
         // prepare
-        val expected = "result";
-        val testDoneMessage = "DoneMessage";
-        val testLogLevel = Level.INFO;
-        val testMinLogLevel = Level.WARN;
+        final var expected = "result";
+        final var testDoneMessage = "DoneMessage";
+        final var testLogLevel = Level.INFO;
+        final var testMinLogLevel = Level.WARN;
 
         logger.setLevel(testMinLogLevel);
 
         // execute
-        val actual = profiler.runProfiled(testLogLevel, testDoneMessage, () -> expected);
+        final var actual = profiler.runProfiled(testLogLevel, testDoneMessage, () -> expected);
 
         // verify
         assertThat(actual, is(expected));
@@ -178,10 +177,10 @@ class ProfilerImplTest {
     @Test
     void runProfiledWithRunnable() {
         // prepare
-        val expected = "result";
+        final var expected = "result";
 
         // execute
-        val actual = new AtomicReference<String>();
+        final var actual = new AtomicReference<String>();
         //noinspection CodeBlock2Expr
         profiler.runProfiled(() -> {
             actual.set(expected);
@@ -191,20 +190,20 @@ class ProfilerImplTest {
         assertThat(actual.get(), is(expected));
 
         verify(appenderMock).append(captorLoggingEvent.capture());
-        val logEvents = captorLoggingEvent.getAllValues();
+        final var logEvents = captorLoggingEvent.getAllValues();
         assertThat(logEvents.size(), is(1));
-        val logEvent = logEvents.get(0);
+        final var logEvent = logEvents.get(0);
         assertThat(logEvent.getMessage().getFormattedMessage(), startsWith("Done in "));
     }
 
     @Test
     void runProfiledWithRunnableAndDoneMessage() {
         // prepare
-        val expected = "result";
-        val testDoneMessage = "DoneMessage";
+        final var expected = "result";
+        final var testDoneMessage = "DoneMessage";
 
         // execute
-        val actual = new AtomicReference<String>();
+        final var actual = new AtomicReference<String>();
         //noinspection CodeBlock2Expr
         profiler.runProfiled(testDoneMessage, () -> {
             actual.set(expected);
@@ -214,20 +213,20 @@ class ProfilerImplTest {
         assertThat(actual.get(), is(expected));
 
         verify(appenderMock).append(captorLoggingEvent.capture());
-        val logEvents = captorLoggingEvent.getAllValues();
+        final var logEvents = captorLoggingEvent.getAllValues();
         assertThat(logEvents.size(), is(1));
-        val logEvent = logEvents.get(0);
+        final var logEvent = logEvents.get(0);
         assertThat(logEvent.getMessage().getFormattedMessage(), startsWith(testDoneMessage + " in "));
     }
 
     @Test
     void runProfiledWithRunnableAndLogLevel() {
         // prepare
-        val expected = "result";
-        val testLogLevel = Level.ERROR;
+        final var expected = "result";
+        final var testLogLevel = Level.ERROR;
 
         // execute
-        val actual = new AtomicReference<String>();
+        final var actual = new AtomicReference<String>();
         //noinspection CodeBlock2Expr
         profiler.runProfiled(testLogLevel, () -> {
             actual.set(expected);
@@ -237,23 +236,23 @@ class ProfilerImplTest {
         assertThat(actual.get(), is(expected));
 
         verify(appenderMock).append(captorLoggingEvent.capture());
-        val logEvents = captorLoggingEvent.getAllValues();
+        final var logEvents = captorLoggingEvent.getAllValues();
         assertThat(logEvents.size(), is(1));
-        val logEvent = logEvents.get(0);
+        final var logEvent = logEvents.get(0);
         assertThat(logEvent.getMessage().getFormattedMessage(), startsWith("Done in "));
     }
 
     @Test
     void runProfiledWithRunnableAndLogLevelWithMinLevelWarn() {
         // prepare
-        val expected = "result";
-        val testLogLevel = Level.INFO;
-        val testMinLogLevel = Level.WARN;
+        final var expected = "result";
+        final var testLogLevel = Level.INFO;
+        final var testMinLogLevel = Level.WARN;
 
         logger.setLevel(testMinLogLevel);
 
         // execute
-        val actual = new AtomicReference<String>();
+        final var actual = new AtomicReference<String>();
         //noinspection CodeBlock2Expr
         profiler.runProfiled(testLogLevel, () -> {
             actual.set(expected);
@@ -268,12 +267,12 @@ class ProfilerImplTest {
     @Test
     void runProfiledWithRunnableAndLogLevelAndDoneMessage() {
         // prepare
-        val expected = "result";
-        val testDoneMessage = "DoneMessage";
-        val testLogLevel = Level.ERROR;
+        final var expected = "result";
+        final var testDoneMessage = "DoneMessage";
+        final var testLogLevel = Level.ERROR;
 
         // execute
-        val actual = new AtomicReference<String>();
+        final var actual = new AtomicReference<String>();
         //noinspection CodeBlock2Expr
         profiler.runProfiled(testLogLevel, testDoneMessage, () -> {
             actual.set(expected);
@@ -283,24 +282,24 @@ class ProfilerImplTest {
         assertThat(actual.get(), is(expected));
 
         verify(appenderMock).append(captorLoggingEvent.capture());
-        val logEvents = captorLoggingEvent.getAllValues();
+        final var logEvents = captorLoggingEvent.getAllValues();
         assertThat(logEvents.size(), is(1));
-        val logEvent = logEvents.get(0);
+        final var logEvent = logEvents.get(0);
         assertThat(logEvent.getMessage().getFormattedMessage(), startsWith(testDoneMessage + " in "));
     }
 
     @Test
     void runProfiledWithRunnableAndLogLevelAndDoneMessageWithMinLevelWarn() {
         // prepare
-        val expected = "result";
-        val testDoneMessage = "DoneMessage";
-        val testLogLevel = Level.INFO;
-        val testMinLogLevel = Level.WARN;
+        final var expected = "result";
+        final var testDoneMessage = "DoneMessage";
+        final var testLogLevel = Level.INFO;
+        final var testMinLogLevel = Level.WARN;
 
         logger.setLevel(testMinLogLevel);
 
         // execute
-        val actual = new AtomicReference<String>();
+        final var actual = new AtomicReference<String>();
         //noinspection CodeBlock2Expr
         profiler.runProfiled(testLogLevel, testDoneMessage, () -> {
             actual.set(expected);

@@ -10,7 +10,6 @@ import com.github.cc007.headsplugin.integration.database.transaction.Transaction
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.val;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,8 +42,8 @@ public class HeadUpdaterImpl implements HeadUpdater {
     }
 
     private ArrayList<Head> getNewHeads(Collection<Head> foundHeads, List<String> storedHeadOwnerStrings) {
-        val newHeads = new ArrayList<Head>();
-        val newHeadOwnerStrings = new ArrayList<String>();
+        final var newHeads = new ArrayList<Head>();
+        final var newHeadOwnerStrings = new ArrayList<String>();
         foundHeads.stream()
                 .filter(foundHead -> !storedHeadOwnerStrings.contains(foundHead.getHeadOwner().toString()))
                 .filter(foundHead -> !newHeadOwnerStrings.contains(foundHead.getHeadOwner().toString()))

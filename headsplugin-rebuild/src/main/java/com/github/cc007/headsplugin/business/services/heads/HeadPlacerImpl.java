@@ -7,7 +7,6 @@ import com.github.cc007.headsplugin.business.services.NbtService;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.text.StringSubstitutor;
 import org.bukkit.Location;
@@ -35,7 +34,7 @@ public class HeadPlacerImpl implements HeadPlacer {
                 "The Material of the provided ItemStack is not equal to PLAYER_HEAD"
         );
 
-        val headBlock = location.getBlock();
+        final var headBlock = location.getBlock();
         headBlock.setType(Material.PLAYER_HEAD);
 
         setRotation(headBlock, rotation);
@@ -44,7 +43,7 @@ public class HeadPlacerImpl implements HeadPlacer {
 
     @Override
     public void placeHead(@NonNull Head head, @NonNull Location location, @NonNull BlockFace rotation) {
-        val headBlock = location.getBlock();
+        final var headBlock = location.getBlock();
         headBlock.setType(Material.PLAYER_HEAD);
 
         setRotation(headBlock, rotation);
@@ -58,7 +57,7 @@ public class HeadPlacerImpl implements HeadPlacer {
                 "The Material of the provided ItemStack is not equal to PLAYER_HEAD"
         );
 
-        val wallHeadBlock = location.getBlock();
+        final var wallHeadBlock = location.getBlock();
         wallHeadBlock.setType(Material.PLAYER_WALL_HEAD);
 
         setFacing(wallHeadBlock, facing);
@@ -67,7 +66,7 @@ public class HeadPlacerImpl implements HeadPlacer {
 
     @Override
     public void placeWallHead(@NonNull Head head, @NonNull Location location, @NonNull BlockFace facing) {
-        val wallHeadBlock = location.getBlock();
+        final var wallHeadBlock = location.getBlock();
         wallHeadBlock.setType(Material.PLAYER_WALL_HEAD);
 
         setFacing(wallHeadBlock, facing);
@@ -81,7 +80,7 @@ public class HeadPlacerImpl implements HeadPlacer {
      * @param rotation  the rotation to set on the block
      */
     private void setRotation(@NonNull Block headBlock, @NonNull BlockFace rotation) {
-        val headBlockData = headBlock.getBlockData();
+        final var headBlockData = headBlock.getBlockData();
         if (headBlockData instanceof Rotatable rotatable) {
             rotatable.setRotation(rotation);
             headBlock.setBlockData(rotatable);
@@ -95,7 +94,7 @@ public class HeadPlacerImpl implements HeadPlacer {
      * @param facing        the facing direction to set on the block
      */
     private void setFacing(@NonNull Block wallHeadBlock, @NonNull BlockFace facing) {
-        val headBlockData = wallHeadBlock.getBlockData();
+        final var headBlockData = wallHeadBlock.getBlockData();
         if (headBlockData instanceof Directional directional) {
             directional.setFacing(facing);
             wallHeadBlock.setBlockData(directional);
@@ -121,7 +120,7 @@ public class HeadPlacerImpl implements HeadPlacer {
      * @return the NBT String
      */
     private String getNbtString(ItemStack headItemStack) {
-        val nbtItem = nbtService.getNbtItem(headItemStack);
+        final var nbtItem = nbtService.getNbtItem(headItemStack);
         return "{SkullOwner:" + nbtItem.getCompound("SkullOwner").toString() + "}";
     }
 
@@ -133,7 +132,7 @@ public class HeadPlacerImpl implements HeadPlacer {
      * @return the NBT String
      */
     private String getNbtString(Head head) {
-        val headMap = head.getAsMap();
+        final var headMap = head.getAsMap();
         headMap.put("headOwner", getAsIntArrayString(head.getHeadOwner()));
 
         return StringSubstitutor.replace(
@@ -149,7 +148,7 @@ public class HeadPlacerImpl implements HeadPlacer {
      * @return the NBT int array string for that UUID
      */
     private String getAsIntArrayString(UUID headOwner) {
-        val headOwnerIntArray = headUtils.getIntArrayFromUuid(headOwner);
+        final var headOwnerIntArray = headUtils.getIntArrayFromUuid(headOwner);
         String headOwnerIntArrayString = Arrays.stream(headOwnerIntArray)
                 .boxed()
                 .map(Object::toString)
