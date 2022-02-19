@@ -49,9 +49,10 @@ public abstract class ApiServiceModule {
             CategoryRepository categoryRepository,
             Transformer<CategoryEntity, Category> categoryEntityToCategoryMapper,
             Transformer<HeadEntity, Head> headEntityToHeadMapper,
-            Transaction transaction
+            Transaction transaction,
+            Profiler profiler
     ) {
-        return new CategorySearcherImpl(categoryRepository, categoryEntityToCategoryMapper, headEntityToHeadMapper, transaction);
+        return new CategorySearcherImpl(categoryRepository, categoryEntityToCategoryMapper, headEntityToHeadMapper, transaction, profiler);
     }
 
     @Provides

@@ -2,6 +2,7 @@ package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Category;
 import com.github.cc007.headsplugin.api.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.services.Profiler;
 import com.github.cc007.headsplugin.integration.database.entities.CategoryEntity;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
@@ -46,6 +47,9 @@ class CategorySearcherImplTest {
     @Mock
     Transaction transaction;
 
+    @Mock
+    Profiler profiler;
+
     CategorySearcherImpl categorySearcher;
 
     /**
@@ -55,7 +59,7 @@ class CategorySearcherImplTest {
      */
     @BeforeEach
     void setUp() {
-        categorySearcher = new CategorySearcherImpl(categoryRepository, categoryEntityToCategoryMapper, headEntityToHeadMapper, transaction);
+        categorySearcher = new CategorySearcherImpl(categoryRepository, categoryEntityToCategoryMapper, headEntityToHeadMapper, transaction, profiler);
     }
 
     @Test
