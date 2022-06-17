@@ -51,9 +51,7 @@
         <profile>
             <id>old</id>
             <modules>
-                <module>headsplugin-core</module>
                 <module>headsplugin-dependencies</module>
-                <module>headsplugin-dummy</module>
                 <module>headsplugin-parent</module>
             </modules>
         </profile>
