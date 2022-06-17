@@ -62,9 +62,8 @@
             </properties>
             <modules>
                 <module>headsplugin-dependencies</module>
-<!--                <module>headsplugin-dummy</module>-->
                 <module>headsplugin-parent</module>
-                <module>headsplugin-rebuild</module>
+                <module>headsplugin-core</module>
             </modules>
         </profile>
     </profiles>
