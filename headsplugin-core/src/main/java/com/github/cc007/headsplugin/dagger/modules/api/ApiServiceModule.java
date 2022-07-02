@@ -12,6 +12,7 @@ import com.github.cc007.headsplugin.api.business.services.heads.HeadToItemstackM
 import com.github.cc007.headsplugin.api.business.services.heads.HeadUpdater;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.CategoryUtils;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
+import com.github.cc007.headsplugin.business.services.HeadValueHelper;
 import com.github.cc007.headsplugin.business.services.NbtService;
 import com.github.cc007.headsplugin.business.services.heads.CategorySearcherImpl;
 import com.github.cc007.headsplugin.business.services.heads.CategoryUpdaterImpl;
@@ -112,9 +113,9 @@ public abstract class ApiServiceModule {
     @Singleton
     static HeadToItemstackMapper provideHeadToItemstackMapper(
             HeadUtils headUtils,
-            NbtService nbtService
+            HeadValueHelper headValueHelper
     ) {
-        return new HeadToItemstackMapperImpl(headUtils, nbtService);
+        return new HeadToItemstackMapperImpl(headUtils, headValueHelper);
     }
 
     @Provides
