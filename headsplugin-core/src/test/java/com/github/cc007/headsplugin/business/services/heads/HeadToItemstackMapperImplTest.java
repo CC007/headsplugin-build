@@ -2,7 +2,7 @@ package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
-import com.github.cc007.headsplugin.business.services.HeadValueHelper;
+import com.github.cc007.headsplugin.business.services.OwnerProfileService;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -26,7 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.net.URL;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -49,7 +48,7 @@ class HeadToItemstackMapperImplTest {
     private HeadUtils headUtils;
 
     @Mock
-    private HeadValueHelper headValueHelper;
+    private OwnerProfileService ownerProfileService;
 
     @InjectMocks
     @Spy
@@ -246,10 +245,10 @@ class HeadToItemstackMapperImplTest {
                     .thenReturn(skullMeta);
             bukkit.when(() -> Bukkit.createPlayerProfile(uuid, name))
                     .thenReturn(ownerProfile);
-            when(headValueHelper.parseHeadValue(value))
-                    .thenReturn(Optional.of(new URL(skinUrl)));
-            when(ownerProfile.getTextures())
-                    .thenReturn(textures);
+            when(ownerProfileService.createOwnerProfile(head))
+                    .thenReturn(ownerProfile);
+//            when(ownerProfile.getTextures())
+//                    .thenReturn(textures);
 
 
             // execute
@@ -258,21 +257,21 @@ class HeadToItemstackMapperImplTest {
             // verify
             bukkit.verify(Bukkit::getItemFactory, times(4));
             bukkit.verify(() -> Bukkit.getOfflinePlayer(notchUuid));
-            bukkit.verify(() -> Bukkit.createPlayerProfile(uuid, name));
+            //bukkit.verify(() -> Bukkit.createPlayerProfile(uuid, name));
             bukkit.verifyNoMoreInteractions();
 
             verify(skullMeta).setOwningPlayer(offlinePlayer);
             verify(skullMeta).setDisplayName(head.getName());
-            verify(textures).setSkin(urlCaptor.capture());
+            //verify(textures).setSkin(urlCaptor.capture());
             verify(skullMeta).setOwnerProfile(ownerProfile);
-            verifyNoMoreInteractions(headUtils, headValueHelper, itemFactory/*, skullMeta*/);
+            verifyNoMoreInteractions(headUtils, ownerProfileService, itemFactory/*, skullMeta*/);
 
             assertThat(actual.getType(), is(Material.PLAYER_HEAD));
             assertThat(actual.getAmount(), is(quantity));
             assertThat(actual.getItemMeta(), isA(SkullMeta.class));
             SkullMeta actualSkullMeta = (SkullMeta) actual.getItemMeta();
             assertThat(actualSkullMeta, notNullValue());
-            assertThat(urlCaptor.getValue().toString(), is(skinUrl));
+            //assertThat(urlCaptor.getValue().toString(), is(skinUrl));
         }
     }
 

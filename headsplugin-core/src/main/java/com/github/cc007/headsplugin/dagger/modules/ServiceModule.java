@@ -3,8 +3,8 @@ package com.github.cc007.headsplugin.dagger.modules;
 import com.github.cc007.headsplugin.api.business.services.Profiler;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.CategoryUtils;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
-import com.github.cc007.headsplugin.business.services.HeadValueHelper;
 import com.github.cc007.headsplugin.business.services.NbtService;
+import com.github.cc007.headsplugin.business.services.OwnerProfileService;
 import com.github.cc007.headsplugin.business.services.ProfilerImpl;
 import com.github.cc007.headsplugin.business.services.heads.utils.CategoryUtilsImpl;
 import com.github.cc007.headsplugin.business.services.heads.utils.HeadUtilsImpl;
@@ -38,8 +38,8 @@ public abstract class ServiceModule {
 
     @Provides
     @Singleton
-    static HeadValueHelper provideHeadValueHelper() {
-        return new HeadValueHelper();
+    static OwnerProfileService provideOwnerProfileHelper() {
+        return new OwnerProfileService();
     }
 
     @Provides

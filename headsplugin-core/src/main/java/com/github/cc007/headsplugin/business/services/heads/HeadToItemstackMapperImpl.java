@@ -3,7 +3,7 @@ package com.github.cc007.headsplugin.business.services.heads;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadToItemstackMapper;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
-import com.github.cc007.headsplugin.business.services.HeadValueHelper;
+import com.github.cc007.headsplugin.business.services.OwnerProfileService;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
     private static final UUID NOTCH_UUID = UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5");
     private static PlayerProfile cachedPlayerProfile;
     private final HeadUtils headUtils;
-    private final HeadValueHelper headValueHelper;
+    private final OwnerProfileService ownerProfileService;
 
     /**
      * Get a List of bukkit <code>ItemStack</code> objects based on the provided
@@ -97,17 +97,10 @@ public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
         headSkullMeta.ifPresentOrElse(meta -> {
             meta.setOwningPlayer(Bukkit.getOfflinePlayer(NOTCH_UUID));
             meta.setDisplayName(head.getName());
-            meta.setOwnerProfile(createOwnerProfile(meta, head));
+            meta.setOwnerProfile(ownerProfileService.createOwnerProfile(head));
             playerHeadItemStack.setItemMeta(meta);
         }, () -> {
             log.warn("Couldn't find player skull meta.");
         });
-    }
-
-    private PlayerProfile createOwnerProfile(@NonNull SkullMeta skullMeta, @NonNull Head head) {
-        final var url = headValueHelper.parseHeadValue(head.getValue());
-        final var ownerProfile = Bukkit.createPlayerProfile(head.getHeadOwner(), head.getName());
-        url.ifPresent(ownerProfile.getTextures()::setSkin);
-        return ownerProfile;
     }
 }

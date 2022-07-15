@@ -2,7 +2,6 @@ package com.github.cc007.headsplugin.business.services.heads.utils;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +10,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -49,33 +47,6 @@ class HeadUtilsImplTest {
         // execute
         final var actualException = Assertions.assertThrows(NullPointerException.class,
                 () -> headUtils.getHeadOwnerStrings(null)
-        );
-
-        // verify
-        assertThat(actualException.getMessage(), containsString("is marked non-null but is null"));
-    }
-
-    @Test
-    void getIntArrayFromUuid() {
-        // prepare
-        final var uuid = UUID.fromString("01234567-89ab-cdef-fedc-ba9876543210");
-        // execute
-        final var actual = headUtils.getIntArrayFromUuid(uuid);
-
-        // verify
-        assertThat(
-                ArrayUtils.toObject(actual),
-                is(arrayContaining(0x01234567, 0x89abcdef, 0xfedcba98, 0x76543210))
-        );
-    }
-
-    @Test
-    void getIntArrayFromUuidNull() {
-        // prepare
-
-        // execute
-        final var actualException = Assertions.assertThrows(NullPointerException.class,
-                () -> headUtils.getIntArrayFromUuid(null)
         );
 
         // verify

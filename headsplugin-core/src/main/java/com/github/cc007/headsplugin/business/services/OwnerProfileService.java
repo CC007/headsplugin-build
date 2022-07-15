@@ -1,5 +1,7 @@
 package com.github.cc007.headsplugin.business.services;
 
+import com.github.cc007.headsplugin.api.business.domain.Head;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -7,6 +9,8 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
+import org.bukkit.Bukkit;
+import org.bukkit.profile.PlayerProfile;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,12 +22,25 @@ import java.util.Optional;
  * Class for decoding and traversing the head value
  */
 @Log4j2
-public class HeadValueHelper {
+public class OwnerProfileService {
+
+    /**
+     * Create a head owner's {@link PlayerProfile} based on a given head
+     *
+     * @param head the head with the name, uuid and texture link
+     * @return the head owner's player profile
+     */
+    public PlayerProfile createOwnerProfile(@NonNull Head head) {
+        final var url = parseHeadValue(head.getValue());
+        final var ownerProfile = Bukkit.createPlayerProfile(head.getHeadOwner(), head.getName());
+        url.ifPresent(skinUrl -> ownerProfile.getTextures().setSkin(skinUrl));
+        return ownerProfile;
+    }
 
     @NonNull
-    public Optional<URL> parseHeadValue(@NonNull String headValue) {
+    private Optional<URL> parseHeadValue(@NonNull String headValue) {
         return decodeBase64(headValue)
-                .flatMap(HeadValueHelper::decodeJson)
+                .flatMap(OwnerProfileService::decodeJson)
                 .flatMap(jsonObject -> getObject(jsonObject, "textures"))
                 .flatMap(texturesObject -> getObject(texturesObject, "SKIN"))
                 .flatMap(skinObject -> getString(skinObject, "url"))
