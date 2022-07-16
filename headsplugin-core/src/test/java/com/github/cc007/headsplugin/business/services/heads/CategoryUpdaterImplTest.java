@@ -16,10 +16,16 @@ import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRe
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
 import org.apache.logging.log4j.Level;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -38,6 +44,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -62,6 +70,9 @@ class CategoryUpdaterImplTest {
     DatabaseRepository databaseRepository;
 
     @Mock
+    Plugin plugin;
+
+    @Mock
     CategoriesProperties categoriesProperties;
 
     @Mock
@@ -70,7 +81,11 @@ class CategoryUpdaterImplTest {
     @Mock
     Profiler profiler;
 
+    @Captor
+    ArgumentCaptor<Runnable> asyncCaptor;
+
     @InjectMocks
+    @Spy
     CategoryUpdaterImpl categoryUpdater;
 
     @Test
@@ -618,6 +633,27 @@ class CategoryUpdaterImplTest {
                 databaseRepository,
                 categoriesProperties
         );
+    }
+
+    @Test
+    void updateCategoriesIfNecessaryAsync() {
+        // prepare
+        try (
+                MockedStatic<Bukkit> bukkitMock = Mockito.mockStatic(Bukkit.class);
+        ) {
+            final var bukkitSchedulerMock = mock(BukkitScheduler.class);
+            bukkitMock.when(Bukkit::getScheduler)
+                    .thenReturn(bukkitSchedulerMock);
+            doNothing().when(categoryUpdater).updateCategoriesIfNecessary();
+
+            // execute
+            categoryUpdater.updateCategoriesIfNecessaryAsync();
+
+            // verify
+            verify(bukkitSchedulerMock).runTaskAsynchronously(eq(plugin), asyncCaptor.capture());
+            asyncCaptor.getValue().run();
+            verify(categoryUpdater).updateCategoriesIfNecessary();
+        }
     }
 
     @Test
