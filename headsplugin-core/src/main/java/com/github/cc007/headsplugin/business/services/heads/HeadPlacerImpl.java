@@ -141,6 +141,7 @@ public class HeadPlacerImpl implements HeadPlacer {
         final var headBlockState = headBlock.getState();
         if (headBlockState instanceof Skull skullBlock) {
             skullBlock.setOwnerProfile(ownerProfile);
+            skullBlock.update();
         }
     }
 }

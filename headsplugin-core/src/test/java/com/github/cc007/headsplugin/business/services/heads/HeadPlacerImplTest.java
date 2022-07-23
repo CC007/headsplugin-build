@@ -276,6 +276,7 @@ class HeadPlacerImplTest {
         verify(testBlock).setBlockData(testRotatable);
 
         verify(testSkull).setOwnerProfile(testPlayerProfile);
+        verify(testSkull).update();
 
         verifyNoMoreInteractions(ownerProfileService, headUtils);
         verifyNoMoreInteractions(testHeadItemStack, testWorld, testBlock, testRotatable);
@@ -320,6 +321,7 @@ class HeadPlacerImplTest {
         verify(testBlock).setBlockData(testRotatable);
 
         verify(testSkull).setOwnerProfile(testPlayerProfile);
+        verify(testSkull).update();
 
         verifyNoMoreInteractions(ownerProfileService, headUtils);
         verifyNoMoreInteractions(testWorld, testBlock, testRotatable);
@@ -366,6 +368,8 @@ class HeadPlacerImplTest {
         verify(testBlock).setBlockData(testDirectional);
 
         verify(testSkull).setOwnerProfile(testPlayerProfile);
+        verify(testSkull).update();
+
         verifyNoMoreInteractions(ownerProfileService, headUtils);
         verifyNoMoreInteractions(testHeadItemStack, testWorld, testBlock, testDirectional);
     }
@@ -408,6 +412,8 @@ class HeadPlacerImplTest {
         verify(testBlock).setBlockData(testDirectional);
 
         verify(testSkull).setOwnerProfile(testPlayerProfile);
+        verify(testSkull).update();
+
         verifyNoMoreInteractions(ownerProfileService, headUtils);
         verifyNoMoreInteractions(testWorld, testBlock, testDirectional);
     }
