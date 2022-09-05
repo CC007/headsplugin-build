@@ -14,11 +14,14 @@ public interface CategoryRepository extends Repository<CategoryEntity, Long> {
     Optional<CategoryEntity> findByName(String name);
 
     default CategoryEntity findByOrCreateFromName(String name) {
-        return findByName(name).orElseGet(() -> {
+        final var category = findByName(name).orElseGet(() -> {
             CategoryEntity newCategory = manageNew();
             newCategory.setName(name);
-            newCategory.setLastUpdated(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
             return newCategory;
         });
+        if (category.getLastUpdated() == null) {
+            category.setLastUpdated(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
+        }
+        return category;
     }
 }
