@@ -55,10 +55,14 @@ public class HeadsPlugin extends JavaPlugin {
 
     private void shutdownDatabase() {
         final var entityManager = headsPluginComponent.entityManager();
-        entityManager.getTransaction().begin();
+        final var transaction = entityManager.getTransaction();
+        if (transaction.isActive()) {
+            transaction.rollback();
+        }
+        transaction.begin();
         entityManager.createNativeQuery("CHECKPOINT;").executeUpdate();
         entityManager.createNativeQuery("SHUTDOWN;").executeUpdate();
-        entityManager.getTransaction().commit();
+        transaction.commit();
         entityManager.close();
     }
 }
