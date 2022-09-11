@@ -22,18 +22,6 @@ public class HeadUtilsImpl implements HeadUtils {
     }
 
     @Override
-    public int[] getIntArrayFromUuid(@NonNull UUID uuid) {
-        final var intArray = new int[4];
-        final var mostSignificantBits = uuid.getMostSignificantBits();
-        final var leastSignificantBits = uuid.getLeastSignificantBits();
-        intArray[0] = (int) (mostSignificantBits >> 32);
-        intArray[1] = (int) mostSignificantBits;
-        intArray[2] = (int) (leastSignificantBits >> 32);
-        intArray[3] = (int) leastSignificantBits;
-        return intArray;
-    }
-
-    @Override
     public boolean isEmpty(@NonNull Map<?, ? extends List<?>> listMap) {
         if (listMap.isEmpty()) {
             return true;

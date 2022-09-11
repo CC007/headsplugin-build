@@ -2,21 +2,20 @@ package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
-import com.github.cc007.headsplugin.business.services.NbtService;
+import com.github.cc007.headsplugin.business.services.OwnerProfileService;
 
-import de.tr7zw.changeme.nbtapi.NBTCompound;
-import de.tr7zw.changeme.nbtapi.NBTCompoundList;
-import de.tr7zw.changeme.nbtapi.NBTItem;
-import de.tr7zw.changeme.nbtapi.NBTListCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -24,6 +23,7 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.net.URL;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -32,8 +32,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -47,7 +48,7 @@ class HeadToItemstackMapperImplTest {
     private HeadUtils headUtils;
 
     @Mock
-    private NbtService nbtService;
+    private OwnerProfileService ownerProfileService;
 
     @InjectMocks
     @Spy
@@ -199,7 +200,7 @@ class HeadToItemstackMapperImplTest {
     }
 
     @Test
-    void getItemStackHeadQuantity() {
+    void getItemStackHeadQuantity() throws Exception {
         // prepare
         try (
                 MockedStatic<Bukkit> bukkit = Mockito.mockStatic(Bukkit.class);
@@ -212,6 +213,7 @@ class HeadToItemstackMapperImplTest {
 
             // Base64 encoded version of {"textures":{"SKIN":{"url":"http://textures.minecraft.net/texture/74e9c6e98582ffd8ff8feb3322cd1849c43fb16b158abb11ca7b42eda7743eb"}}}
             final var value = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzRlOWM2ZTk4NTgyZmZkOGZmOGZlYjMzMjJjZDE4NDljNDNmYjE2YjE1OGFiYjExY2E3YjQyZWRhNzc0M2ViIn19fQ";
+            final var skinUrl = "http://textures.minecraft.net/texture/74e9c6e98582ffd8ff8feb3322cd1849c43fb16b158abb11ca7b42eda7743eb";
             final var quantity = 42;
             final var head = Head.builder()
                     .name(name)
@@ -221,15 +223,11 @@ class HeadToItemstackMapperImplTest {
 
             final var itemFactory = Mockito.mock(ItemFactory.class);
             final var skullMeta = Mockito.mock(SkullMeta.class);
+            final var ownerProfile = Mockito.mock(PlayerProfile.class);
+            final var textures = Mockito.mock(PlayerTextures.class);
             final var offlinePlayer = Mockito.mock(OfflinePlayer.class);
 
-            final var nbtItem = Mockito.mock(NBTItem.class);
-            final var displayCompound = Mockito.mock(NBTCompound.class);
-            final var skullOwnerCompound = Mockito.mock(NBTCompound.class);
-            final var propertiesCompound = Mockito.mock(NBTCompound.class);
-            final var texturesCompoundList = Mockito.mock(NBTCompoundList.class);
-            final var textureListCompound = Mockito.mock(NBTListCompound.class);
-            final var headItemStack = Mockito.mock(ItemStack.class);
+            final var urlCaptor = ArgumentCaptor.forClass(URL.class);
 
             bukkit.when(Bukkit::getItemFactory)
                     .thenReturn(itemFactory);
@@ -245,23 +243,12 @@ class HeadToItemstackMapperImplTest {
                     .thenReturn(Material.PLAYER_HEAD);
             when(skullMeta.clone())
                     .thenReturn(skullMeta);
-
-            when(nbtService.getNbtItem(any(ItemStack.class)))
-                    .thenReturn(nbtItem);
-            when(nbtItem.addCompound("display"))
-                    .thenReturn(displayCompound);
-            when(nbtItem.addCompound("SkullOwner"))
-                    .thenReturn(skullOwnerCompound);
-            when(headUtils.getIntArrayFromUuid(uuid))
-                    .thenReturn(uuidIntArray);
-            when(skullOwnerCompound.addCompound("Properties"))
-                    .thenReturn(propertiesCompound);
-            when(propertiesCompound.getCompoundList("textures"))
-                    .thenReturn(texturesCompoundList);
-            when(texturesCompoundList.addCompound())
-                    .thenReturn(textureListCompound);
-            when(nbtItem.getItem())
-                    .thenReturn(headItemStack);
+            bukkit.when(() -> Bukkit.createPlayerProfile(uuid, name))
+                    .thenReturn(ownerProfile);
+            when(ownerProfileService.createOwnerProfile(head))
+                    .thenReturn(ownerProfile);
+//            when(ownerProfile.getTextures())
+//                    .thenReturn(textures);
 
 
             // execute
@@ -270,17 +257,21 @@ class HeadToItemstackMapperImplTest {
             // verify
             bukkit.verify(Bukkit::getItemFactory, times(4));
             bukkit.verify(() -> Bukkit.getOfflinePlayer(notchUuid));
+            //bukkit.verify(() -> Bukkit.createPlayerProfile(uuid, name));
             bukkit.verifyNoMoreInteractions();
 
             verify(skullMeta).setOwningPlayer(offlinePlayer);
             verify(skullMeta).setDisplayName(head.getName());
-            verify(displayCompound).setString("Name", "\"" + head.getName() + "\"");
-            verify(skullOwnerCompound).setIntArray("Id", uuidIntArray);
-            verify(skullOwnerCompound).setString("Name", head.getName());
-            verify(textureListCompound).setString("Value", head.getValue());
-            verifyNoMoreInteractions(headUtils, nbtService, itemFactory, skullMeta, nbtItem);
+            //verify(textures).setSkin(urlCaptor.capture());
+            verify(skullMeta).setOwnerProfile(ownerProfile);
+            verifyNoMoreInteractions(headUtils, ownerProfileService, itemFactory/*, skullMeta*/);
 
-            assertThat(actual, is(headItemStack));
+            assertThat(actual.getType(), is(Material.PLAYER_HEAD));
+            assertThat(actual.getAmount(), is(quantity));
+            assertThat(actual.getItemMeta(), isA(SkullMeta.class));
+            SkullMeta actualSkullMeta = (SkullMeta) actual.getItemMeta();
+            assertThat(actualSkullMeta, notNullValue());
+            //assertThat(urlCaptor.getValue().toString(), is(skinUrl));
         }
     }
 

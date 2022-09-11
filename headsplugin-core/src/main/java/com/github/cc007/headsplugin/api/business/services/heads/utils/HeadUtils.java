@@ -5,7 +5,6 @@ import com.github.cc007.headsplugin.api.business.domain.Head;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public interface HeadUtils {
 
@@ -16,15 +15,6 @@ public interface HeadUtils {
      * @return list of head owner UUIDs as strings
      */
     List<String> getHeadOwnerStrings(Collection<Head> heads);
-
-    /**
-     * Get a given UUID as an int array.
-     * This int array will have a size of 4.
-     *
-     * @param uuid the UUID to convert
-     * @return the resulting int array
-     */
-    int[] getIntArrayFromUuid(UUID uuid);
 
     /**
      * Determine if the map of lists contains any values.

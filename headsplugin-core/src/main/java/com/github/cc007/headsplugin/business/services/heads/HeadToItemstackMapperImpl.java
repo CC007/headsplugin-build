@@ -3,10 +3,8 @@ package com.github.cc007.headsplugin.business.services.heads;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadToItemstackMapper;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
-import com.github.cc007.headsplugin.business.services.NbtService;
+import com.github.cc007.headsplugin.business.services.OwnerProfileService;
 
-import de.tr7zw.changeme.nbtapi.NBTCompound;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
@@ -15,6 +13,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +26,10 @@ import java.util.stream.Collectors;
 @ExtensionMethod(HeadToItemstackMapperImpl.class)
 public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
 
+    private static final UUID NOTCH_UUID = UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5");
+    private static PlayerProfile cachedPlayerProfile;
     private final HeadUtils headUtils;
-    private final NbtService nbtService;
+    private final OwnerProfileService ownerProfileService;
 
     /**
      * Get a List of bukkit <code>ItemStack</code> objects based on the provided
@@ -81,44 +83,24 @@ public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
     @Override
     public ItemStack getItemStack(@NonNull Head head, int quantity) {
         final var playerHeadItemStack = new ItemStack(Material.PLAYER_HEAD, quantity);
-        initSkullMeta(playerHeadItemStack, head.getName());
-        return initNbtData(head, playerHeadItemStack);
+        initSkullMeta(playerHeadItemStack, head);
+        Optional.ofNullable((SkullMeta) playerHeadItemStack.getItemMeta())
+                .map(SkullMeta::getOwnerProfile)
+                .map(PlayerProfile::getTextures)
+                .map(PlayerTextures::getSkin)
+                .ifPresentOrElse(skin -> log.debug("Skin url: " + skin), () -> log.debug("No skin URL found"));
+        return playerHeadItemStack;
     }
 
-    private void initSkullMeta(ItemStack playerHeadItemStack, String displayName) {
+    private void initSkullMeta(@NonNull ItemStack playerHeadItemStack, @NonNull Head head) {
         final var headSkullMeta = Optional.ofNullable((SkullMeta) playerHeadItemStack.getItemMeta());
-        headSkullMeta.ifPresent((meta) -> {
-            meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5")));
-            meta.setDisplayName(displayName);
+        headSkullMeta.ifPresentOrElse(meta -> {
+            meta.setOwningPlayer(Bukkit.getOfflinePlayer(NOTCH_UUID));
+            meta.setDisplayName(head.getName());
+            meta.setOwnerProfile(ownerProfileService.createOwnerProfile(head));
             playerHeadItemStack.setItemMeta(meta);
+        }, () -> {
+            log.warn("Couldn't find player skull meta.");
         });
     }
-
-    private ItemStack initNbtData(Head head, ItemStack playerHeadItemStack) {
-        final var nbtItem = nbtService.getNbtItem(playerHeadItemStack);
-        setDisplayName(nbtItem, head.getName());
-        setSkullOwner(nbtItem, head);
-        return nbtItem.getItem();
-    }
-
-    private void setDisplayName(NBTItem nbtItem, String displayName) {
-        final var displayCompound = nbtItem.addCompound("display");
-        displayCompound.setString("Name", "\"" + displayName + "\"");
-    }
-
-    private void setSkullOwner(NBTItem nbtItem, Head head) {
-        final var idIntArray = headUtils.getIntArrayFromUuid(head.getHeadOwner());
-        final var skullOwnerCompound = nbtItem.addCompound("SkullOwner");
-        skullOwnerCompound.setIntArray("Id", idIntArray);
-        skullOwnerCompound.setString("Name", head.getName());
-        setTextureValueProperty(skullOwnerCompound, head.getValue());
-    }
-
-    private void setTextureValueProperty(NBTCompound skullOwnerCompound, String headValue) {
-        final var propertiesCompound = skullOwnerCompound.addCompound("Properties");
-        final var texturesCompoundList = propertiesCompound.getCompoundList("textures");
-        final var textureListCompound = texturesCompoundList.addCompound();
-        textureListCompound.setString("Value", headValue);
-    }
-
 }

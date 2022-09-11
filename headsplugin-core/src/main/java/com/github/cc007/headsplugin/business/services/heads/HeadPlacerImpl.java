@@ -3,29 +3,29 @@ package com.github.cc007.headsplugin.business.services.heads;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadPlacer;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
-import com.github.cc007.headsplugin.business.services.NbtService;
+import com.github.cc007.headsplugin.business.services.OwnerProfileService;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.text.StringSubstitutor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Skull;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rotatable;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerProfile;
 
-import java.util.Arrays;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class HeadPlacerImpl implements HeadPlacer {
 
     private final HeadUtils headUtils;
-    private final NbtService nbtService;
+    private final OwnerProfileService ownerProfileService;
 
     @Override
     public void placeHead(@NonNull ItemStack headItemStack, @NonNull Location location, @NonNull BlockFace rotation) {
@@ -38,7 +38,7 @@ public class HeadPlacerImpl implements HeadPlacer {
         headBlock.setType(Material.PLAYER_HEAD);
 
         setRotation(headBlock, rotation);
-        updateHeadBlockState(headBlock, getNbtString(headItemStack));
+        setOwnerProfile(headBlock, mapOwnerProfile(headItemStack));
     }
 
     @Override
@@ -47,7 +47,7 @@ public class HeadPlacerImpl implements HeadPlacer {
         headBlock.setType(Material.PLAYER_HEAD);
 
         setRotation(headBlock, rotation);
-        updateHeadBlockState(headBlock, getNbtString(head));
+        setOwnerProfile(headBlock, mapOwnerProfile(head));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class HeadPlacerImpl implements HeadPlacer {
         wallHeadBlock.setType(Material.PLAYER_WALL_HEAD);
 
         setFacing(wallHeadBlock, facing);
-        updateHeadBlockState(wallHeadBlock, getNbtString(wallHeadItemStack));
+        setOwnerProfile(wallHeadBlock, mapOwnerProfile(wallHeadItemStack));
     }
 
     @Override
@@ -70,7 +70,7 @@ public class HeadPlacerImpl implements HeadPlacer {
         wallHeadBlock.setType(Material.PLAYER_WALL_HEAD);
 
         setFacing(wallHeadBlock, facing);
-        updateHeadBlockState(wallHeadBlock, getNbtString(head));
+        setOwnerProfile(wallHeadBlock, mapOwnerProfile(head));
     }
 
     /**
@@ -102,57 +102,46 @@ public class HeadPlacerImpl implements HeadPlacer {
     }
 
     /**
-     * Updates the NBT values for the player head block's state to set the skin for the head.
+     * Get the head owner's {@link PlayerProfile} based on an item stack of a {@link Material#PLAYER_HEAD}
      *
-     * @param headBlock the player (wall) head block.
-     * @param nbtString the NBT string containing the skin data for the head.
+     * @param itemStack the item stack of a {@link Material#PLAYER_HEAD}
+     * @return the player profile of the head owner
      */
-    private void updateHeadBlockState(@NonNull Block headBlock, String nbtString) {
-        nbtService.getNbtTileEntity(headBlock)
-                .mergeCompound(nbtService.getNbtContainer(nbtString));
-    }
-
-    /**
-     * Get the NBT string for the SkullOwner property of the block.
-     * This string contains the information for the skin.
-     *
-     * @param headItemStack the ItemStack containing the NBT data for the skin
-     * @return the NBT String
-     */
-    private String getNbtString(ItemStack headItemStack) {
-        final var nbtItem = nbtService.getNbtItem(headItemStack);
-        return "{SkullOwner:" + nbtItem.getCompound("SkullOwner").toString() + "}";
-    }
-
-    /**
-     * Get the NBT string for the SkullOwner property of the block.
-     * This string contains the information for the skin.
-     *
-     * @param head the Head containing the data for the skin
-     * @return the NBT String
-     */
-    private String getNbtString(Head head) {
-        final var headMap = head.getAsMap();
-        headMap.put("headOwner", getAsIntArrayString(head.getHeadOwner()));
-
-        return StringSubstitutor.replace(
-                "{SkullOwner:{Id:${headOwner},Properties:{textures:[{Value:\"${value}\"}]},Name:\"${name}\"}}",
-                headMap
+    private PlayerProfile mapOwnerProfile(@NonNull ItemStack itemStack) {
+        final var itemMeta = Objects.requireNonNull(
+                itemStack.getItemMeta(),
+                "This method should only be called with an item stack that represents a stack of player heads!"
+        );
+        if (!(itemMeta instanceof SkullMeta skullMeta)) {
+            throw new IllegalArgumentException("This method should only be called with an item stack that represents a stack of player heads!");
+        }
+        return Objects.requireNonNull(
+                skullMeta.getOwnerProfile(),
+                "This method should only be called with an item stack that represents a stack of player heads that have a skin defined through its owner profile!"
         );
     }
 
     /**
-     * Get the head owner UUID as an NBT int array string.
+     * Get the head owner's {@link PlayerProfile} based on a given head
      *
-     * @param headOwner the UUID of the head owner
-     * @return the NBT int array string for that UUID
+     * @param head the head with the name, uuid and texture link
+     * @return the player profile of the head owner
      */
-    private String getAsIntArrayString(UUID headOwner) {
-        final var headOwnerIntArray = headUtils.getIntArrayFromUuid(headOwner);
-        String headOwnerIntArrayString = Arrays.stream(headOwnerIntArray)
-                .boxed()
-                .map(Object::toString)
-                .collect(Collectors.joining(","));
-        return "[I;" + headOwnerIntArrayString + "]";
+    private PlayerProfile mapOwnerProfile(@NonNull Head head) {
+        return ownerProfileService.createOwnerProfile(head);
+    }
+
+    /**
+     * Updates the NBT values for the player head block's state to set the skin for the head.
+     *
+     * @param headBlock the player (wall) head block.
+     * @param ownerProfile the {@link PlayerProfile} of the head owner.
+     */
+    private void setOwnerProfile(@NonNull Block headBlock, PlayerProfile ownerProfile) {
+        final var headBlockState = headBlock.getState();
+        if (headBlockState instanceof Skull skullBlock) {
+            skullBlock.setOwnerProfile(ownerProfile);
+            skullBlock.update();
+        }
     }
 }

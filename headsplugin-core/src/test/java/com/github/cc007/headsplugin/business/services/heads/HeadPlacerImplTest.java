@@ -2,21 +2,20 @@ package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
-import com.github.cc007.headsplugin.business.services.NbtService;
+import com.github.cc007.headsplugin.business.services.OwnerProfileService;
 import com.github.cc007.headsplugin.business.services.heads.utils.HeadUtilsImpl;
 
-import de.tr7zw.changeme.nbtapi.NBTCompound;
-import de.tr7zw.changeme.nbtapi.NBTContainer;
-import de.tr7zw.changeme.nbtapi.NBTItem;
-import de.tr7zw.changeme.nbtapi.NBTTileEntity;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Skull;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rotatable;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerProfile;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -31,13 +30,11 @@ import java.util.UUID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class HeadPlacerImplTest {
@@ -46,11 +43,12 @@ class HeadPlacerImplTest {
     HeadUtils headUtils = new HeadUtilsImpl();
 
     @Mock
-    NbtService nbtService;
+    OwnerProfileService ownerProfileService;
 
     @InjectMocks
     HeadPlacerImpl headPlacer;
 
+    @SuppressWarnings("ConstantConditions")
     @Nested
     class NullParameterValidation {
         @Test
@@ -248,44 +246,40 @@ class HeadPlacerImplTest {
         final var testRotation = BlockFace.NORTH;
         final var testBlock = mock(Block.class);
         final var testRotatable = mock(Rotatable.class);
-        final var testNBTItem = mock(NBTItem.class);
-        final var testSkullOwnerCompound = mock(NBTCompound.class);
-        final var testNBTTileEntity = mock(NBTTileEntity.class);
-        final var testNBTContainer = mock(NBTContainer.class);
-        final var testSkullOwner = "{Id:[I;19088743,-1985229329,-19088744,1985229328],Properties:{textures:[{Value:\"TestValue\"}]},Name:\"TestName\"}";
+        final var testSkullMeta = mock(SkullMeta.class);
+        final var testPlayerProfile = mock(PlayerProfile.class);
+        final var testSkull = mock(Skull.class);
 
-        when(testHeadItemStack.getType())
-                .thenReturn(Material.PLAYER_HEAD);
-        when(testWorld.getBlockAt(testLocation))
-                .thenReturn(testBlock);
-        doNothing().when(testBlock).setType(eq(Material.PLAYER_HEAD));
+        doReturn(Material.PLAYER_HEAD)
+                .when(testHeadItemStack).getType();
+        doReturn(testBlock)
+                .when(testWorld).getBlockAt(testLocation);
 
-        when(testBlock.getBlockData())
-                .thenReturn(testRotatable);
-        doNothing().when(testRotatable).setRotation(testRotation);
-        doNothing().when(testBlock).setBlockData(testRotatable);
+        doReturn(testRotatable)
+                .when(testBlock).getBlockData();
 
-        when(nbtService.getNbtItem(testHeadItemStack))
-                .thenReturn(testNBTItem);
-        when(testNBTItem.getCompound("SkullOwner"))
-                .thenReturn(testSkullOwnerCompound);
-        when(testSkullOwnerCompound.toString())
-                .thenReturn(testSkullOwner);
+        doReturn(testSkullMeta)
+                .when(testHeadItemStack).getItemMeta();
+        doReturn(testPlayerProfile)
+                .when(testSkullMeta).getOwnerProfile();
 
-        when(nbtService.getNbtTileEntity(testBlock))
-                .thenReturn(testNBTTileEntity);
-        when(nbtService.getNbtContainer("{SkullOwner:" + testSkullOwner + "}"))
-                .thenReturn(testNBTContainer);
-        doNothing().when(testNBTTileEntity).mergeCompound(testNBTContainer);
-
+        doReturn(testSkull)
+                .when(testBlock).getState();
 
         // execute
         headPlacer.placeHead(testHeadItemStack, testLocation, testRotation);
 
         // verify
-        verifyNoMoreInteractions(nbtService, headUtils);
+        verify(testBlock).setType(eq(Material.PLAYER_HEAD));
+
+        verify(testRotatable).setRotation(testRotation);
+        verify(testBlock).setBlockData(testRotatable);
+
+        verify(testSkull).setOwnerProfile(testPlayerProfile);
+        verify(testSkull).update();
+
+        verifyNoMoreInteractions(ownerProfileService, headUtils);
         verifyNoMoreInteractions(testHeadItemStack, testWorld, testBlock, testRotatable);
-        verifyNoMoreInteractions(testNBTItem, testSkullOwnerCompound, testNBTTileEntity, testNBTContainer);
     }
 
     @Test
@@ -301,35 +295,36 @@ class HeadPlacerImplTest {
         final var testRotation = BlockFace.NORTH;
         final var testBlock = mock(Block.class);
         final var testRotatable = mock(Rotatable.class);
-        final var testNBTTileEntity = mock(NBTTileEntity.class);
-        final var testNBTContainer = mock(NBTContainer.class);
-        final var testSkullOwner = "{Id:[I;19088743,-1985229329,-19088744,1985229328],Properties:{textures:[{Value:\"TestValue\"}]},Name:\"TestName\"}";
+        final var testPlayerProfile = mock(PlayerProfile.class);
+        final var testSkull = mock(Skull.class);
 
-        when(testWorld.getBlockAt(testLocation))
-                .thenReturn(testBlock);
-        doNothing().when(testBlock).setType(eq(Material.PLAYER_HEAD));
+        doReturn(testBlock)
+                .when(testWorld).getBlockAt(testLocation);
 
-        when(testBlock.getBlockData())
-                .thenReturn(testRotatable);
-        doNothing().when(testRotatable).setRotation(testRotation);
-        doNothing().when(testBlock).setBlockData(testRotatable);
+        doReturn(testRotatable)
+                .when(testBlock).getBlockData();
 
-        doCallRealMethod().when(headUtils).getIntArrayFromUuid(any());
+        doReturn(testPlayerProfile)
+                .when(ownerProfileService).createOwnerProfile(testHead);
 
-        when(nbtService.getNbtTileEntity(testBlock))
-                .thenReturn(testNBTTileEntity);
-        when(nbtService.getNbtContainer("{SkullOwner:" + testSkullOwner + "}"))
-                .thenReturn(testNBTContainer);
-        doNothing().when(testNBTTileEntity).mergeCompound(testNBTContainer);
+        doReturn(testSkull)
+                .when(testBlock).getState();
 
 
         // execute
         headPlacer.placeHead(testHead, testLocation, testRotation);
 
         // verify
-        verifyNoMoreInteractions(nbtService, headUtils);
+        verify(testBlock).setType(eq(Material.PLAYER_HEAD));
+
+        verify(testRotatable).setRotation(testRotation);
+        verify(testBlock).setBlockData(testRotatable);
+
+        verify(testSkull).setOwnerProfile(testPlayerProfile);
+        verify(testSkull).update();
+
+        verifyNoMoreInteractions(ownerProfileService, headUtils);
         verifyNoMoreInteractions(testWorld, testBlock, testRotatable);
-        verifyNoMoreInteractions(testNBTTileEntity, testNBTContainer);
     }
 
     @Test
@@ -341,44 +336,42 @@ class HeadPlacerImplTest {
         final var testDirection = BlockFace.NORTH;
         final var testBlock = mock(Block.class);
         final var testDirectional = mock(Directional.class);
-        final var testNBTItem = mock(NBTItem.class);
-        final var testSkullOwnerCompound = mock(NBTCompound.class);
-        final var testNBTTileEntity = mock(NBTTileEntity.class);
-        final var testNBTContainer = mock(NBTContainer.class);
-        final var testSkullOwner = "{Id:[I;19088743,-1985229329,-19088744,1985229328],Properties:{textures:[{Value:\"TestValue\"}]},Name:\"TestName\"}";
+        final var testSkullMeta = mock(SkullMeta.class);
+        final var testPlayerProfile = mock(PlayerProfile.class);
+        final var testSkull = mock(Skull.class);
 
-        when(testHeadItemStack.getType())
-                .thenReturn(Material.PLAYER_HEAD);
-        when(testWorld.getBlockAt(testLocation))
-                .thenReturn(testBlock);
-        doNothing().when(testBlock).setType(eq(Material.PLAYER_WALL_HEAD));
+        doReturn(Material.PLAYER_HEAD)
+                .when(testHeadItemStack).getType();
+        doReturn(testBlock)
+                .when(testWorld).getBlockAt(testLocation);
 
-        when(testBlock.getBlockData())
-                .thenReturn(testDirectional);
-        doNothing().when(testDirectional).setFacing(testDirection);
-        doNothing().when(testBlock).setBlockData(testDirectional);
+        doReturn(testDirectional)
+                .when(testBlock).getBlockData();
 
-        when(nbtService.getNbtItem(testHeadItemStack))
-                .thenReturn(testNBTItem);
-        when(testNBTItem.getCompound("SkullOwner"))
-                .thenReturn(testSkullOwnerCompound);
-        when(testSkullOwnerCompound.toString())
-                .thenReturn(testSkullOwner);
+        doReturn(testSkullMeta)
+                .when(testHeadItemStack).getItemMeta();
+        doReturn(testPlayerProfile)
+                .when(testSkullMeta).getOwnerProfile();
 
-        when(nbtService.getNbtTileEntity(testBlock))
-                .thenReturn(testNBTTileEntity);
-        when(nbtService.getNbtContainer("{SkullOwner:" + testSkullOwner + "}"))
-                .thenReturn(testNBTContainer);
-        doNothing().when(testNBTTileEntity).mergeCompound(testNBTContainer);
+        doReturn(testSkull)
+                .when(testBlock).getState();
+
 
 
         // execute
         headPlacer.placeWallHead(testHeadItemStack, testLocation, testDirection);
 
         // verify
-        verifyNoMoreInteractions(nbtService, headUtils);
+        verify(testBlock).setType(eq(Material.PLAYER_WALL_HEAD));
+
+        verify(testDirectional).setFacing(testDirection);
+        verify(testBlock).setBlockData(testDirectional);
+
+        verify(testSkull).setOwnerProfile(testPlayerProfile);
+        verify(testSkull).update();
+
+        verifyNoMoreInteractions(ownerProfileService, headUtils);
         verifyNoMoreInteractions(testHeadItemStack, testWorld, testBlock, testDirectional);
-        verifyNoMoreInteractions(testNBTItem, testSkullOwnerCompound, testNBTTileEntity, testNBTContainer);
     }
 
     @Test
@@ -394,34 +387,34 @@ class HeadPlacerImplTest {
         final var testDirection = BlockFace.NORTH;
         final var testBlock = mock(Block.class);
         final var testDirectional = mock(Directional.class);
-        final var testNBTTileEntity = mock(NBTTileEntity.class);
-        final var testNBTContainer = mock(NBTContainer.class);
-        final var testSkullOwner = "{Id:[I;19088743,-1985229329,-19088744,1985229328],Properties:{textures:[{Value:\"TestValue\"}]},Name:\"TestName\"}";
+        final var testPlayerProfile = mock(PlayerProfile.class);
+        final var testSkull = mock(Skull.class);
 
-        when(testWorld.getBlockAt(testLocation))
-                .thenReturn(testBlock);
-        doNothing().when(testBlock).setType(eq(Material.PLAYER_WALL_HEAD));
+        doReturn(testBlock)
+                .when(testWorld).getBlockAt(testLocation);
 
-        when(testBlock.getBlockData())
-                .thenReturn(testDirectional);
-        doNothing().when(testDirectional).setFacing(testDirection);
-        doNothing().when(testBlock).setBlockData(testDirectional);
+        doReturn(testDirectional)
+                .when(testBlock).getBlockData();
 
-        doCallRealMethod().when(headUtils).getIntArrayFromUuid(any());
+        doReturn(testPlayerProfile)
+                .when(ownerProfileService).createOwnerProfile(testHead);
 
-        when(nbtService.getNbtTileEntity(testBlock))
-                .thenReturn(testNBTTileEntity);
-        when(nbtService.getNbtContainer("{SkullOwner:" + testSkullOwner + "}"))
-                .thenReturn(testNBTContainer);
-        doNothing().when(testNBTTileEntity).mergeCompound(testNBTContainer);
-
+        doReturn(testSkull)
+                .when(testBlock).getState();
 
         // execute
         headPlacer.placeWallHead(testHead, testLocation, testDirection);
 
         // verify
-        verifyNoMoreInteractions(nbtService, headUtils);
+        verify(testBlock).setType(eq(Material.PLAYER_WALL_HEAD));
+
+        verify(testDirectional).setFacing(testDirection);
+        verify(testBlock).setBlockData(testDirectional);
+
+        verify(testSkull).setOwnerProfile(testPlayerProfile);
+        verify(testSkull).update();
+
+        verifyNoMoreInteractions(ownerProfileService, headUtils);
         verifyNoMoreInteractions(testWorld, testBlock, testDirectional);
-        verifyNoMoreInteractions(testNBTTileEntity, testNBTContainer);
     }
 }
