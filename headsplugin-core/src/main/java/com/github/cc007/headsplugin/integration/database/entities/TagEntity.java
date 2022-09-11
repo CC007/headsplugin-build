@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -30,11 +31,12 @@ import java.util.Set;
 )
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 public class TagEntity {
 
     @Id
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
@@ -59,6 +61,7 @@ public class TagEntity {
     @Setter(AccessLevel.NONE)
     private Set<HeadEntity> heads = new HashSet<>();
 
+    @ToString.Exclude
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
@@ -79,16 +82,4 @@ public class TagEntity {
     public void addhead(HeadEntity head) {
         heads.add(head);
     }
-
-    public void removeHead(HeadEntity head) {
-        heads.remove(head);
-    }
-
-//    public void addDatabase(DatabaseEntity database){
-//        databases.add(database);
-//    }
-//
-//    public void removeDatabase(DatabaseEntity database){
-//        databases.remove(database);
-//    }
 }

@@ -5,7 +5,7 @@
 
     <groupId>com.github.cc007</groupId>
     <artifactId>headsplugin-build</artifactId>
-    <version>3.0.3</version>
+    <version>3.1.0</version>
 
     <packaging>pom</packaging>
 
@@ -51,9 +51,7 @@
         <profile>
             <id>old</id>
             <modules>
-                <module>headsplugin-core</module>
                 <module>headsplugin-dependencies</module>
-                <module>headsplugin-dummy</module>
                 <module>headsplugin-parent</module>
             </modules>
         </profile>
@@ -64,9 +62,8 @@
             </properties>
             <modules>
                 <module>headsplugin-dependencies</module>
-<!--                <module>headsplugin-dummy</module>-->
                 <module>headsplugin-parent</module>
-                <module>headsplugin-rebuild</module>
+                <module>headsplugin-core</module>
             </modules>
         </profile>
     </profiles>

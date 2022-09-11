@@ -1,8 +1,0 @@
-name: DummyPlugin
-version: ${version}
-api-version: "1.13"
-main: com.github.cc007.dummyplugin.DummyPlugin
-author: Rik Schaaf aka CC007 (http://coolcat007.nl/)
-depend: [HeadsPluginAPI]
-description: >
-  Dummy plugin to test HeadsPluginAPI

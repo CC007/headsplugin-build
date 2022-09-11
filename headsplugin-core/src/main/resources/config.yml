@@ -8,7 +8,14 @@ headsplugin:
     mineskin: true
     minecraftHeads: true
   suppressHttpClientErrors: true
+  search:
+    update:
+      # search update interval in minutes
+      interval: 1440 # 1 day
   categories:
+    update:
+      # category update interval in hours
+      interval: 168 # 1 week
     # define your custom categories here
     custom:
       - name: pokemon-starters
@@ -24,37 +31,8 @@ headsplugin:
           - cat
           - dog
 
-    update:
-      # category update interval in hours
-      interval: 168 # 1 week
-      # the delay between category updates when updating all categories
-      delay: 10
-  search:
-    update:
-      # search update interval in minutes
-      interval: 1440 # 1 day
+profiler:
+  defaultLogLevel: DEBUG
 
-# spring framework related config
-spring:
-  # if you want to run a dedicated database, instead of an embedded database, you can configure this here
-  datasource:
-    url: jdbc:hsqldb:file:plugins/HeadsPluginAPI/data/heads
-    username: sa
-    password: ""
-    driverClassName: org.hsqldb.jdbcDriver
-
-  hsql:
-    console:
-      enabled: false
-
-  jpa:
-    database: HSQL
-    hibernate:
-      ddl-auto: update
-      dialect: org.hibernate.dialect.HSQLDialect
-    show-sql: false
-    properties:
-      hibernate.jdbc.batch_size: 1000
-      hibernate.order_inserts: true
-      hibernate.jdbc.batch_versioned_data: true
-      hibernate.enable_lazy_load_no_trans: true
+database:
+  chunkSize: 500

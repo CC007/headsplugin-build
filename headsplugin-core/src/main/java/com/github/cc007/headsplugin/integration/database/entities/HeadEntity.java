@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,11 +30,12 @@ import java.util.Set;
 )
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 public class HeadEntity {
 
     @Id
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
@@ -51,8 +53,9 @@ public class HeadEntity {
     @Column(name = "value", length = 1023)
     private String value;
 
+    @ToString.Exclude
     @ManyToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "heads"
     )
@@ -60,8 +63,9 @@ public class HeadEntity {
     @Setter(AccessLevel.NONE)
     private Set<DatabaseEntity> databases = new HashSet<>();
 
+    @ToString.Exclude
     @ManyToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "heads"
     )
@@ -69,8 +73,9 @@ public class HeadEntity {
     @Setter(AccessLevel.NONE)
     private Set<TagEntity> tags = new HashSet<>();
 
+    @ToString.Exclude
     @ManyToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "heads"
     )
@@ -78,6 +83,7 @@ public class HeadEntity {
     @Setter(AccessLevel.NONE)
     private Set<CategoryEntity> categories = new HashSet<>();
 
+    @ToString.Exclude
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
@@ -102,37 +108,4 @@ public class HeadEntity {
     public Set<SearchEntity> getSearches() {
         return Collections.unmodifiableSet(searches);
     }
-
-//    public void addDatabase(DatabaseEntity database){
-//        databases.add(database);
-//    }
-//
-//    public void removeDatabase(DatabaseEntity database){
-//        databases.remove(database);
-//    }
-//
-//    public void addTag(TagEntity tag){
-//        tags.add(tag);
-//    }
-//
-//    public void removeTag(TagEntity tag){
-//        tags.remove(tag);
-//    }
-//
-//    public void addCategory(CategoryEntity category){
-//        categories.add(category);
-//    }
-//
-//    public void removeCategory(CategoryEntity category){
-//        categories.remove(category);
-//    }
-//
-//    public void addSearch(SearchEntity search){
-//        searches.add(search);
-//    }
-//
-//    public void removeSearch(SearchEntity search){
-//        searches.remove(search);
-//    }
-
 }

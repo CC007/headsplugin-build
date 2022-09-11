@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -34,11 +35,12 @@ import java.util.Set;
 )
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 public class SearchEntity {
 
     @Id
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
@@ -52,7 +54,7 @@ public class SearchEntity {
 
     @Column(name = "searchCount")
     @Setter(AccessLevel.NONE)
-    private int searchCount;
+    private long searchCount;
 
     @Column(name = "lastUpdated")
     @Convert(converter = LocalDateTimeConverter.class)
@@ -77,10 +79,6 @@ public class SearchEntity {
 
     public void addhead(HeadEntity head) {
         heads.add(head);
-    }
-
-    public void removeHead(HeadEntity head) {
-        heads.remove(head);
     }
 
     public void resetSearchCount() {

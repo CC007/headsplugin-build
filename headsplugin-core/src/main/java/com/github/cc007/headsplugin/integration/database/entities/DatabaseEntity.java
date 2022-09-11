@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -30,11 +31,12 @@ import java.util.Set;
 )
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 public class DatabaseEntity {
 
     @Id
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
@@ -101,23 +103,11 @@ public class DatabaseEntity {
         heads.add(head);
     }
 
-    public void removeHead(HeadEntity head) {
-        heads.remove(head);
-    }
-
     public void addTag(TagEntity tag) {
         tags.add(tag);
     }
 
-    public void removeTag(TagEntity tag) {
-        tags.remove(tag);
-    }
-
     public void addCategory(CategoryEntity category) {
         categories.add(category);
-    }
-
-    public void removeCategory(CategoryEntity category) {
-        categories.remove(category);
     }
 }

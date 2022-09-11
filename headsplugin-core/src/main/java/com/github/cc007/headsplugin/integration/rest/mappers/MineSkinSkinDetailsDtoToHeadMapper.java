@@ -3,16 +3,14 @@ package com.github.cc007.headsplugin.integration.rest.mappers;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.integration.rest.dto.mineskin.SkinDetailsDto;
 
+import lombok.NonNull;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.Validate;
-import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.UUID;
 
-@Component
 public class MineSkinSkinDetailsDtoToHeadMapper implements Transformer<SkinDetailsDto, Head> {
     @Override
     public Head transform(@NonNull SkinDetailsDto skinDetailsDto) {

@@ -2,29 +2,34 @@ package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadToItemstackMapper;
+import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
+import com.github.cc007.headsplugin.business.services.OwnerProfileService;
 
-import de.tr7zw.changeme.nbtapi.NBTItem;
-import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.ExtensionMethod;
 import lombok.extern.log4j.Log4j2;
-import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.springframework.stereotype.Component;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Component
 @Log4j2
 @RequiredArgsConstructor
+@ExtensionMethod(HeadToItemstackMapperImpl.class)
 public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
 
+    private static final UUID NOTCH_UUID = UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5");
+    private static PlayerProfile cachedPlayerProfile;
     private final HeadUtils headUtils;
+    private final OwnerProfileService ownerProfileService;
 
     /**
      * Get a List of bukkit <code>ItemStack</code> objects based on the provided
@@ -35,7 +40,7 @@ public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
      * provided List of <code>Head</code> objects
      */
     @Override
-    public List<ItemStack> getItemStacks(List<Head> heads) {
+    public List<ItemStack> getItemStacks(@NonNull List<Head> heads) {
         return getItemStacks(heads, 1);
     }
 
@@ -49,7 +54,7 @@ public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
      * provided List of <code>Head</code> objects
      */
     @Override
-    public List<ItemStack> getItemStacks(List<Head> heads, int quantity) {
+    public List<ItemStack> getItemStacks(@NonNull List<Head> heads, int quantity) {
         return heads.stream().map((head -> getItemStack(head, quantity))).collect(Collectors.toList());
     }
 
@@ -62,7 +67,7 @@ public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
      * <code>Head</code>
      */
     @Override
-    public ItemStack getItemStack(Head head) {
+    public ItemStack getItemStack(@NonNull Head head) {
         return getItemStack(head, 1);
     }
 
@@ -76,35 +81,26 @@ public class HeadToItemstackMapperImpl implements HeadToItemstackMapper {
      * <code>Head</code>
      */
     @Override
-    public ItemStack getItemStack(Head head, int quantity) {
-        val minecraftVersion = MinecraftVersion.getVersion();
-        val playerHeadItemStack = new ItemStack(Material.PLAYER_HEAD, quantity);
-        val headSkullMeta = Optional.ofNullable((SkullMeta) playerHeadItemStack.getItemMeta());
-        headSkullMeta.ifPresent((meta) -> {
-            meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5")));
+    public ItemStack getItemStack(@NonNull Head head, int quantity) {
+        final var playerHeadItemStack = new ItemStack(Material.PLAYER_HEAD, quantity);
+        initSkullMeta(playerHeadItemStack, head);
+        Optional.ofNullable((SkullMeta) playerHeadItemStack.getItemMeta())
+                .map(SkullMeta::getOwnerProfile)
+                .map(PlayerProfile::getTextures)
+                .map(PlayerTextures::getSkin)
+                .ifPresentOrElse(skin -> log.debug("Skin url: " + skin), () -> log.debug("No skin URL found"));
+        return playerHeadItemStack;
+    }
+
+    private void initSkullMeta(@NonNull ItemStack playerHeadItemStack, @NonNull Head head) {
+        final var headSkullMeta = Optional.ofNullable((SkullMeta) playerHeadItemStack.getItemMeta());
+        headSkullMeta.ifPresentOrElse(meta -> {
+            meta.setOwningPlayer(Bukkit.getOfflinePlayer(NOTCH_UUID));
             meta.setDisplayName(head.getName());
+            meta.setOwnerProfile(ownerProfileService.createOwnerProfile(head));
             playerHeadItemStack.setItemMeta(meta);
+        }, () -> {
+            log.warn("Couldn't find player skull meta.");
         });
-        val nbtItem = new NBTItem(playerHeadItemStack);
-        val displayCompound = nbtItem.addCompound("display");
-        displayCompound.setString("Name", "\"" + head.getName() + "\"");
-
-        val skullOwnerCompound = nbtItem.addCompound("SkullOwner");
-
-        // Fix for 1.16 and newer, because UUIDs are now stored as an integer array with 4 integers
-        if (minecraftVersion.getVersionId() >= MinecraftVersion.MC1_16_R1.getVersionId()){
-            val idIntArray = headUtils.getIntArrayFromUuid(head.getHeadOwner());
-            skullOwnerCompound.setIntArray("Id", idIntArray);
-        } else {
-            skullOwnerCompound.setString("Id", head.getHeadOwner().toString());
-        }
-
-        skullOwnerCompound.setString("Name", head.getName());
-        val propertiesCompound = skullOwnerCompound.addCompound("Properties");
-        val texturesCompoundList = propertiesCompound.getCompoundList("textures");
-        val textureListCompound = texturesCompoundList.addCompound();
-        textureListCompound.setString("Value", head.getValue());
-
-        return nbtItem.getItem();
     }
 }

@@ -35,12 +35,12 @@ import java.util.Set;
 )
 @Getter
 @Setter
-@ToString
+@ToString()
 @NoArgsConstructor
 public class CategoryEntity {
 
     @Id
-    @Column(name = "id", unique = true)
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
@@ -69,8 +69,9 @@ public class CategoryEntity {
     @Setter(AccessLevel.NONE)
     private Set<HeadEntity> heads = new HashSet<>();
 
+    @ToString.Exclude
     @ManyToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "categories"
     )
@@ -89,16 +90,4 @@ public class CategoryEntity {
     public void addhead(HeadEntity head) {
         heads.add(head);
     }
-
-    public void removeHead(HeadEntity head) {
-        heads.remove(head);
-    }
-
-//    public void addDatabase(DatabaseEntity database){
-//        databases.add(database);
-//    }
-//
-//    public void removeDatabase(DatabaseEntity database){
-//        databases.remove(database);
-//    }
 }

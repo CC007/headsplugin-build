@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.github.cc007</groupId>
         <artifactId>headsplugin-parent</artifactId>
-        <version>3.0.3</version>
+        <version>3.1.0</version>
         <relativePath>../headsplugin-parent</relativePath>
     </parent>
-
     <artifactId>headsplugin-core</artifactId>
-
+    <version>3.1.0</version>
     <packaging>jar</packaging>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <jar.name>HeadsPluginAPI-${project.version}</jar.name>
     </properties>
-
+    
     <licenses>
         <license>
             <name>MIT License</name>
@@ -49,66 +44,62 @@
             <id>snapshot-repo</id>
         </snapshotRepository>
     </distributionManagement>
-
+    
     <dependencies>
+        <!-- internal dependencies -->
         <dependency>
             <groupId>com.github.cc007</groupId>
             <artifactId>headsplugin-api</artifactId>
         </dependency>
 
+        <!-- Minecraft related dependencies -->
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>commons-lang</artifactId>
-                    <groupId>commons-lang</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>snakeyaml</artifactId>
-                    <groupId>org.yaml</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>dev.alangomes</groupId>
-            <artifactId>spigot-spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <groupId>de.tr7zw</groupId>
+            <artifactId>item-nbt-api</artifactId>
         </dependency>
 
+        <!-- CDI dependencies -->
+        <dependency>
+            <groupId>com.google.dagger</groupId>
+            <artifactId>dagger</artifactId>
+        </dependency>
+
+        <!-- logging dependencies -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+
+        <!-- html/rest dependencies -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-gson</artifactId>
+        </dependency>
+
+        <!-- database dependencies -->
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.openjpa</groupId>
+            <artifactId>openjpa</artifactId>
+        </dependency>
+
+        <!-- other dependencies -->
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
@@ -117,52 +108,44 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
 
+        <!-- test dependencies -->
         <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>de.tr7zw</groupId>
-            <artifactId>item-nbt-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.switchyard</groupId>
-            <artifactId>switchyard-common</artifactId>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
+            <groupId>com.mistraltech.smog</groupId>
+            <artifactId>smog-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.cc007</groupId>
-            <artifactId>headsplugin-api</artifactId>
+            <groupId>com.github.npathai</groupId>
+            <artifactId>hamcrest-optional</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
 
     <!-- Build settings -->
     <build>
-        <finalName>HeadsPluginAPI-${project.version}</finalName>
+        <finalName>${jar.name}</finalName>
         <!-- Resource replacement -->
         <resources>
             <resource>
@@ -189,14 +172,45 @@
                 </executions>
             </plugin>
 
-            <!-- Define JDK for compilation -->
+            <plugin>
+                <groupId>org.apache.openjpa</groupId>
+                <artifactId>openjpa-maven-plugin</artifactId>
+                <version>${openjpa.version}</version>
+                <configuration>
+                    <includes>**/entities/*.class</includes>
+                    <excludes>**/entities/XML*.class</excludes>
+                    <addDefaultConstructor>true</addDefaultConstructor>
+                    <enforcePropertyRestrictions>true</enforcePropertyRestrictions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>enhancer</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.6.1</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>com.google.dagger</groupId>
+                            <artifactId>dagger-compiler</artifactId>
+                            <version>${dagger2.version}</version>
+                        </path>
+
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.20</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
@@ -205,7 +219,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <finalName>HeadsPluginAPI-${project.version}</finalName>
+                    <finalName>${jar.name}</finalName>
                 </configuration>
             </plugin>
 
@@ -234,24 +248,12 @@
                 <version>2.5.2</version>
             </plugin>
 
-            <!--			<plugin>-->
-            <!--				<groupId>org.springframework.boot</groupId>-->
-            <!--				<artifactId>spring-boot-maven-plugin</artifactId>-->
-            <!--			</plugin>-->
-
             <!-- build with dependencies -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
-
-                <dependencies>
-                    <dependency>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-maven-plugin</artifactId>
-                        <version>${spring-boot.version}</version>
-                    </dependency>
-                </dependencies>
+                <version>3.3.0</version>
+                
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -261,7 +263,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <finalName>HeadsPluginAPI-${project.version}</finalName>
+                    <finalName>${jar.name}</finalName>
+                    <minimizeJar>true</minimizeJar>
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
@@ -274,18 +277,6 @@
                     </relocations>
                     <transformers>
                         <transformer
-                                implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                            <resource>META-INF/spring.handlers</resource>
-                        </transformer>
-                        <transformer
-                                implementation="org.springframework.boot.maven.PropertiesMergingResourceTransformer">
-                            <resource>META-INF/spring.factories</resource>
-                        </transformer>
-                        <transformer
-                                implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                            <resource>META-INF/spring.schemas</resource>
-                        </transformer>
-                        <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                     </transformers>
                     <filters>
@@ -297,26 +288,19 @@
                                 <exclude>META-INF/*.RSA</exclude>
                             </excludes>
                         </filter>
+                        <filter>
+                            <artifact>org.apache.openjpa:openjpa</artifact>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                        </filter>
+                        <filter>
+                            <artifact>org.hsqldb:hsqldb</artifact>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                        </filter>
                     </filters>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.4</version>
-                <configuration>
-                    <additionalparam>-Xdoclint:none</additionalparam>
-                    <sourceFileIncludes>
-                        <include>bukkit/*.java</include>
-                        <include>utils/HeadsUtils.java</include>
-                        <include>utils/heads/*.java</include>
-                        <include>utils/loader/DatabaseLoader.java</include>
-                        <include>utils/loader/FreshCoalLoader.java</include>
-                        <include>utils/loader/MinecraftHeadsLoader.java</include>
-                        <include>utils/loader/MineSkinLoader.java</include>
-                    </sourceFileIncludes>
-                    <sourcepath>${basedir}/src/main/java/com/github/cc007/headsplugin</sourcepath>
                 </configuration>
             </plugin>
         </plugins>

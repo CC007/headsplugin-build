@@ -1,28 +1,29 @@
 package com.github.cc007.headsplugin.integration.database.repositories;
 
+import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
-
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-public interface HeadRepository extends CrudRepository<HeadEntity, Long> {
-
-    List<HeadEntity> findByNameContaining(String name);
-
-    List<HeadEntity> findByNameIgnoreCaseContaining(String name);
+public interface HeadRepository extends Repository<HeadEntity, Long> {
 
     Optional<HeadEntity> findByHeadOwner(String headOwner);
 
-    List<HeadEntity> findByHeadOwnerIn(Collection<String> headOwners);
+    List<HeadEntity> findAllByHeadOwnerIn(Collection<String> headOwners);
 
-    List<HeadEntity> findByCategories_NameAndHeadOwnerIn(String categoryName, Collection<String> headOwners);
+    List<String> findAllHeadOwnersByHeadOwnerIn(Collection<String> headOwners);
 
-    List<HeadEntity> findByDatabases_NameAndHeadOwnerIn(String databaseName, Collection<String> headOwners);
+    List<HeadEntity> findAllByDatabases_NameAndHeadOwnerIn(String databaseName, Collection<String> headOwners);
 
+    List<HeadEntity> findAllByNameIgnoreCaseContaining(String name);
 
+    default HeadEntity createFromHead(Head head) {
+        final var headEntity = manageNew();
+        headEntity.setHeadOwner(head.getHeadOwner().toString());
+        headEntity.setName(head.getName());
+        headEntity.setValue(head.getValue());
+        return headEntity;
+    }
 }

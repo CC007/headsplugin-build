@@ -5,12 +5,10 @@ import com.github.cc007.headsplugin.integration.database.entities.DatabaseEntity
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 
 import org.apache.commons.collections4.Transformer;
-import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Component
 public class HeadEntityToHeadMapper implements Transformer<HeadEntity, Head> {
 
     @Override

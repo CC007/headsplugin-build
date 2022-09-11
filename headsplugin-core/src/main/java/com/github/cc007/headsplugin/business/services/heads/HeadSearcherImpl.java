@@ -1,146 +1,169 @@
 package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.services.Profiler;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadSearcher;
-import com.github.cc007.headsplugin.integration.daos.heads.interfaces.Searchable;
+import com.github.cc007.headsplugin.api.business.services.heads.HeadUpdater;
+import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
+import com.github.cc007.headsplugin.config.properties.HeadspluginProperties;
+import com.github.cc007.headsplugin.integration.daos.interfaces.DatabaseClientDao;
+import com.github.cc007.headsplugin.integration.daos.interfaces.Searchable;
 import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
-import com.github.cc007.headsplugin.integration.database.mappers.from_entity.HeadEntityToHeadMapper;
-import com.github.cc007.headsplugin.integration.database.mappers.to_entity.DatabaseNameToDatabaseEntityMapper;
-import com.github.cc007.headsplugin.integration.database.mappers.to_entity.SearchTermToSearchEntityMapper;
+import com.github.cc007.headsplugin.integration.database.entities.SearchEntity;
+import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.SearchRepository;
+import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.val;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.collections4.Transformer;
+import org.apache.logging.log4j.Level;
 
-import javax.persistence.NoResultException;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Log4j2
-@Component
 @RequiredArgsConstructor
 public class HeadSearcherImpl implements HeadSearcher {
 
-    public final Map<String, Searchable> searchables;
-    public final HeadUpdater headUpdater;
-    public final HeadUtils headUtils;
-    public final DatabaseNameToDatabaseEntityMapper databaseNameToDatabaseEntityMapper;
-    public final SearchTermToSearchEntityMapper searchTermToSearchEntityMapper;
-    public final HeadRepository headRepository;
-    public final SearchRepository searchRepository;
-    public final HeadEntityToHeadMapper headEntityToHeadMapper;
+    private final Set<Searchable> searchables;
+    private final HeadUpdater headUpdater;
+    private final HeadUtils headUtils;
 
-    @Value("${headsplugin.search.update.interval:5}")
-    private int searchUpdateInterval;
+    private final Transformer<HeadEntity, Head> headEntityToHeadMapper;
+
+    private final HeadRepository headRepository;
+    private final SearchRepository searchRepository;
+    private final DatabaseRepository databaseRepository;
+
+    private final HeadspluginProperties headspluginProperties;
+
+    private final Transaction transaction;
+    private final Profiler profiler;
 
     @Override
-    @Transactional(readOnly = true)
-    public int getSearchCount(String searchTerm) {
-        val optionalSearchEntity = searchRepository.findBySearchTerm(searchTerm);
-        if (!optionalSearchEntity.isPresent()) {
-            return 0;
-        }
-
-        val searchEntity = optionalSearchEntity.get();
-        return searchEntity.getSearchCount();
+    public long getSearchCount(@NonNull String searchTerm) {
+        return transaction.runTransacted(() ->
+                searchRepository.findBySearchTerm(searchTerm)
+                        .map(SearchEntity::getSearchCount)
+                        .orElse(0L)
+        );
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Optional<Head> getHead(UUID headOwner) {
-        return headRepository.findByHeadOwner(headOwner.toString()).map(headEntityToHeadMapper::transform);
+    public Optional<Head> getHead(@NonNull UUID headOwner) {
+        return transaction.runTransacted(() ->
+                headRepository.findByHeadOwner(headOwner.toString())
+                        .map(headEntityToHeadMapper::transform)
+        );
     }
 
     @Override
-    @Transactional
-    public List<Head> getHeads(String searchTerm) {
-        long start = System.currentTimeMillis();
-        if (needsUpdate(searchTerm)) {
-            log.info("Updating heads for: " + searchTerm);
-            updateSearch(searchTerm);
-        } else {
+    public List<Head> getHeads(@NonNull String searchTerm) {
+        return profiler.runProfiled(Level.INFO, "Heads for " + searchTerm + " found", () ->
+                transaction.runTransacted(() -> {
+                    final var search = searchRepository.findByOrCreateFromSearchTerm(searchTerm);
+                    updateHeadsIfNecessary(search);
+                    return getStoredHeads(search);
+                })
+        );
+    }
+
+    /**
+     * Update the heads for a search term that haven't recently been updated.
+     * This depends on the property <code>headsplugin.search.update.interval</code> in config.yml.
+     *
+     * @param search the search entity associated with the search term
+     */
+    private void updateHeadsIfNecessary(SearchEntity search) {
+        final var searchTerm = search.getSearchTerm();
+        if (!needsUpdate(search)) {
             log.info("Use cached heads for: " + searchTerm);
+            return;
         }
-        List<Head> storedHeads = getStoredHeads(searchTerm);
-        long end = System.currentTimeMillis();
-        log.info(String.format("getHeads time: %.3fs", (end - start) / 1000.0));
-        return storedHeads;
+        final var foundHeadsBySource = requestHeads(searchTerm);
+        if (headUtils.isEmpty(foundHeadsBySource)) {
+            log.info("No heads found for the search " + searchTerm + ". Skipping the update");
+            return;
+        }
+        log.info("Updating heads for: " + searchTerm);
+        updateSearch(search, foundHeadsBySource);
     }
 
-    private boolean needsUpdate(String searchTerm) {
-        val optionalSearchEntity = searchRepository.findBySearchTerm(searchTerm);
-        if (!optionalSearchEntity.isPresent()) {
-            return true;
-        }
-
-        val searchEntity = optionalSearchEntity.get();
-        return searchEntity.getLastUpdated()
+    /**
+     * Determine if the cache for a search term needs to be updated
+     *
+     * @param search the search entity associated with the search term
+     * @return whether to update the cache
+     */
+    private boolean needsUpdate(SearchEntity search) {
+        int searchUpdateInterval = headspluginProperties.getSearch().getUpdate().getInterval();
+        return search.getLastUpdated()
                 .plusMinutes(searchUpdateInterval)
                 .isBefore(LocalDateTime.now());
     }
 
-    private List<Head> getStoredHeads(String searchTerm) {
-        return searchRepository.findBySearchTerm(searchTerm)
-                .orElseThrow(NoResultException::new)
-                .getHeads()
-                .stream()
-                .map(headEntityToHeadMapper::transform)
-                .collect(Collectors.toList());
-    }
-
-    private void updateSearch(String searchTerm) {
-        // get heads based on searchables
-        val foundHeadsMap = requestHeads(searchables.values(), searchTerm);
-        for (Map.Entry<Searchable, List<Head>> foundHeadsEntries : foundHeadsMap.entrySet()) {
-            val searchable = foundHeadsEntries.getKey();
-            val foundHeads = foundHeadsEntries.getValue();
-
-            if(foundHeads.isEmpty()) {
-                log.warn("No heads found for the search " + searchTerm + " in " + searchable.getDatabaseName() + ". Skipping the update");
-                continue;
-            }
-
-            val headEntities = headUpdater.updateHeads(foundHeads);
-            updateDatabaseHeads(searchable, headEntities);
-            updateSearchHeads(searchTerm, headEntities);
-        }
-
-        // get heads that are already stored in the database
-        val storedHeadEntities = headRepository.findByNameIgnoreCaseContaining(searchTerm);
-        updateSearchHeads(searchTerm, storedHeadEntities);
-    }
-
-    private void updateSearchHeads(String searchTerm, List<HeadEntity> headEntities) {
-        val searchEntity = searchTermToSearchEntityMapper.transform(searchTerm);
-
-        headEntities.forEach(searchEntity::addhead);
-        searchEntity.setLastUpdated(LocalDateTime.now());
-        searchEntity.incrementSearchCount();
-        searchRepository.save(searchEntity);
-    }
-
-    private void updateDatabaseHeads(Searchable searchable, List<HeadEntity> headEntities) {
-        val database = databaseNameToDatabaseEntityMapper.transform(searchable.getDatabaseName());
-        headUpdater.updateDatabaseHeads(headEntities, database);
-    }
-
-    private Map<Searchable, List<Head>> requestHeads(Collection<Searchable> searchables, String searchTerm) {
+    /**
+     * Request the heads for a given search term from the searchable sources
+     *
+     * @param searchTerm the search term to use when searching for heads
+     * @return the heads for that search term, grouped by source
+     */
+    private Map<String, List<Head>> requestHeads(String searchTerm) {
         return searchables
                 .stream()
                 .collect(Collectors.toMap(
-                        searchable -> searchable,
+                        DatabaseClientDao::getDatabaseName,
                         searchable -> searchable.getHeads(searchTerm)
                 ));
+    }
+
+    /**
+     * Update the search cache for a given search term with the given heads
+     * <p>
+     * Firstly, heads that were already in the database and match the search term will be linked to the search.
+     * After that all heads that weren't already in the database will be added.
+     * Then all heads will be linked to the given search and data source (like MineSkin), if it wasn't already.
+     * This includes both all new heads and the ones that were already in the database.
+     * Finally the search count and last updated timestamp will be updated for this search term
+     *
+     * @param search the search entity associated with the search term
+     * @param headsBySource the heads for that search term, grouped by source
+     */
+    private void updateSearch(SearchEntity search, Map<String, List<Head>> headsBySource) {
+
+        final var storedHeadEntities = headRepository.findAllByNameIgnoreCaseContaining(search.getSearchTerm());
+        storedHeadEntities.forEach(search::addhead);
+
+        headsBySource.forEach((databaseName, foundHeads) -> {
+            final var headEntities = headUpdater.updateHeads(foundHeads);
+            headEntities.forEach(search::addhead);
+            final var database = databaseRepository.findByOrCreateFromName(databaseName);
+            headEntities.forEach(database::addhead);
+        });
+
+        search.setLastUpdated(LocalDateTime.now());
+        search.incrementSearchCount();
+    }
+
+    /**
+     * Get all heads that are linked to a given search term.
+     *
+     * @param search the search entity associated with the search term
+     * @return all heads that are linked to the search term
+     */
+    private List<Head> getStoredHeads(SearchEntity search) {
+        return search.getHeads()
+                .stream()
+                .map(headEntityToHeadMapper::transform)
+                .collect(Collectors.toList());
     }
 
 }
