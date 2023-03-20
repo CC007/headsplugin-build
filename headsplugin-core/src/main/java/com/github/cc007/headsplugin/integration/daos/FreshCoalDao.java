@@ -16,7 +16,6 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.Transformer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 @ToString
 @EqualsAndHashCode
 @Log4j2
-// TODO @ConditionalOnProperty(name = "headsplugin.provider.freshcoal", havingValue = "true", matchIfMissing = true)
 public class FreshCoalDao implements PredefinedCategorizable, Searchable {
 
     private final FreshCoalClient client;
@@ -38,51 +36,58 @@ public class FreshCoalDao implements PredefinedCategorizable, Searchable {
 
     @Override
     public List<Head> getCategoryHeads(@NonNull String categoryName) {
-        try {
-            return client.getCategory(categoryName)
-                    .stream()
-                    .map(headMapper::transform)
-                    .collect(Collectors.toList());
-        } catch (FeignException.FeignServerException ex) {
-            if (!headspluginProperties.isSuppressHttpClientErrors()) {
-                log.error(ex.getMessage(), ex);
+        if (headspluginProperties.getProvider().isFreshcoal()) {
+            try {
+                return client.getCategory(categoryName)
+                        .stream()
+                        .map(headMapper::transform)
+                        .collect(Collectors.toList());
+            } catch (FeignException.FeignServerException | FeignException.NotFound ex) {
+                if (!headspluginProperties.isSuppressHttpClientErrors()) {
+                    log.error(ex.getMessage(), ex);
+                }
             }
-            return Collections.emptyList();
         }
+        return List.of();
     }
 
     @Override
     public List<String> getCategoryNames() {
-        return List.of(
-                "food",
-                "devices",
-                "misc",
-                "alphabet",
-                "interior",
-                "color",
-                "blocks",
-                "games",
-                "mobs",
-                "characters",
-                "pokemon"
-        );
+        if (headspluginProperties.getProvider().isFreshcoal()) {
+            return List.of(
+                    "food",
+                    "devices",
+                    "misc",
+                    "alphabet",
+                    "interior",
+                    "color",
+                    "blocks",
+                    "games",
+                    "mobs",
+                    "characters",
+                    "pokemon"
+            );
+        }
+        return List.of();
     }
 
     @Override
     public List<Head> getHeads(String searchTerm) {
-        if (searchTerm.length() < 3) {
-            return new ArrayList<>();
-        }
-        try {
-            return client.find(searchTerm)
-                    .stream()
-                    .map(headMapper::transform)
-                    .collect(Collectors.toList());
-        } catch (FeignException.FeignServerException ex) {
-            if (!headspluginProperties.isSuppressHttpClientErrors()) {
-                log.error(ex.getMessage(), ex);
+        if (headspluginProperties.getProvider().isFreshcoal()) {
+            if (searchTerm.length() < 3) {
+                return new ArrayList<>();
             }
-            return Collections.emptyList();
+            try {
+                return client.find(searchTerm)
+                        .stream()
+                        .map(headMapper::transform)
+                        .collect(Collectors.toList());
+            } catch (FeignException.FeignServerException | FeignException.NotFound ex) {
+                if (!headspluginProperties.isSuppressHttpClientErrors()) {
+                    log.error(ex.getMessage(), ex);
+                }
+            }
         }
+        return List.of();
     }
 }
