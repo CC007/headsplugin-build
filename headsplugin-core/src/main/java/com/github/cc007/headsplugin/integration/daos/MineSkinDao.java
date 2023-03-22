@@ -17,7 +17,6 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.Transformer;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 @ToString
 @EqualsAndHashCode
 @Log4j2
-// TODO @ConditionalOnProperty(name = "headsplugin.provider.mineskin", havingValue = "true", matchIfMissing = true)
 public class MineSkinDao implements Searchable, Creatable {
 
     private final MineSkinClient client;
@@ -41,33 +39,37 @@ public class MineSkinDao implements Searchable, Creatable {
 
     @Override
     public Optional<Head> addHead(UUID playerUuid, String newHeadName) {
-        final var createDto = client.create(playerUuid.toString(), newHeadName);
-        if (createDto instanceof CreateSkinDetailsDto createSkinDetailsDto) {
-            return Optional.of(headMapper.transform(createSkinDetailsDto));
+        if (headspluginProperties.getProvider().isMineskin()) {
+            final var createDto = client.create(playerUuid.toString(), newHeadName);
+            if (createDto instanceof CreateSkinDetailsDto createSkinDetailsDto) {
+                return Optional.of(headMapper.transform(createSkinDetailsDto));
+            }
+            if (createDto instanceof CreateErrorDto createErrorDto) {
+                log.error("Unable to add the head to MineSkin. The server responded with te following error: " + createErrorDto.getError());
+                return Optional.empty();
+            }
+            log.error("An unknown type was found when trying to parse the result from adding a head to MineSkin.");
         }
-        if (createDto instanceof CreateErrorDto createErrorDto) {
-            log.error("Unable to add the head to MineSkin. The server responded with te following error: " + createErrorDto.getError());
-            return Optional.empty();
-        }
-        log.error("An unknown type was found when trying to parse the result from adding a head to MineSkin.");
         return Optional.empty();
     }
 
     @Override
     public List<Head> getHeads(String searchTerm) {
-        try {
-            return client.find(searchTerm)
-                    .getSkins()
-                    .stream()
-                    .map(SkinDto::getId)
-                    .map(client::findById)
-                    .map(headMapper::transform)
-                    .collect(Collectors.toList());
-        } catch (FeignException.FeignServerException ex) {
-            if (!headspluginProperties.isSuppressHttpClientErrors()) {
-                log.error(ex.getMessage(), ex);
+        if (headspluginProperties.getProvider().isMineskin()) {
+            try {
+                return client.find(searchTerm)
+                        .getSkins()
+                        .stream()
+                        .map(SkinDto::getId)
+                        .map(client::findById)
+                        .map(headMapper::transform)
+                        .collect(Collectors.toList());
+            } catch (FeignException.FeignServerException | FeignException.NotFound ex) {
+                if (!headspluginProperties.isSuppressHttpClientErrors()) {
+                    log.error(ex.getMessage(), ex);
+                }
             }
-            return Collections.emptyList();
         }
+        return List.of();
     }
 }
