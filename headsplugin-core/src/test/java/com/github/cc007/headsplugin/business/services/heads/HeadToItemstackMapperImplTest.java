@@ -3,7 +3,6 @@ package com.github.cc007.headsplugin.business.services.heads;
 import com.github.cc007.headsplugin.api.business.domain.Head;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
 import com.github.cc007.headsplugin.business.services.OwnerProfileService;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -206,7 +205,6 @@ class HeadToItemstackMapperImplTest {
                 MockedStatic<Bukkit> bukkit = Mockito.mockStatic(Bukkit.class);
         ) {
             final var encoder = Base64.getEncoder();
-            final var notchUuid = UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5");
             final var name = "TestHead";
             final var uuid = UUID.randomUUID();
             final var uuidIntArray = new int[]{1, 2, 3, 4};
@@ -233,7 +231,7 @@ class HeadToItemstackMapperImplTest {
                     .thenReturn(itemFactory);
             when(itemFactory.getItemMeta(Material.PLAYER_HEAD))
                     .thenReturn(skullMeta);
-            bukkit.when(() -> Bukkit.getOfflinePlayer(notchUuid))
+            bukkit.when(() -> Bukkit.getOfflinePlayer("Notch"))
                     .thenReturn(offlinePlayer);
             when(itemFactory.isApplicable(skullMeta, Material.PLAYER_HEAD))
                     .thenReturn(true);
@@ -256,7 +254,7 @@ class HeadToItemstackMapperImplTest {
 
             // verify
             bukkit.verify(Bukkit::getItemFactory, times(4));
-            bukkit.verify(() -> Bukkit.getOfflinePlayer(notchUuid));
+            bukkit.verify(() -> Bukkit.getOfflinePlayer("Notch"));
             //bukkit.verify(() -> Bukkit.createPlayerProfile(uuid, name));
             bukkit.verifyNoMoreInteractions();
 
