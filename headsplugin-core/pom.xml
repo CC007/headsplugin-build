@@ -57,10 +57,6 @@
             <artifactId>spigot-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>de.tr7zw</groupId>
-            <artifactId>item-nbt-api</artifactId>
-        </dependency>
 
         <!-- CDI dependencies -->
         <dependency>

@@ -62,40 +62,6 @@
         </repository>
     </repositories>
 
-    <profiles>
-        <profile>
-            <id>old</id>
-            <dependencyManagement>
-                <dependencies>
-                    <!-- Spring boot dependencies import -->
-                    <dependency>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-dependencies</artifactId>
-                        <version>${spring-boot.version}</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-
-                    <!-- Spring cloud dependencies import -->
-                    <dependency>
-                        <groupId>org.springframework.cloud</groupId>
-                        <artifactId>spring-cloud-dependencies</artifactId>
-                        <version>${spring-cloud.version}</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-
-                    <!-- Spigot Spring Boot starter -->
-                    <dependency>
-                        <groupId>dev.alangomes</groupId>
-                        <artifactId>spigot-spring-boot-starter</artifactId>
-                        <version>${spigot-spring-boot.version}</version>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-        </profile>
-    </profiles>
-
     <dependencyManagement>
         <dependencies>
             <!-- HeadsPlugin API dependency -->
@@ -105,35 +71,24 @@
                 <version>3.3.0</version>
             </dependency>
 
-            <!-- Bukkit API -->
+            <!-- Minecraft API -->
             <dependency>
                 <groupId>org.bukkit</groupId>
                 <artifactId>bukkit</artifactId>
                 <version>${minecraft.version}</version>
                 <scope>provided</scope>
             </dependency>
-
-            <!-- Craftbukkit API -->
             <dependency>
                 <groupId>org.bukkit</groupId>
                 <artifactId>craftbukkit</artifactId>
                 <version>${minecraft.version}</version>
                 <scope>provided</scope>
             </dependency>
-
-            <!-- Spigot API -->
             <dependency>
                 <groupId>org.spigotmc</groupId>
                 <artifactId>spigot-api</artifactId>
                 <version>${minecraft.version}</version>
                 <scope>provided</scope>
-            </dependency>
-
-            <!-- NBT API -->
-            <dependency>
-                <groupId>de.tr7zw</groupId>
-                <artifactId>item-nbt-api</artifactId>
-                <version>2.10.0</version>
             </dependency>
 
             <!-- Google Dagger2 -->
@@ -301,9 +256,7 @@
                 <version>3.11.2</version>
                 <scope>test</scope>
             </dependency>
-
         </dependencies>
-
     </dependencyManagement>
 
     <build>
