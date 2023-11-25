@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.github.cc007</groupId>
         <artifactId>headsplugin-build</artifactId>
-        <version>3.2.1</version>
+        <version>3.3.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>headsplugin-dependencies</artifactId>
@@ -102,7 +102,7 @@
             <dependency>
                 <groupId>com.github.cc007</groupId>
                 <artifactId>headsplugin-api</artifactId>
-                <version>3.0.0</version>
+                <version>3.3.0</version>
             </dependency>
 
             <!-- Bukkit API -->
@@ -306,5 +306,15 @@
 
     </dependencyManagement>
 
-
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
