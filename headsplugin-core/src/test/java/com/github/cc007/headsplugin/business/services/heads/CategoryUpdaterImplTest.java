@@ -1,6 +1,8 @@
 package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.domain.events.CategoriesUpdatedEvent;
+import com.github.cc007.headsplugin.api.business.domain.events.CategoryUpdatedEvent;
 import com.github.cc007.headsplugin.api.business.services.Profiler;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadUpdater;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.CategoryUtils;
@@ -14,11 +16,14 @@ import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
-
 import org.apache.logging.log4j.Level;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
+import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -40,11 +45,13 @@ import java.util.function.Supplier;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -83,6 +90,12 @@ class CategoryUpdaterImplTest {
 
     @Captor
     ArgumentCaptor<Runnable> asyncCaptor;
+
+    @Captor
+    ArgumentCaptor<Event> eventCaptor;
+
+    @Captor
+    ArgumentCaptor<CategoriesUpdatedEvent> categoriesUpdatedEventCaptor;
 
     @InjectMocks
     @Spy
@@ -167,7 +180,7 @@ class CategoryUpdaterImplTest {
     }
 
     @Test
-    void updateCategoryNoHeadsFound() {
+    void updateCategory_NoHeadsFound() {
         // prepare
         final var testCategoryName1 = "CategoryName1";
         final var testCategoryName2 = "CategoryName2";
@@ -212,7 +225,7 @@ class CategoryUpdaterImplTest {
     }
 
     @Test
-    void updateCategoryNoCategorizablesFound() {
+    void updateCategory_NoCategorizablesFound() {
         // prepare
         final var testCategoryName1 = "CategoryName1";
         final var testCategoryName2 = "CategoryName2";
@@ -241,487 +254,761 @@ class CategoryUpdaterImplTest {
     @Test
     void updateCategories() {
         // prepare
-        final var testCategoryName1 = "CategoryName1";
-        final var testCategoryName2 = "CategoryName2";
-        final var testCategorizable11 = Mockito.mock(Categorizable.class);
-        final var testCategorizable12 = Mockito.mock(Categorizable.class);
-        final var testCategorizable21 = Mockito.mock(Categorizable.class);
-        final var testSource11 = "Source11";
-        final var testSource12 = "Source12";
-        final var testSource21 = "Source21";
-        final var testHead1 = Head.builder().name("Head1").build();
-        final var testHead2 = Head.builder().name("Head2").build();
-        final var testHeads11 = List.of(testHead1, testHead2);
-        final var testHeads12 = List.of(testHead1);
-        final var testHeads21 = List.of(testHead2);
-        final var testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
-        final var testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
-        final var testHeadEntity1 = Mockito.mock(HeadEntity.class);
-        final var testHeadEntity2 = Mockito.mock(HeadEntity.class);
-        final var testDatabaseEntity11 = Mockito.mock(DatabaseEntity.class);
-        final var testDatabaseEntity12 = Mockito.mock(DatabaseEntity.class);
-        final var testDatabaseEntity21 = Mockito.mock(DatabaseEntity.class);
+        try (MockedStatic<Bukkit> bukkitMock = Mockito.mockStatic(Bukkit.class)) {
+            final var testCategoryName1 = "CategoryName1";
+            final var testCategoryName2 = "CategoryName2";
+            final var testCategorizable11 = Mockito.mock(Categorizable.class);
+            final var testCategorizable12 = Mockito.mock(Categorizable.class);
+            final var testCategorizable21 = Mockito.mock(Categorizable.class);
+            final var testCategoryDuration = 12.0;
+            final var testCategoriesDuration = 42.0;
+            final var testSource11 = "Source11";
+            final var testSource12 = "Source12";
+            final var testSource21 = "Source21";
+            final var testHead1 = Head.builder().name("Head1").build();
+            final var testHead2 = Head.builder().name("Head2").build();
+            final var testHeads11 = List.of(testHead1, testHead2);
+            final var testHeads12 = List.of(testHead1);
+            final var testHeads21 = List.of(testHead2);
+            final var testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
+            final var testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
+            final var testHeadEntity1 = Mockito.mock(HeadEntity.class);
+            final var testHeadEntity2 = Mockito.mock(HeadEntity.class);
+            final var testDatabaseEntity11 = Mockito.mock(DatabaseEntity.class);
+            final var testDatabaseEntity12 = Mockito.mock(DatabaseEntity.class);
+            final var testDatabaseEntity21 = Mockito.mock(DatabaseEntity.class);
+            final var bukkitSchedulerMock = mock(BukkitScheduler.class);
+            final var serverMock = mock(Server.class);
+            final var pluginManagerMock = mock(PluginManager.class);
 
-        final var categoryMap = Map.ofEntries(
-                Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
-                Map.entry(testCategoryName2, Set.of(testCategorizable21))
-        );
+            final var categoryMap = Map.ofEntries(
+                    Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
+                    Map.entry(testCategoryName2, Set.of(testCategorizable21))
+            );
 
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(2);
-            runnable.run();
-            return null;
-        }).when(profiler).runProfiled(eq(Level.INFO), isA(String.class), isA(Runnable.class));
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(2);
+                runnable.run();
+                return testCategoryDuration;
+            }).when(profiler).runProfiled(eq(Level.DEBUG), startsWith("Done updating category: "), isA(Runnable.class));
 
-        //noinspection unchecked
-        when(categoryUtils.getCategoryMap())
-                .thenReturn(categoryMap, categoryMap);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(2);
+                runnable.run();
+                return testCategoriesDuration;
+            }).when(profiler).runProfiled(eq(Level.INFO), eq("Done updating all categories"), isA(Runnable.class));
 
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(0);
-            runnable.run();
-            return null;
-        }).when(transaction).runTransacted(isA(Runnable.class));
+            //noinspection unchecked
+            when(categoryUtils.getCategoryMap())
+                    .thenReturn(categoryMap, categoryMap);
 
-        when(testCategorizable11.getSource())
-                .thenReturn(testSource11);
-        when(testCategorizable12.getSource())
-                .thenReturn(testSource12);
-        when(testCategorizable21.getSource())
-                .thenReturn(testSource21);
-        when(testCategorizable11.getCategoryHeads(testCategoryName1))
-                .thenReturn(testHeads11);
-        when(testCategorizable12.getCategoryHeads(testCategoryName1))
-                .thenReturn(testHeads12);
-        when(testCategorizable21.getCategoryHeads(testCategoryName2))
-                .thenReturn(testHeads21);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(0);
+                runnable.run();
+                return null;
+            }).when(transaction).runTransacted(isA(Runnable.class));
 
-        when(categoryRepository.findByOrCreateFromName(testCategoryName1))
-                .thenReturn(testCategoryEntity1);
-        when(categoryRepository.findByOrCreateFromName(testCategoryName2))
-                .thenReturn(testCategoryEntity2);
+            when(testCategorizable11.getSource())
+                    .thenReturn(testSource11);
+            when(testCategorizable12.getSource())
+                    .thenReturn(testSource12);
+            when(testCategorizable21.getSource())
+                    .thenReturn(testSource21);
+            when(testCategorizable11.getCategoryHeads(testCategoryName1))
+                    .thenReturn(testHeads11);
+            when(testCategorizable12.getCategoryHeads(testCategoryName1))
+                    .thenReturn(testHeads12);
+            when(testCategorizable21.getCategoryHeads(testCategoryName2))
+                    .thenReturn(testHeads21);
 
-        when(headUpdater.updateHeads(testHeads11))
-                .thenReturn(List.of(testHeadEntity1, testHeadEntity2));
-        when(headUpdater.updateHeads(testHeads12))
-                .thenReturn(List.of(testHeadEntity1));
-        when(headUpdater.updateHeads(testHeads21))
-                .thenReturn(List.of(testHeadEntity2));
+            when(categoryRepository.findByOrCreateFromName(testCategoryName1))
+                    .thenReturn(testCategoryEntity1);
+            when(categoryRepository.findByOrCreateFromName(testCategoryName2))
+                    .thenReturn(testCategoryEntity2);
 
-        when(databaseRepository.findByOrCreateFromName(testSource11))
-                .thenReturn(testDatabaseEntity11);
-        when(databaseRepository.findByOrCreateFromName(testSource12))
-                .thenReturn(testDatabaseEntity12);
-        when(databaseRepository.findByOrCreateFromName(testSource21))
-                .thenReturn(testDatabaseEntity21);
+            when(headUpdater.updateHeads(testHeads11))
+                    .thenReturn(List.of(testHeadEntity1, testHeadEntity2));
+            when(headUpdater.updateHeads(testHeads12))
+                    .thenReturn(List.of(testHeadEntity1));
+            when(headUpdater.updateHeads(testHeads21))
+                    .thenReturn(List.of(testHeadEntity2));
 
-        // execute
-        categoryUpdater.updateCategories();
+            when(databaseRepository.findByOrCreateFromName(testSource11))
+                    .thenReturn(testDatabaseEntity11);
+            when(databaseRepository.findByOrCreateFromName(testSource12))
+                    .thenReturn(testDatabaseEntity12);
+            when(databaseRepository.findByOrCreateFromName(testSource21))
+                    .thenReturn(testDatabaseEntity21);
 
-        // verify
-        verify(testCategoryEntity1, times(2)).addhead(testHeadEntity1);
-        verify(testCategoryEntity1).addhead(testHeadEntity2);
-        verify(testCategoryEntity1).setLastUpdated(any());
+            bukkitMock.when(Bukkit::getScheduler)
+                    .thenReturn(bukkitSchedulerMock);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(1);
+                runnable.run();
+                return null;
+            }).when(bukkitSchedulerMock).runTask(eq(plugin), isA(Runnable.class));
 
-        verify(testCategoryEntity2).addhead(testHeadEntity2);
-        verify(testCategoryEntity2).setLastUpdated(any());
+            bukkitMock.when(Bukkit::getServer)
+                    .thenReturn(serverMock);
+            when(serverMock.getPluginManager())
+                    .thenReturn(pluginManagerMock);
 
-        verify(testDatabaseEntity11).addhead(testHeadEntity1);
-        verify(testDatabaseEntity11).addhead(testHeadEntity2);
+            // execute
+            categoryUpdater.updateCategories();
 
-        verify(testDatabaseEntity12).addhead(testHeadEntity1);
+            // verify
+            verify(testCategoryEntity1, times(2)).addhead(testHeadEntity1);
+            verify(testCategoryEntity1).addhead(testHeadEntity2);
+            verify(testCategoryEntity1).setLastUpdated(any());
 
-        verify(testDatabaseEntity21).addhead(testHeadEntity2);
+            verify(testCategoryEntity2).addhead(testHeadEntity2);
+            verify(testCategoryEntity2).setLastUpdated(any());
 
-        verify(testDatabaseEntity11).addCategory(testCategoryEntity1);
-        verify(testDatabaseEntity12).addCategory(testCategoryEntity1);
-        verify(testDatabaseEntity21).addCategory(testCategoryEntity2);
+            verify(testDatabaseEntity11).addhead(testHeadEntity1);
+            verify(testDatabaseEntity11).addhead(testHeadEntity2);
 
-        verifyNoMoreInteractions(testCategorizable11, testCategorizable12, testCategorizable21);
-        verifyNoMoreInteractions(testHeadEntity1, testHeadEntity2);
-        verifyNoMoreInteractions(testCategoryEntity1, testCategoryEntity2);
-        verifyNoMoreInteractions(testDatabaseEntity11, testDatabaseEntity12, testDatabaseEntity21);
-        verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository);
+            verify(testDatabaseEntity12).addhead(testHeadEntity1);
+
+            verify(testDatabaseEntity21).addhead(testHeadEntity2);
+
+            verify(testDatabaseEntity11).addCategory(testCategoryEntity1);
+            verify(testDatabaseEntity12).addCategory(testCategoryEntity1);
+            verify(testDatabaseEntity21).addCategory(testCategoryEntity2);
+
+            verify(pluginManagerMock, times(3)).callEvent(eventCaptor.capture());
+
+            verifyNoMoreInteractions(pluginManagerMock);
+            verifyNoMoreInteractions(testCategorizable11, testCategorizable12, testCategorizable21);
+            verifyNoMoreInteractions(testHeadEntity1, testHeadEntity2);
+            verifyNoMoreInteractions(testCategoryEntity1, testCategoryEntity2);
+            verifyNoMoreInteractions(testDatabaseEntity11, testDatabaseEntity12, testDatabaseEntity21);
+            verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository);
+
+            List<Event> events = eventCaptor.getAllValues();
+            List<CategoryUpdatedEvent> categoriesUpdatedEvents = events.stream()
+                    .limit(2)
+                    .filter(CategoryUpdatedEvent.class::isInstance)
+                    .map(CategoryUpdatedEvent.class::cast)
+                    .toList();
+            assertThat(categoriesUpdatedEvents.size(), is(2));
+
+            List<String> actualCategoryNames = categoriesUpdatedEvents.stream().map(CategoryUpdatedEvent::getCategoryName).toList();
+            assertThat(actualCategoryNames, containsInAnyOrder(testCategoryName1, testCategoryName2));
+            categoriesUpdatedEvents.forEach(categoryUpdatedEvent -> {
+                assertThat(categoryUpdatedEvent.getDuration(), is(testCategoryDuration));
+                assertThat(categoryUpdatedEvent.getEndTime(), notNullValue());
+            });
+
+            if (events.get(2) instanceof CategoriesUpdatedEvent categoriesUpdatedEvent) {
+                assertThat(categoriesUpdatedEvent.getCategoryNames(), containsInAnyOrder(testCategoryName1, testCategoryName2));
+                assertThat(categoriesUpdatedEvent.getDuration(), is(testCategoriesDuration));
+                assertThat(categoriesUpdatedEvent.getEndTime(), notNullValue());
+            } else {
+                Assertions.fail("Third event is not a CategoriesUpdatedEvent");
+            }
+        }
     }
 
     @Test
-    void updateCategoriesNoHeadsFound() {
+    void updateCategories_NoHeadsFound() {
         // prepare
-        final var testCategoryName1 = "CategoryName1";
-        final var testCategoryName2 = "CategoryName2";
-        final var testCategorizable11 = Mockito.mock(Categorizable.class);
-        final var testCategorizable12 = Mockito.mock(Categorizable.class);
-        final var testCategorizable21 = Mockito.mock(Categorizable.class);
-        final var testSource11 = "Source11";
-        final var testSource12 = "Source12";
-        final var testSource21 = "Source21";
-        final var testHead1 = Head.builder().name("Head1").build();
-        final var testHead2 = Head.builder().name("Head2").build();
+        try (MockedStatic<Bukkit> bukkitMock = Mockito.mockStatic(Bukkit.class)) {
+            final var testCategoryName1 = "CategoryName1";
+            final var testCategoryName2 = "CategoryName2";
+            final var testCategorizable11 = Mockito.mock(Categorizable.class);
+            final var testCategorizable12 = Mockito.mock(Categorizable.class);
+            final var testCategorizable21 = Mockito.mock(Categorizable.class);
+            final var testCategoryDuration = 12.0;
+            final var testCategoriesDuration = 42.0;
+            final var testSource11 = "Source11";
+            final var testSource12 = "Source12";
+            final var testSource21 = "Source21";
+            final var testHead1 = Head.builder().name("Head1").build();
+            final var testHead2 = Head.builder().name("Head2").build();
+            final var bukkitSchedulerMock = mock(BukkitScheduler.class);
+            final var serverMock = mock(Server.class);
+            final var pluginManagerMock = mock(PluginManager.class);
 
-        final var categoryMap = Map.ofEntries(
-                Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
-                Map.entry(testCategoryName2, Set.of(testCategorizable21))
-        );
+            final var categoryMap = Map.ofEntries(
+                    Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
+                    Map.entry(testCategoryName2, Set.of(testCategorizable21))
+            );
 
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(2);
-            runnable.run();
-            return null;
-        }).when(profiler).runProfiled(eq(Level.INFO), isA(String.class), isA(Runnable.class));
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(2);
+                runnable.run();
+                return testCategoryDuration;
+            }).when(profiler).runProfiled(eq(Level.DEBUG), startsWith("Done updating category: "), isA(Runnable.class));
 
-        //noinspection unchecked
-        when(categoryUtils.getCategoryMap())
-                .thenReturn(categoryMap, categoryMap);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(2);
+                runnable.run();
+                return testCategoriesDuration;
+            }).when(profiler).runProfiled(eq(Level.INFO), eq("Done updating all categories"), isA(Runnable.class));
 
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(0);
-            runnable.run();
-            return null;
-        }).when(transaction).runTransacted(isA(Runnable.class));
+            //noinspection unchecked
+            when(categoryUtils.getCategoryMap())
+                    .thenReturn(categoryMap, categoryMap);
 
-        when(testCategorizable11.getSource())
-                .thenReturn(testSource11);
-        when(testCategorizable12.getSource())
-                .thenReturn(testSource12);
-        when(testCategorizable21.getSource())
-                .thenReturn(testSource21);
-        when(testCategorizable11.getCategoryHeads(testCategoryName1))
-                .thenReturn(Collections.emptyList());
-        when(testCategorizable12.getCategoryHeads(testCategoryName1))
-                .thenReturn(Collections.emptyList());
-        when(testCategorizable21.getCategoryHeads(testCategoryName2))
-                .thenReturn(Collections.emptyList());
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(0);
+                runnable.run();
+                return null;
+            }).when(transaction).runTransacted(isA(Runnable.class));
 
-        // execute
-        categoryUpdater.updateCategories();
+            when(testCategorizable11.getSource())
+                    .thenReturn(testSource11);
+            when(testCategorizable12.getSource())
+                    .thenReturn(testSource12);
+            when(testCategorizable21.getSource())
+                    .thenReturn(testSource21);
+            when(testCategorizable11.getCategoryHeads(testCategoryName1))
+                    .thenReturn(Collections.emptyList());
+            when(testCategorizable12.getCategoryHeads(testCategoryName1))
+                    .thenReturn(Collections.emptyList());
+            when(testCategorizable21.getCategoryHeads(testCategoryName2))
+                    .thenReturn(Collections.emptyList());
 
-        // verify
-        verifyNoMoreInteractions(testCategorizable11, testCategorizable12, testCategorizable21);
-        verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository);
+            bukkitMock.when(Bukkit::getScheduler)
+                    .thenReturn(bukkitSchedulerMock);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(1);
+                runnable.run();
+                return null;
+            }).when(bukkitSchedulerMock).runTask(eq(plugin), isA(Runnable.class));
+
+            bukkitMock.when(Bukkit::getServer)
+                    .thenReturn(serverMock);
+            when(serverMock.getPluginManager())
+                    .thenReturn(pluginManagerMock);
+
+            // execute
+            categoryUpdater.updateCategories();
+
+            // verify
+            verify(pluginManagerMock, times(3)).callEvent(eventCaptor.capture());
+
+            verifyNoMoreInteractions(pluginManagerMock);
+            verifyNoMoreInteractions(testCategorizable11, testCategorizable12, testCategorizable21);
+            verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository);
+
+            List<Event> events = eventCaptor.getAllValues();
+            List<CategoryUpdatedEvent> categoriesUpdatedEvents = events.stream()
+                    .limit(2)
+                    .filter(CategoryUpdatedEvent.class::isInstance)
+                    .map(CategoryUpdatedEvent.class::cast)
+                    .toList();
+            assertThat(categoriesUpdatedEvents.size(), is(2));
+
+            List<String> actualCategoryNames = categoriesUpdatedEvents.stream().map(CategoryUpdatedEvent::getCategoryName).toList();
+            assertThat(actualCategoryNames, containsInAnyOrder(testCategoryName1, testCategoryName2));
+            categoriesUpdatedEvents.forEach(categoryUpdatedEvent -> {
+                assertThat(categoryUpdatedEvent.getDuration(), is(testCategoryDuration));
+                assertThat(categoryUpdatedEvent.getEndTime(), notNullValue());
+            });
+
+            if (events.get(2) instanceof CategoriesUpdatedEvent categoriesUpdatedEvent) {
+                assertThat(categoriesUpdatedEvent.getCategoryNames(), containsInAnyOrder(testCategoryName1, testCategoryName2));
+                assertThat(categoriesUpdatedEvent.getDuration(), is(testCategoriesDuration));
+                assertThat(categoriesUpdatedEvent.getEndTime(), notNullValue());
+            } else {
+                Assertions.fail("Third event is not a CategoriesUpdatedEvent");
+            }
+        }
     }
 
     @Test
-    void updateCategoriesNoCategorizablesFound() {
+    void updateCategories_NoCategorizablesFound() {
         // prepare
-        final var testCategoryName1 = "CategoryName1";
-        final var testCategoryName2 = "CategoryName2";
+        try (MockedStatic<Bukkit> bukkitMock = Mockito.mockStatic(Bukkit.class)) {
+            final var testCategoryName1 = "CategoryName1";
+            final var testCategoryName2 = "CategoryName2";
+            final var testCategoryDuration = 12.0;
+            final var testCategoriesDuration = 42.0;
+            final var bukkitSchedulerMock = mock(BukkitScheduler.class);
+            final var serverMock = mock(Server.class);
+            final var pluginManagerMock = mock(PluginManager.class);
 
-        final var categoryMap = Map.ofEntries(
-                Map.entry(testCategoryName1, Collections.<Categorizable>emptySet()),
-                Map.entry(testCategoryName2, Collections.<Categorizable>emptySet())
-        );
+            final var categoryMap = Map.ofEntries(
+                    Map.entry(testCategoryName1, Collections.<Categorizable>emptySet()),
+                    Map.entry(testCategoryName2, Collections.<Categorizable>emptySet())
+            );
 
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(2);
-            runnable.run();
-            return null;
-        }).when(profiler).runProfiled(eq(Level.INFO), isA(String.class), isA(Runnable.class));
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(2);
+                runnable.run();
+                return testCategoryDuration;
+            }).when(profiler).runProfiled(eq(Level.DEBUG), startsWith("Done updating category: "), isA(Runnable.class));
 
-        //noinspection unchecked
-        when(categoryUtils.getCategoryMap())
-                .thenReturn(categoryMap, categoryMap);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(2);
+                runnable.run();
+                return testCategoriesDuration;
+            }).when(profiler).runProfiled(eq(Level.INFO), eq("Done updating all categories"), isA(Runnable.class));
 
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(0);
-            runnable.run();
-            return null;
-        }).when(transaction).runTransacted(isA(Runnable.class));
+            //noinspection unchecked
+            when(categoryUtils.getCategoryMap())
+                    .thenReturn(categoryMap, categoryMap);
 
-        // execute
-        categoryUpdater.updateCategories();
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(0);
+                runnable.run();
+                return null;
+            }).when(transaction).runTransacted(isA(Runnable.class));
 
-        // verify
-        verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository);
+            bukkitMock.when(Bukkit::getScheduler)
+                    .thenReturn(bukkitSchedulerMock);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(1);
+                runnable.run();
+                return null;
+            }).when(bukkitSchedulerMock).runTask(eq(plugin), isA(Runnable.class));
+
+            bukkitMock.when(Bukkit::getServer)
+                    .thenReturn(serverMock);
+            when(serverMock.getPluginManager())
+                    .thenReturn(pluginManagerMock);
+
+            // execute
+            categoryUpdater.updateCategories();
+
+            // verify
+            verify(pluginManagerMock, times(3)).callEvent(eventCaptor.capture());
+
+            verifyNoMoreInteractions(pluginManagerMock);
+            verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository);
+
+            List<Event> events = eventCaptor.getAllValues();
+            List<CategoryUpdatedEvent> categoriesUpdatedEvents = events.stream()
+                    .limit(2)
+                    .filter(CategoryUpdatedEvent.class::isInstance)
+                    .map(CategoryUpdatedEvent.class::cast)
+                    .toList();
+            assertThat(categoriesUpdatedEvents.size(), is(2));
+
+            List<String> actualCategoryNames = categoriesUpdatedEvents.stream().map(CategoryUpdatedEvent::getCategoryName).toList();
+            assertThat(actualCategoryNames, containsInAnyOrder(testCategoryName1, testCategoryName2));
+            categoriesUpdatedEvents.forEach(categoryUpdatedEvent -> {
+                assertThat(categoryUpdatedEvent.getDuration(), is(testCategoryDuration));
+                assertThat(categoryUpdatedEvent.getEndTime(), notNullValue());
+            });
+
+            if (events.get(2) instanceof CategoriesUpdatedEvent categoriesUpdatedEvent) {
+                assertThat(categoriesUpdatedEvent.getCategoryNames(), containsInAnyOrder(testCategoryName1, testCategoryName2));
+                assertThat(categoriesUpdatedEvent.getDuration(), is(testCategoriesDuration));
+                assertThat(categoriesUpdatedEvent.getEndTime(), notNullValue());
+            } else {
+                Assertions.fail("Third event is not a CategoriesUpdatedEvent");
+            }
+        }
     }
 
     @Test
     void updateCategoriesIfNecessary() {
         // prepare
-        final var testCategoryName1 = "CategoryName1";
-        final var testCategoryName2 = "CategoryName2";
-        final var testCategorizable11 = Mockito.mock(Categorizable.class);
-        final var testCategorizable12 = Mockito.mock(Categorizable.class);
-        final var testCategorizable21 = Mockito.mock(Categorizable.class);
-        final var testSource1 = "Source1";
-        final var testSource2 = "Source2";
-        final var testHead1 = Head.builder().name("Head1").build();
-        final var testHead2 = Head.builder().name("Head2").build();
-        final var testHeads11 = List.of(testHead1, testHead2);
-        final var testHeads12 = List.of(testHead1);
-        final var testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
-        final var testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
-        final var testHeadEntity1 = Mockito.mock(HeadEntity.class);
-        final var testHeadEntity2 = Mockito.mock(HeadEntity.class);
-        final var testDatabaseEntity1 = Mockito.mock(DatabaseEntity.class);
-        final var testDatabaseEntity2 = Mockito.mock(DatabaseEntity.class);
-        final var testLastUpdated1 = LocalDateTime.now().minusHours(6);
-        final var testLastUpdated2 = LocalDateTime.now().minusHours(2);
+        try (MockedStatic<Bukkit> bukkitMock = Mockito.mockStatic(Bukkit.class)) {
+            final var testCategoryName1 = "CategoryName1";
+            final var testCategoryName2 = "CategoryName2";
+            final var testCategorizable11 = Mockito.mock(Categorizable.class);
+            final var testCategorizable12 = Mockito.mock(Categorizable.class);
+            final var testCategorizable21 = Mockito.mock(Categorizable.class);
+            final var testCategoryDuration = 12.0;
+            final var testCategoriesDuration = 42.0;
+            final var testSource1 = "Source1";
+            final var testSource2 = "Source2";
+            final var testHead1 = Head.builder().name("Head1").build();
+            final var testHead2 = Head.builder().name("Head2").build();
+            final var testHeads11 = List.of(testHead1, testHead2);
+            final var testHeads12 = List.of(testHead1);
+            final var testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
+            final var testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
+            final var testHeadEntity1 = Mockito.mock(HeadEntity.class);
+            final var testHeadEntity2 = Mockito.mock(HeadEntity.class);
+            final var testDatabaseEntity1 = Mockito.mock(DatabaseEntity.class);
+            final var testDatabaseEntity2 = Mockito.mock(DatabaseEntity.class);
+            final var testLastUpdated1 = LocalDateTime.now().minusHours(6);
+            final var testLastUpdated2 = LocalDateTime.now().minusHours(2);
+            final var bukkitSchedulerMock = mock(BukkitScheduler.class);
+            final var serverMock = mock(Server.class);
+            final var pluginManagerMock = mock(PluginManager.class);
 
-        final var categoryMap = Map.ofEntries(
-                Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
-                Map.entry(testCategoryName2, Set.of(testCategorizable21))
-        );
+            final var categoryMap = Map.ofEntries(
+                    Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
+                    Map.entry(testCategoryName2, Set.of(testCategorizable21))
+            );
 
-        final var categoryUpdateProperties = new CategoriesProperties.Update();
-        categoryUpdateProperties.setInterval(4);
+            final var categoryUpdateProperties = new CategoriesProperties.Update();
+            categoryUpdateProperties.setInterval(4);
 
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(2);
-            runnable.run();
-            return null;
-        }).when(profiler).runProfiled(eq(Level.INFO), isA(String.class), isA(Runnable.class));
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(2);
+                runnable.run();
+                return testCategoryDuration;
+            }).when(profiler).runProfiled(eq(Level.DEBUG), startsWith("Done updating category: "), isA(Runnable.class));
 
-        //noinspection unchecked
-        when(categoryUtils.getCategoryMap())
-                .thenReturn(categoryMap, categoryMap);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(2);
+                runnable.run();
+                return testCategoriesDuration;
+            }).when(profiler).runProfiled(eq(Level.INFO), eq("Done updating necessary categories"), isA(Runnable.class));
 
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(0);
-            runnable.run();
-            return null;
-        }).when(transaction).runTransacted(isA(Runnable.class));
+            //noinspection unchecked
+            when(categoryUtils.getCategoryMap())
+                    .thenReturn(categoryMap, categoryMap);
 
-        when(categoriesProperties.getUpdate())
-                .thenReturn(categoryUpdateProperties);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(0);
+                runnable.run();
+                return null;
+            }).when(transaction).runTransacted(isA(Runnable.class));
 
-        when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
-                .thenAnswer(invocation -> {
-                    Supplier<?> supplier = invocation.getArgument(1);
-                    return supplier.get();
-                });
+            when(categoriesProperties.getUpdate())
+                    .thenReturn(categoryUpdateProperties);
 
-        when(categoryRepository.findByOrCreateFromName(testCategoryName1))
-                .thenReturn(testCategoryEntity1, testCategoryEntity1);
-        when(categoryRepository.findByOrCreateFromName(testCategoryName2))
-                .thenReturn(testCategoryEntity2);
+            when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
+                    .thenAnswer(invocation -> {
+                        Supplier<?> supplier = invocation.getArgument(1);
+                        return supplier.get();
+                    });
 
-        when(testCategoryEntity1.getLastUpdated())
-                .thenReturn(testLastUpdated1);
-        when(testCategoryEntity2.getLastUpdated())
-                .thenReturn(testLastUpdated2);
+            when(categoryRepository.findByOrCreateFromName(testCategoryName1))
+                    .thenReturn(testCategoryEntity1, testCategoryEntity1);
+            when(categoryRepository.findByOrCreateFromName(testCategoryName2))
+                    .thenReturn(testCategoryEntity2);
 
-        when(testCategorizable11.getSource())
-                .thenReturn(testSource1);
-        when(testCategorizable12.getSource())
-                .thenReturn(testSource2);
-        when(testCategorizable11.getCategoryHeads(testCategoryName1))
-                .thenReturn(testHeads11);
-        when(testCategorizable12.getCategoryHeads(testCategoryName1))
-                .thenReturn(testHeads12);
+            when(testCategoryEntity1.getLastUpdated())
+                    .thenReturn(testLastUpdated1);
+            when(testCategoryEntity2.getLastUpdated())
+                    .thenReturn(testLastUpdated2);
 
-        when(headUpdater.updateHeads(testHeads11))
-                .thenReturn(List.of(testHeadEntity1, testHeadEntity2));
-        when(headUpdater.updateHeads(testHeads12))
-                .thenReturn(List.of(testHeadEntity1));
+            when(testCategorizable11.getSource())
+                    .thenReturn(testSource1);
+            when(testCategorizable12.getSource())
+                    .thenReturn(testSource2);
+            when(testCategorizable11.getCategoryHeads(testCategoryName1))
+                    .thenReturn(testHeads11);
+            when(testCategorizable12.getCategoryHeads(testCategoryName1))
+                    .thenReturn(testHeads12);
 
-        when(databaseRepository.findByOrCreateFromName(testSource1))
-                .thenReturn(testDatabaseEntity1);
-        when(databaseRepository.findByOrCreateFromName(testSource2))
-                .thenReturn(testDatabaseEntity2);
+            when(headUpdater.updateHeads(testHeads11))
+                    .thenReturn(List.of(testHeadEntity1, testHeadEntity2));
+            when(headUpdater.updateHeads(testHeads12))
+                    .thenReturn(List.of(testHeadEntity1));
 
-        // execute
-        categoryUpdater.updateCategoriesIfNecessary();
+            when(databaseRepository.findByOrCreateFromName(testSource1))
+                    .thenReturn(testDatabaseEntity1);
+            when(databaseRepository.findByOrCreateFromName(testSource2))
+                    .thenReturn(testDatabaseEntity2);
 
-        // verify
-        verify(testCategoryEntity1, times(2)).addhead(testHeadEntity1);
-        verify(testCategoryEntity1).addhead(testHeadEntity2);
-        verify(testCategoryEntity1).setLastUpdated(any());
+            bukkitMock.when(Bukkit::getScheduler)
+                    .thenReturn(bukkitSchedulerMock);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(1);
+                runnable.run();
+                return null;
+            }).when(bukkitSchedulerMock).runTask(eq(plugin), isA(Runnable.class));
 
-        verify(testDatabaseEntity1).addhead(testHeadEntity1);
-        verify(testDatabaseEntity1).addhead(testHeadEntity2);
+            bukkitMock.when(Bukkit::getServer)
+                    .thenReturn(serverMock);
+            when(serverMock.getPluginManager())
+                    .thenReturn(pluginManagerMock);
 
-        verify(testDatabaseEntity2).addhead(testHeadEntity1);
+            // execute
+            categoryUpdater.updateCategoriesIfNecessary();
 
-        verify(testDatabaseEntity1).addCategory(testCategoryEntity1);
-        verify(testDatabaseEntity2).addCategory(testCategoryEntity1);
+            // verify
+            verify(testCategoryEntity1, times(2)).addhead(testHeadEntity1);
+            verify(testCategoryEntity1).addhead(testHeadEntity2);
+            verify(testCategoryEntity1).setLastUpdated(any());
 
-        verifyNoMoreInteractions(testCategorizable11, testCategorizable12, testCategorizable21);
-        verifyNoMoreInteractions(testHeadEntity1, testHeadEntity2);
-        verifyNoMoreInteractions(testCategoryEntity1, testCategoryEntity2);
-        verifyNoMoreInteractions(testDatabaseEntity1, testDatabaseEntity2);
-        verifyNoMoreInteractions(
-                transaction,
-                categoryUtils,
-                headUpdater,
-                categoryRepository,
-                databaseRepository,
-                categoriesProperties
-        );
+            verify(testDatabaseEntity1).addhead(testHeadEntity1);
+            verify(testDatabaseEntity1).addhead(testHeadEntity2);
+
+            verify(testDatabaseEntity2).addhead(testHeadEntity1);
+
+            verify(testDatabaseEntity1).addCategory(testCategoryEntity1);
+            verify(testDatabaseEntity2).addCategory(testCategoryEntity1);
+
+            verify(pluginManagerMock, times(2)).callEvent(eventCaptor.capture());
+
+            verifyNoMoreInteractions(pluginManagerMock);
+            verifyNoMoreInteractions(testCategorizable11, testCategorizable12, testCategorizable21);
+            verifyNoMoreInteractions(testHeadEntity1, testHeadEntity2);
+            verifyNoMoreInteractions(testCategoryEntity1, testCategoryEntity2);
+            verifyNoMoreInteractions(testDatabaseEntity1, testDatabaseEntity2);
+            verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository, categoriesProperties);
+
+            List<Event> events = eventCaptor.getAllValues();
+            if (events.get(0) instanceof CategoryUpdatedEvent categoriesUpdatedEvent) {
+                assertThat(categoriesUpdatedEvent.getCategoryName(), is(testCategoryName1));
+                assertThat(categoriesUpdatedEvent.getDuration(), is(testCategoryDuration));
+                assertThat(categoriesUpdatedEvent.getEndTime(), notNullValue());
+            } else {
+                Assertions.fail("First event is not a CategoryUpdatedEvent");
+            }
+
+            if (events.get(1) instanceof CategoriesUpdatedEvent categoriesUpdatedEvent) {
+                assertThat(categoriesUpdatedEvent.getCategoryNames(), contains(testCategoryName1));
+                assertThat(categoriesUpdatedEvent.getDuration(), is(testCategoriesDuration));
+                assertThat(categoriesUpdatedEvent.getEndTime(), notNullValue());
+            } else {
+                Assertions.fail("Second event is not a CategoriesUpdatedEvent");
+            }
+        }
     }
 
     @Test
-    void updateCategoriesIfNecessaryNoHeadsFound() {
+    void updateCategoriesIfNecessary_NoHeadsFound() {
         // prepare
-        final var testCategoryName1 = "CategoryName1";
-        final var testCategoryName2 = "CategoryName2";
-        final var testCategorizable11 = Mockito.mock(Categorizable.class);
-        final var testCategorizable12 = Mockito.mock(Categorizable.class);
-        final var testCategorizable21 = Mockito.mock(Categorizable.class);
-        final var testSource1 = "Source1";
-        final var testSource2 = "Source2";
-        final var testHead1 = Head.builder().name("Head1").build();
-        final var testHead2 = Head.builder().name("Head2").build();
-        final var testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
-        final var testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
-        final var testLastUpdated1 = LocalDateTime.now().minusHours(6);
-        final var testLastUpdated2 = LocalDateTime.now().minusHours(2);
+        try (MockedStatic<Bukkit> bukkitMock = Mockito.mockStatic(Bukkit.class)) {
+            final var testCategoryName1 = "CategoryName1";
+            final var testCategoryName2 = "CategoryName2";
+            final var testCategorizable11 = Mockito.mock(Categorizable.class);
+            final var testCategorizable12 = Mockito.mock(Categorizable.class);
+            final var testCategorizable21 = Mockito.mock(Categorizable.class);
+            final var testCategoryDuration = 12.0;
+            final var testCategoriesDuration = 42.0;
+            final var testSource1 = "Source1";
+            final var testSource2 = "Source2";
+            final var testHead1 = Head.builder().name("Head1").build();
+            final var testHead2 = Head.builder().name("Head2").build();
+            final var testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
+            final var testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
+            final var testLastUpdated1 = LocalDateTime.now().minusHours(6);
+            final var testLastUpdated2 = LocalDateTime.now().minusHours(2);
+            final var bukkitSchedulerMock = mock(BukkitScheduler.class);
+            final var serverMock = mock(Server.class);
+            final var pluginManagerMock = mock(PluginManager.class);
 
-        final var categoryMap = Map.ofEntries(
-                Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
-                Map.entry(testCategoryName2, Set.of(testCategorizable21))
-        );
+            final var categoryMap = Map.ofEntries(
+                    Map.entry(testCategoryName1, Set.of(testCategorizable11, testCategorizable12)),
+                    Map.entry(testCategoryName2, Set.of(testCategorizable21))
+            );
 
-        final var categoryUpdateProperties = new CategoriesProperties.Update();
-        categoryUpdateProperties.setInterval(4);
+            final var categoryUpdateProperties = new CategoriesProperties.Update();
+            categoryUpdateProperties.setInterval(4);
 
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(2);
-            runnable.run();
-            return null;
-        }).when(profiler).runProfiled(eq(Level.INFO), isA(String.class), isA(Runnable.class));
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(2);
+                runnable.run();
+                return testCategoryDuration;
+            }).when(profiler).runProfiled(eq(Level.DEBUG), startsWith("Done updating category: "), isA(Runnable.class));
 
-        //noinspection unchecked
-        when(categoryUtils.getCategoryMap())
-                .thenReturn(categoryMap, categoryMap);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(2);
+                runnable.run();
+                return testCategoriesDuration;
+            }).when(profiler).runProfiled(eq(Level.INFO), eq("Done updating necessary categories"), isA(Runnable.class));
 
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(0);
-            runnable.run();
-            return null;
-        }).when(transaction).runTransacted(isA(Runnable.class));
+            //noinspection unchecked
+            when(categoryUtils.getCategoryMap())
+                    .thenReturn(categoryMap, categoryMap);
 
-        when(categoriesProperties.getUpdate())
-                .thenReturn(categoryUpdateProperties);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(0);
+                runnable.run();
+                return null;
+            }).when(transaction).runTransacted(isA(Runnable.class));
 
-        when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
-                .thenAnswer(invocation -> {
-                    Supplier<?> supplier = invocation.getArgument(1);
-                    return supplier.get();
-                });
+            when(categoriesProperties.getUpdate())
+                    .thenReturn(categoryUpdateProperties);
 
-        when(categoryRepository.findByOrCreateFromName(testCategoryName1))
-                .thenReturn(testCategoryEntity1, testCategoryEntity1);
-        when(categoryRepository.findByOrCreateFromName(testCategoryName2))
-                .thenReturn(testCategoryEntity2);
+            when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
+                    .thenAnswer(invocation -> {
+                        Supplier<?> supplier = invocation.getArgument(1);
+                        return supplier.get();
+                    });
 
-        when(testCategoryEntity1.getLastUpdated())
-                .thenReturn(testLastUpdated1);
-        when(testCategoryEntity2.getLastUpdated())
-                .thenReturn(testLastUpdated2);
+            when(categoryRepository.findByOrCreateFromName(testCategoryName1))
+                    .thenReturn(testCategoryEntity1, testCategoryEntity1);
+            when(categoryRepository.findByOrCreateFromName(testCategoryName2))
+                    .thenReturn(testCategoryEntity2);
 
-        when(testCategorizable11.getSource())
-                .thenReturn(testSource1);
-        when(testCategorizable12.getSource())
-                .thenReturn(testSource2);
-        when(testCategorizable11.getCategoryHeads(testCategoryName1))
-                .thenReturn(Collections.emptyList());
-        when(testCategorizable12.getCategoryHeads(testCategoryName1))
-                .thenReturn(Collections.emptyList());
+            when(testCategoryEntity1.getLastUpdated())
+                    .thenReturn(testLastUpdated1);
+            when(testCategoryEntity2.getLastUpdated())
+                    .thenReturn(testLastUpdated2);
 
+            when(testCategorizable11.getSource())
+                    .thenReturn(testSource1);
+            when(testCategorizable12.getSource())
+                    .thenReturn(testSource2);
+            when(testCategorizable11.getCategoryHeads(testCategoryName1))
+                    .thenReturn(Collections.emptyList());
+            when(testCategorizable12.getCategoryHeads(testCategoryName1))
+                    .thenReturn(Collections.emptyList());
 
-        // execute
-        categoryUpdater.updateCategoriesIfNecessary();
+            bukkitMock.when(Bukkit::getScheduler)
+                    .thenReturn(bukkitSchedulerMock);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(1);
+                runnable.run();
+                return null;
+            }).when(bukkitSchedulerMock).runTask(eq(plugin), isA(Runnable.class));
 
-        // verify
-        verifyNoMoreInteractions(testCategorizable11, testCategorizable12, testCategorizable21);
-        verifyNoMoreInteractions(testCategoryEntity1, testCategoryEntity2);
-        verifyNoMoreInteractions(
-                transaction,
-                categoryUtils,
-                headUpdater,
-                categoryRepository,
-                databaseRepository,
-                categoriesProperties
-        );
+            bukkitMock.when(Bukkit::getServer)
+                    .thenReturn(serverMock);
+            when(serverMock.getPluginManager())
+                    .thenReturn(pluginManagerMock);
+
+            // execute
+            categoryUpdater.updateCategoriesIfNecessary();
+
+            // verify
+            verify(pluginManagerMock, times(2)).callEvent(eventCaptor.capture());
+
+            verifyNoMoreInteractions(pluginManagerMock);
+            verifyNoMoreInteractions(testCategorizable11, testCategorizable12, testCategorizable21);
+            verifyNoMoreInteractions(testCategoryEntity1, testCategoryEntity2);
+            verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository, categoriesProperties);
+
+            List<Event> events = eventCaptor.getAllValues();
+            if (events.get(0) instanceof CategoryUpdatedEvent categoriesUpdatedEvent) {
+                assertThat(categoriesUpdatedEvent.getCategoryName(), is(testCategoryName1));
+                assertThat(categoriesUpdatedEvent.getDuration(), is(testCategoryDuration));
+                assertThat(categoriesUpdatedEvent.getEndTime(), notNullValue());
+            } else {
+                Assertions.fail("First event is not a CategoryUpdatedEvent");
+            }
+
+            if (events.get(1) instanceof CategoriesUpdatedEvent categoriesUpdatedEvent) {
+                assertThat(categoriesUpdatedEvent.getCategoryNames(), contains(testCategoryName1));
+                assertThat(categoriesUpdatedEvent.getDuration(), is(testCategoriesDuration));
+                assertThat(categoriesUpdatedEvent.getEndTime(), notNullValue());
+            } else {
+                Assertions.fail("Second event is not a CategoriesUpdatedEvent");
+            }
+        }
     }
 
     @Test
     void updateCategoriesIfNecessaryAsync() {
         // prepare
-        try (
-                MockedStatic<Bukkit> bukkitMock = Mockito.mockStatic(Bukkit.class);
-        ) {
+        try (MockedStatic<Bukkit> bukkitMock = Mockito.mockStatic(Bukkit.class)) {
             final var bukkitSchedulerMock = mock(BukkitScheduler.class);
+
             bukkitMock.when(Bukkit::getScheduler)
                     .thenReturn(bukkitSchedulerMock);
-            doNothing().when(categoryUpdater).updateCategoriesIfNecessary();
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(1);
+                runnable.run();
+                return null;
+            }).when(bukkitSchedulerMock).runTaskAsynchronously(eq(plugin), isA(Runnable.class));
 
             // execute
             categoryUpdater.updateCategoriesIfNecessaryAsync();
 
             // verify
-            verify(bukkitSchedulerMock).runTaskAsynchronously(eq(plugin), asyncCaptor.capture());
-            asyncCaptor.getValue().run();
+            verify(bukkitSchedulerMock).runTaskAsynchronously(eq(plugin), isA(Runnable.class));
             verify(categoryUpdater).updateCategoriesIfNecessary();
         }
     }
 
     @Test
-    void updateCategoriesIfNecessaryNoCategorizablesFound() {
+    void updateCategoriesIfNecessary_NoCategorizablesFound() {
         // prepare
-        final var testCategoryName1 = "CategoryName1";
-        final var testCategoryName2 = "CategoryName2";
-        final var testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
-        final var testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
-        final var testLastUpdated1 = LocalDateTime.now().minusHours(6);
-        final var testLastUpdated2 = LocalDateTime.now().minusHours(2);
+        try (MockedStatic<Bukkit> bukkitMock = Mockito.mockStatic(Bukkit.class)) {
+            final var testCategoryName1 = "CategoryName1";
+            final var testCategoryName2 = "CategoryName2";
+            final var testCategoryDuration = 12.0;
+            final var testCategoriesDuration = 42.0;
+            final var testCategoryEntity1 = Mockito.mock(CategoryEntity.class);
+            final var testCategoryEntity2 = Mockito.mock(CategoryEntity.class);
+            final var testLastUpdated1 = LocalDateTime.now().minusHours(6);
+            final var testLastUpdated2 = LocalDateTime.now().minusHours(2);
+            final var bukkitSchedulerMock = mock(BukkitScheduler.class);
+            final var serverMock = mock(Server.class);
+            final var pluginManagerMock = mock(PluginManager.class);
 
-        final var categoryMap = Map.ofEntries(
-                Map.entry(testCategoryName1, Collections.<Categorizable>emptySet()),
-                Map.entry(testCategoryName2, Collections.<Categorizable>emptySet())
-        );
+            final var categoryMap = Map.ofEntries(
+                    Map.entry(testCategoryName1, Collections.<Categorizable>emptySet()),
+                    Map.entry(testCategoryName2, Collections.<Categorizable>emptySet())
+            );
 
-        final var categoryUpdateProperties = new CategoriesProperties.Update();
-        categoryUpdateProperties.setInterval(4);
+            final var categoryUpdateProperties = new CategoriesProperties.Update();
+            categoryUpdateProperties.setInterval(4);
 
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(2);
-            runnable.run();
-            return null;
-        }).when(profiler).runProfiled(eq(Level.INFO), isA(String.class), isA(Runnable.class));
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(2);
+                runnable.run();
+                return testCategoryDuration;
+            }).when(profiler).runProfiled(eq(Level.DEBUG), startsWith("Done updating category: "), isA(Runnable.class));
 
-        //noinspection unchecked
-        when(categoryUtils.getCategoryMap())
-                .thenReturn(categoryMap, categoryMap);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(2);
+                runnable.run();
+                return testCategoriesDuration;
+            }).when(profiler).runProfiled(eq(Level.INFO), eq("Done updating necessary categories"), isA(Runnable.class));
 
-        doAnswer(invocation -> {
-            Runnable runnable = invocation.getArgument(0);
-            runnable.run();
-            return null;
-        }).when(transaction).runTransacted(isA(Runnable.class));
+            //noinspection unchecked
+            when(categoryUtils.getCategoryMap())
+                    .thenReturn(categoryMap, categoryMap);
 
-        when(categoriesProperties.getUpdate())
-                .thenReturn(categoryUpdateProperties);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(0);
+                runnable.run();
+                return null;
+            }).when(transaction).runTransacted(isA(Runnable.class));
 
-        when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
-                .thenAnswer(invocation -> {
-                    Supplier<?> supplier = invocation.getArgument(1);
-                    return supplier.get();
-                });
+            when(categoriesProperties.getUpdate())
+                    .thenReturn(categoryUpdateProperties);
 
-        when(categoryRepository.findByOrCreateFromName(testCategoryName1))
-                .thenReturn(testCategoryEntity1, testCategoryEntity1);
-        when(categoryRepository.findByOrCreateFromName(testCategoryName2))
-                .thenReturn(testCategoryEntity2);
+            when(profiler.runProfiled(isA(String.class), isA(Supplier.class)))
+                    .thenAnswer(invocation -> {
+                        Supplier<?> supplier = invocation.getArgument(1);
+                        return supplier.get();
+                    });
 
-        when(testCategoryEntity1.getLastUpdated())
-                .thenReturn(testLastUpdated1);
-        when(testCategoryEntity2.getLastUpdated())
-                .thenReturn(testLastUpdated2);
+            when(categoryRepository.findByOrCreateFromName(testCategoryName1))
+                    .thenReturn(testCategoryEntity1, testCategoryEntity1);
+            when(categoryRepository.findByOrCreateFromName(testCategoryName2))
+                    .thenReturn(testCategoryEntity2);
 
-        // execute
-        categoryUpdater.updateCategoriesIfNecessary();
+            when(testCategoryEntity1.getLastUpdated())
+                    .thenReturn(testLastUpdated1);
+            when(testCategoryEntity2.getLastUpdated())
+                    .thenReturn(testLastUpdated2);
 
-        // verify
-        verifyNoMoreInteractions(testCategoryEntity1, testCategoryEntity2);
-        verifyNoMoreInteractions(
-                transaction,
-                categoryUtils,
-                headUpdater,
-                categoryRepository,
-                databaseRepository,
-                categoriesProperties
-        );
+            bukkitMock.when(Bukkit::getScheduler)
+                    .thenReturn(bukkitSchedulerMock);
+            doAnswer(invocation -> {
+                Runnable runnable = invocation.getArgument(1);
+                runnable.run();
+                return null;
+            }).when(bukkitSchedulerMock).runTask(eq(plugin), isA(Runnable.class));
+
+            bukkitMock.when(Bukkit::getServer)
+                    .thenReturn(serverMock);
+            when(serverMock.getPluginManager())
+                    .thenReturn(pluginManagerMock);
+
+            // execute
+            categoryUpdater.updateCategoriesIfNecessary();
+
+            // verify
+            verify(pluginManagerMock, times(2)).callEvent(eventCaptor.capture());
+
+            verifyNoMoreInteractions(pluginManagerMock);
+            verifyNoMoreInteractions(testCategoryEntity1, testCategoryEntity2);
+            verifyNoMoreInteractions(transaction, categoryUtils, headUpdater, categoryRepository, databaseRepository, categoriesProperties);
+
+            List<Event> events = eventCaptor.getAllValues();
+            if (events.get(0) instanceof CategoryUpdatedEvent categoriesUpdatedEvent) {
+                assertThat(categoriesUpdatedEvent.getCategoryName(), is(testCategoryName1));
+                assertThat(categoriesUpdatedEvent.getDuration(), is(testCategoryDuration));
+                assertThat(categoriesUpdatedEvent.getEndTime(), notNullValue());
+            } else {
+                Assertions.fail("First event is not a CategoryUpdatedEvent");
+            }
+
+            if (events.get(1) instanceof CategoriesUpdatedEvent categoriesUpdatedEvent) {
+                assertThat(categoriesUpdatedEvent.getCategoryNames(), contains(testCategoryName1));
+                assertThat(categoriesUpdatedEvent.getDuration(), is(testCategoriesDuration));
+                assertThat(categoriesUpdatedEvent.getEndTime(), notNullValue());
+            } else {
+                Assertions.fail("Second event is not a CategoriesUpdatedEvent");
+            }
+        }
     }
 
     @Test
@@ -749,7 +1036,7 @@ class CategoryUpdaterImplTest {
     }
 
     @Test
-    void getUpdatableCategoryNamesNecessaryOnly() {
+    void getUpdatableCategoryNames_NecessaryOnly() {
         // prepare
         final var testCategoryName1 = "CategoryName1";
         final var testCategoryName2 = "CategoryName2";
