@@ -3,12 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.github.cc007</groupId>
-        <artifactId>headsplugin-parent</artifactId>
-        <version>3.2.1</version>
-        <relativePath>../headsplugin-parent</relativePath>
+        <artifactId>headsplugin-dependencies</artifactId>
+        <version>3.3.0</version>
+        <relativePath>../headsplugin-dependencies</relativePath>
     </parent>
     <artifactId>headsplugin-core</artifactId>
-    <version>3.2.1</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -59,8 +58,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>de.tr7zw</groupId>
-            <artifactId>item-nbt-api</artifactId>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- CDI dependencies -->

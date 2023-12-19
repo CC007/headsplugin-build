@@ -3,7 +3,6 @@ package com.github.cc007.headsplugin.dagger.modules;
 import com.github.cc007.headsplugin.api.business.services.Profiler;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.CategoryUtils;
 import com.github.cc007.headsplugin.api.business.services.heads.utils.HeadUtils;
-import com.github.cc007.headsplugin.business.services.NbtService;
 import com.github.cc007.headsplugin.business.services.OwnerProfileService;
 import com.github.cc007.headsplugin.business.services.ProfilerImpl;
 import com.github.cc007.headsplugin.business.services.heads.utils.CategoryUtilsImpl;
@@ -16,7 +15,6 @@ import com.github.cc007.headsplugin.integration.daos.MinecraftHeadsDao;
 import com.github.cc007.headsplugin.integration.daos.interfaces.Categorizable;
 import com.github.cc007.headsplugin.integration.daos.interfaces.Creatable;
 import com.github.cc007.headsplugin.integration.daos.interfaces.Searchable;
-
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.ElementsIntoSet;
@@ -29,12 +27,6 @@ import java.util.Set;
 @Module
 @Log4j2
 public abstract class ServiceModule {
-
-    @Provides
-    @Singleton
-    static NbtService provideNbtService() {
-        return new NbtService();
-    }
 
     @Provides
     @Singleton

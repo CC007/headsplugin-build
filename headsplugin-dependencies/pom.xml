@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.github.cc007</groupId>
         <artifactId>headsplugin-build</artifactId>
-        <version>3.2.1</version>
+        <version>3.3.0</version>
     </parent>
 
     <artifactId>headsplugin-dependencies</artifactId>
@@ -15,7 +15,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <minecraft.version>1.18.1-R0.1-SNAPSHOT</minecraft.version>
+        <minecraft.version>1.20.2-R0.1-SNAPSHOT</minecraft.version>
         <spigot-spring-boot.version>0.20.8-SNAPSHOT</spigot-spring-boot.version>
         <spring-boot.version>2.5.0</spring-boot.version>
         <spring-cloud.version>2020.0.3</spring-cloud.version>
@@ -55,6 +55,12 @@
             </snapshots>
         </repository>
 
+        <!-- repo for Paper -->
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+
         <!-- repo for headsplugin-api -->
         <repository>
             <id>hpa</id>
@@ -62,78 +68,39 @@
         </repository>
     </repositories>
 
-    <profiles>
-        <profile>
-            <id>old</id>
-            <dependencyManagement>
-                <dependencies>
-                    <!-- Spring boot dependencies import -->
-                    <dependency>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-dependencies</artifactId>
-                        <version>${spring-boot.version}</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-
-                    <!-- Spring cloud dependencies import -->
-                    <dependency>
-                        <groupId>org.springframework.cloud</groupId>
-                        <artifactId>spring-cloud-dependencies</artifactId>
-                        <version>${spring-cloud.version}</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-
-                    <!-- Spigot Spring Boot starter -->
-                    <dependency>
-                        <groupId>dev.alangomes</groupId>
-                        <artifactId>spigot-spring-boot-starter</artifactId>
-                        <version>${spigot-spring-boot.version}</version>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-        </profile>
-    </profiles>
-
     <dependencyManagement>
         <dependencies>
             <!-- HeadsPlugin API dependency -->
             <dependency>
                 <groupId>com.github.cc007</groupId>
                 <artifactId>headsplugin-api</artifactId>
-                <version>3.0.0</version>
+                <version>3.3.0</version>
             </dependency>
 
-            <!-- Bukkit API -->
+            <!-- Minecraft API -->
             <dependency>
                 <groupId>org.bukkit</groupId>
                 <artifactId>bukkit</artifactId>
                 <version>${minecraft.version}</version>
                 <scope>provided</scope>
             </dependency>
-
-            <!-- Craftbukkit API -->
             <dependency>
                 <groupId>org.bukkit</groupId>
                 <artifactId>craftbukkit</artifactId>
                 <version>${minecraft.version}</version>
                 <scope>provided</scope>
             </dependency>
-
-            <!-- Spigot API -->
             <dependency>
                 <groupId>org.spigotmc</groupId>
                 <artifactId>spigot-api</artifactId>
                 <version>${minecraft.version}</version>
                 <scope>provided</scope>
             </dependency>
-
-            <!-- NBT API -->
             <dependency>
-                <groupId>de.tr7zw</groupId>
-                <artifactId>item-nbt-api</artifactId>
-                <version>2.10.0</version>
+                <groupId>io.papermc.paper</groupId>
+                <artifactId>paper-api</artifactId>
+                <version>${minecraft.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <!-- Google Dagger2 -->
@@ -301,10 +268,18 @@
                 <version>3.11.2</version>
                 <scope>test</scope>
             </dependency>
-
         </dependencies>
-
     </dependencyManagement>
 
-
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

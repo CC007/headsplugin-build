@@ -1,6 +1,8 @@
 package com.github.cc007.headsplugin.business.services.heads;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
+import com.github.cc007.headsplugin.api.business.domain.events.CategoriesUpdatedEvent;
+import com.github.cc007.headsplugin.api.business.domain.events.CategoryUpdatedEvent;
 import com.github.cc007.headsplugin.api.business.services.Profiler;
 import com.github.cc007.headsplugin.api.business.services.heads.CategoryUpdater;
 import com.github.cc007.headsplugin.api.business.services.heads.HeadUpdater;
@@ -11,17 +13,18 @@ import com.github.cc007.headsplugin.integration.daos.interfaces.Categorizable;
 import com.github.cc007.headsplugin.integration.database.repositories.CategoryRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -52,25 +55,34 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
 
     @Override
     public void updateCategories() {
-        profiler.runProfiled(Level.INFO, "Done updating all categories", () -> {
+        final var categoriesToBeUpdatedRef = new AtomicReference<Collection<String>>();
+        double duration = profiler.runProfiled(Level.INFO, "Done updating all categories", () -> {
             final var categoryMap = categoryUtils.getCategoryMap();
+            final var categoriesToBeUpdated = categoryMap.keySet();
+            categoriesToBeUpdatedRef.set(categoriesToBeUpdated);
             //noinspection CodeBlock2Expr
             transaction.runTransacted(() -> {
-                updateCategories(categoryMap.keySet());
+                updateCategories(categoriesToBeUpdated);
             });
         });
+        final var categoriesUpdatedEvent = new CategoriesUpdatedEvent(categoriesToBeUpdatedRef.get(), duration, Instant.now());
+        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.getServer().getPluginManager().callEvent(categoriesUpdatedEvent));
     }
 
     @Override
     public void updateCategoriesIfNecessary() {
-        profiler.runProfiled(Level.INFO, "Done updating necessary categories", () -> {
+        final var categoriesToBeUpdatedRef = new AtomicReference<Collection<String>>();
+        double duration = profiler.runProfiled(Level.INFO, "Done updating necessary categories", () -> {
             final var categoryMap = categoryUtils.getCategoryMap();
             transaction.runTransacted(() -> {
                 final var categoriesToBeUpdated = getCategoriesToBeUpdated(categoryMap.keySet());
+                categoriesToBeUpdatedRef.set(categoriesToBeUpdated);
                 log.info("Found categories to be updated: " + categoriesToBeUpdated);
                 updateCategories(categoriesToBeUpdated);
             });
         });
+        final var categoriesUpdatedEvent = new CategoriesUpdatedEvent(categoriesToBeUpdatedRef.get(), duration, Instant.now());
+        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.getServer().getPluginManager().callEvent(categoriesUpdatedEvent));
     }
 
     @Override
@@ -110,13 +122,17 @@ public class CategoryUpdaterImpl implements CategoryUpdater {
      */
     private void updateCategories(Collection<String> categoryNames) {
         categoryNames.forEach(categoryName -> {
-            final var foundHeadsBySource = requestCategoryHeads(categoryName);
-            if (headUtils.isEmpty(foundHeadsBySource)) {
-                log.warn("No heads found for category " + categoryName + ". Skipping this category");
-                return;
-            }
-            log.info("Updating category: " + categoryName);
-            updateCategory(categoryName, foundHeadsBySource);
+            double duration = profiler.runProfiled(Level.DEBUG, "Done updating category: " + categoryName, () -> {
+                final var foundHeadsBySource = requestCategoryHeads(categoryName);
+                if (headUtils.isEmpty(foundHeadsBySource)) {
+                    log.warn("No heads found for category " + categoryName + ". Skipping this category");
+                    return;
+                }
+                log.info("Updating category: " + categoryName);
+                updateCategory(categoryName, foundHeadsBySource);
+            });
+            final var categoryUpdatedEvent = new CategoryUpdatedEvent(categoryName, duration, Instant.now());
+            Bukkit.getScheduler().runTask(plugin, () -> Bukkit.getServer().getPluginManager().callEvent(categoryUpdatedEvent));
         });
     }
 

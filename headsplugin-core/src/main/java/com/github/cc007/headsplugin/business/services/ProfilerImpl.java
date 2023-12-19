@@ -1,7 +1,6 @@
 package com.github.cc007.headsplugin.business.services;
 
 import com.github.cc007.headsplugin.api.business.services.Profiler;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -43,29 +42,29 @@ public class ProfilerImpl implements Profiler {
     }
 
     @Override
-    public void runProfiled(Runnable runnable) {
-        runProfiled(DEFAULT_DONE_MESSAGE, runnable);
-
+    public double runProfiled(Runnable runnable) {
+        return runProfiled(DEFAULT_DONE_MESSAGE, runnable);
     }
 
     @Override
-    public void runProfiled(String doneMessage, Runnable runnable) {
-        runProfiled(defaultLogLevel, doneMessage, runnable);
+    public double runProfiled(String doneMessage, Runnable runnable) {
+        return runProfiled(defaultLogLevel, doneMessage, runnable);
     }
 
     @Override
-    public void runProfiled(Level logLevel, Runnable runnable) {
-        runProfiled(logLevel, DEFAULT_DONE_MESSAGE, runnable);
+    public double runProfiled(Level logLevel, Runnable runnable) {
+        return runProfiled(logLevel, DEFAULT_DONE_MESSAGE, runnable);
     }
 
     @Override
-    public void runProfiled(Level logLevel, String doneMessage, Runnable runnable) {
+    public double runProfiled(Level logLevel, String doneMessage, Runnable runnable) {
         long start = System.currentTimeMillis();
         runnable.run();
         long end = System.currentTimeMillis();
         double duration = (end - start) / 1000.0;
 
         logDuration(logLevel, doneMessage, duration);
+        return duration;
     }
 
     private void logDuration(Level logLevel, String message, double duration) {

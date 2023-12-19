@@ -5,14 +5,15 @@
 
     <groupId>com.github.cc007</groupId>
     <artifactId>headsplugin-build</artifactId>
-    <version>3.2.1</version>
+    <version>3.3.0</version>
 
     <packaging>pom</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
     </properties>
 
     <licenses>
@@ -36,36 +37,10 @@
         </developer>
     </developers>
 
-    <profiles>
-        <profile>
-            <id>java-8-api</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            <properties>
-                <maven.compiler.release>8</maven.compiler.release>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>old</id>
-            <modules>
-                <module>headsplugin-dependencies</module>
-                <module>headsplugin-parent</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>new</id>
-            <properties>
-                <maven.compiler.release>17</maven.compiler.release>
-            </properties>
-            <modules>
-                <module>headsplugin-dependencies</module>
-                <module>headsplugin-parent</module>
-                <module>headsplugin-core</module>
-            </modules>
-        </profile>
-    </profiles>
+    <modules>
+        <module>headsplugin-dependencies</module>
+        <module>headsplugin-core</module>
+    </modules>
 
     <build>
         <plugins>

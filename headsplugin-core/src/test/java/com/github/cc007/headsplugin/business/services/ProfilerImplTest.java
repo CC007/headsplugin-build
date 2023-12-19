@@ -1,5 +1,6 @@
 package com.github.cc007.headsplugin.business.services;
 
+import com.github.cc007.headsplugin.api.business.services.Profiler;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
@@ -14,6 +15,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.text.DecimalFormat;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,7 +29,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ProfilerImplTest {
 
-    ProfilerImpl profiler;
+    private final DecimalFormat EXPECTED_DECIMAL_FORMAT =  new DecimalFormat("0.000");
+
+    private Profiler profiler;
 
     @Mock(lenient = true)
     private Appender appenderMock;
@@ -35,7 +39,7 @@ class ProfilerImplTest {
     private Appender realAppender;
 
     @Captor
-    private ArgumentCaptor<LogEvent> captorLoggingEvent;
+    private ArgumentCaptor<LogEvent> loggingEventCaptor;
 
     private Logger logger;
 
@@ -62,7 +66,7 @@ class ProfilerImplTest {
     }
 
     @Test
-    void runProfiledWithSupplier() {
+    void runProfiled_Supplier() {
         // prepare
         final var expected = "result";
 
@@ -72,15 +76,15 @@ class ProfilerImplTest {
         // verify
         assertThat(actual, is(expected));
 
-        verify(appenderMock).append(captorLoggingEvent.capture());
-        final var logEvents = captorLoggingEvent.getAllValues();
+        verify(appenderMock).append(loggingEventCaptor.capture());
+        final var logEvents = loggingEventCaptor.getAllValues();
         assertThat(logEvents.size(), is(1));
         final var logEvent = logEvents.get(0);
         assertThat(logEvent.getMessage().getFormattedMessage(), startsWith("Done in "));
     }
 
     @Test
-    void runProfiledWithSupplierAndDoneMessage() {
+    void runProfiled_SupplierAndDoneMessage() {
         // prepare
         final var expected = "result";
         final var testDoneMessage = "DoneMessage";
@@ -91,15 +95,15 @@ class ProfilerImplTest {
         // verify
         assertThat(actual, is(expected));
 
-        verify(appenderMock).append(captorLoggingEvent.capture());
-        final var logEvents = captorLoggingEvent.getAllValues();
+        verify(appenderMock).append(loggingEventCaptor.capture());
+        final var logEvents = loggingEventCaptor.getAllValues();
         assertThat(logEvents.size(), is(1));
         final var logEvent = logEvents.get(0);
         assertThat(logEvent.getMessage().getFormattedMessage(), startsWith(testDoneMessage + " in "));
     }
 
     @Test
-    void runProfiledWithSupplierAndLogLevel() {
+    void runProfiled_SupplierAndLogLevel() {
         // prepare
         final var expected = "result";
         final var testLogLevel = Level.ERROR;
@@ -110,15 +114,15 @@ class ProfilerImplTest {
         // verify
         assertThat(actual, is(expected));
 
-        verify(appenderMock).append(captorLoggingEvent.capture());
-        final var logEvents = captorLoggingEvent.getAllValues();
+        verify(appenderMock).append(loggingEventCaptor.capture());
+        final var logEvents = loggingEventCaptor.getAllValues();
         assertThat(logEvents.size(), is(1));
         final var logEvent = logEvents.get(0);
         assertThat(logEvent.getMessage().getFormattedMessage(), startsWith("Done in "));
     }
 
     @Test
-    void runProfiledWithSupplierAndLogLevelWithMinLevelWarn() {
+    void runProfiled_SupplierAndLogLevel_MinLevelWarn() {
         // prepare
         final var expected = "result";
         final var testLogLevel = Level.INFO;
@@ -136,7 +140,7 @@ class ProfilerImplTest {
     }
 
     @Test
-    void runProfiledWithSupplierAndLogLevelAndDoneMessage() {
+    void runProfiled_SupplierAndLogLevelAndDoneMessage() {
         // prepare
         final var expected = "result";
         final var testDoneMessage = "DoneMessage";
@@ -148,15 +152,15 @@ class ProfilerImplTest {
         // verify
         assertThat(actual, is(expected));
 
-        verify(appenderMock).append(captorLoggingEvent.capture());
-        final var logEvents = captorLoggingEvent.getAllValues();
+        verify(appenderMock).append(loggingEventCaptor.capture());
+        final var logEvents = loggingEventCaptor.getAllValues();
         assertThat(logEvents.size(), is(1));
         final var logEvent = logEvents.get(0);
         assertThat(logEvent.getMessage().getFormattedMessage(), startsWith(testDoneMessage + " in "));
     }
 
     @Test
-    void runProfiledWithSupplierAndLogLevelAndDoneMessageWithMinLevelWarn() {
+    void runProfiled_SupplierAndLogLevelAndDoneMessage_MinLevelWarn() {
         // prepare
         final var expected = "result";
         final var testDoneMessage = "DoneMessage";
@@ -175,29 +179,29 @@ class ProfilerImplTest {
     }
 
     @Test
-    void runProfiledWithRunnable() {
+    void runProfiled_Runnable() {
         // prepare
         final var expected = "result";
 
         // execute
         final var actual = new AtomicReference<String>();
         //noinspection CodeBlock2Expr
-        profiler.runProfiled(() -> {
+        double actualDuration = profiler.runProfiled(() -> {
             actual.set(expected);
         });
 
         // verify
         assertThat(actual.get(), is(expected));
 
-        verify(appenderMock).append(captorLoggingEvent.capture());
-        final var logEvents = captorLoggingEvent.getAllValues();
+        verify(appenderMock).append(loggingEventCaptor.capture());
+        final var logEvents = loggingEventCaptor.getAllValues();
         assertThat(logEvents.size(), is(1));
         final var logEvent = logEvents.get(0);
-        assertThat(logEvent.getMessage().getFormattedMessage(), startsWith("Done in "));
+        assertThat(logEvent.getMessage().getFormattedMessage(), is("Done in " + EXPECTED_DECIMAL_FORMAT.format(actualDuration) + "s."));
     }
 
     @Test
-    void runProfiledWithRunnableAndDoneMessage() {
+    void runProfiled_RunnableAndDoneMessage() {
         // prepare
         final var expected = "result";
         final var testDoneMessage = "DoneMessage";
@@ -205,22 +209,22 @@ class ProfilerImplTest {
         // execute
         final var actual = new AtomicReference<String>();
         //noinspection CodeBlock2Expr
-        profiler.runProfiled(testDoneMessage, () -> {
+        double actualDuration = profiler.runProfiled(testDoneMessage, () -> {
             actual.set(expected);
         });
 
         // verify
         assertThat(actual.get(), is(expected));
 
-        verify(appenderMock).append(captorLoggingEvent.capture());
-        final var logEvents = captorLoggingEvent.getAllValues();
+        verify(appenderMock).append(loggingEventCaptor.capture());
+        final var logEvents = loggingEventCaptor.getAllValues();
         assertThat(logEvents.size(), is(1));
         final var logEvent = logEvents.get(0);
-        assertThat(logEvent.getMessage().getFormattedMessage(), startsWith(testDoneMessage + " in "));
+        assertThat(logEvent.getMessage().getFormattedMessage(), is(testDoneMessage + " in " + EXPECTED_DECIMAL_FORMAT.format(actualDuration) + "s."));
     }
 
     @Test
-    void runProfiledWithRunnableAndLogLevel() {
+    void runProfiled_RunnableAndLogLevel() {
         // prepare
         final var expected = "result";
         final var testLogLevel = Level.ERROR;
@@ -228,22 +232,22 @@ class ProfilerImplTest {
         // execute
         final var actual = new AtomicReference<String>();
         //noinspection CodeBlock2Expr
-        profiler.runProfiled(testLogLevel, () -> {
+        double actualDuration = profiler.runProfiled(testLogLevel, () -> {
             actual.set(expected);
         });
 
         // verify
         assertThat(actual.get(), is(expected));
 
-        verify(appenderMock).append(captorLoggingEvent.capture());
-        final var logEvents = captorLoggingEvent.getAllValues();
+        verify(appenderMock).append(loggingEventCaptor.capture());
+        final var logEvents = loggingEventCaptor.getAllValues();
         assertThat(logEvents.size(), is(1));
         final var logEvent = logEvents.get(0);
-        assertThat(logEvent.getMessage().getFormattedMessage(), startsWith("Done in "));
+        assertThat(logEvent.getMessage().getFormattedMessage(), is("Done in " + EXPECTED_DECIMAL_FORMAT.format(actualDuration) + "s."));
     }
 
     @Test
-    void runProfiledWithRunnableAndLogLevelWithMinLevelWarn() {
+    void runProfiled_RunnableAndLogLevel_MinLevelWarn() {
         // prepare
         final var expected = "result";
         final var testLogLevel = Level.INFO;
@@ -265,7 +269,7 @@ class ProfilerImplTest {
     }
 
     @Test
-    void runProfiledWithRunnableAndLogLevelAndDoneMessage() {
+    void runProfiled_RunnableAndLogLevelAndDoneMessage() {
         // prepare
         final var expected = "result";
         final var testDoneMessage = "DoneMessage";
@@ -274,22 +278,22 @@ class ProfilerImplTest {
         // execute
         final var actual = new AtomicReference<String>();
         //noinspection CodeBlock2Expr
-        profiler.runProfiled(testLogLevel, testDoneMessage, () -> {
+        double actualDuration = profiler.runProfiled(testLogLevel, testDoneMessage, () -> {
             actual.set(expected);
         });
 
         // verify
         assertThat(actual.get(), is(expected));
 
-        verify(appenderMock).append(captorLoggingEvent.capture());
-        final var logEvents = captorLoggingEvent.getAllValues();
+        verify(appenderMock).append(loggingEventCaptor.capture());
+        final var logEvents = loggingEventCaptor.getAllValues();
         assertThat(logEvents.size(), is(1));
         final var logEvent = logEvents.get(0);
-        assertThat(logEvent.getMessage().getFormattedMessage(), startsWith(testDoneMessage + " in "));
+        assertThat(logEvent.getMessage().getFormattedMessage(), is(testDoneMessage + " in " + EXPECTED_DECIMAL_FORMAT.format(actualDuration) + "s."));
     }
 
     @Test
-    void runProfiledWithRunnableAndLogLevelAndDoneMessageWithMinLevelWarn() {
+    void runProfiled_RunnableAndLogLevelAndDoneMessage_MinLevelWarn() {
         // prepare
         final var expected = "result";
         final var testDoneMessage = "DoneMessage";
