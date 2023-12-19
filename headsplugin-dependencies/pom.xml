@@ -15,7 +15,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <minecraft.version>1.18.1-R0.1-SNAPSHOT</minecraft.version>
+        <minecraft.version>1.20.2-R0.1-SNAPSHOT</minecraft.version>
         <spigot-spring-boot.version>0.20.8-SNAPSHOT</spigot-spring-boot.version>
         <spring-boot.version>2.5.0</spring-boot.version>
         <spring-cloud.version>2020.0.3</spring-cloud.version>
@@ -55,6 +55,12 @@
             </snapshots>
         </repository>
 
+        <!-- repo for Paper -->
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+
         <!-- repo for headsplugin-api -->
         <repository>
             <id>hpa</id>
@@ -87,6 +93,12 @@
             <dependency>
                 <groupId>org.spigotmc</groupId>
                 <artifactId>spigot-api</artifactId>
+                <version>${minecraft.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.papermc.paper</groupId>
+                <artifactId>paper-api</artifactId>
                 <version>${minecraft.version}</version>
                 <scope>provided</scope>
             </dependency>

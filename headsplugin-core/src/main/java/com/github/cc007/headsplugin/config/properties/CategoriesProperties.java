@@ -21,5 +21,7 @@ public class CategoriesProperties {
     @Data
     public static class Update {
         private int interval = 5;
+        private List<String> notify = new ArrayList<>();
+        private List<String> notifyEach = new ArrayList<>();
     }
 }

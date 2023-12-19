@@ -16,6 +16,8 @@ headsplugin:
     update:
       # category update interval in hours
       interval: 168 # 1 week
+      notify: [] # list of player names to notify when the update is done
+      notifyEach: [] # list of player names to notify when each category is updated
     # define your custom categories here
     custom:
       - name: pokemon-starters
