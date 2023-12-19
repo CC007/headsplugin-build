@@ -4,7 +4,6 @@ import com.github.cc007.headsplugin.api.HeadsPluginApi;
 import com.github.cc007.headsplugin.api.business.services.heads.CategoryUpdater;
 import com.github.cc007.headsplugin.dagger.DaggerHeadsPluginComponent;
 import com.github.cc007.headsplugin.dagger.HeadsPluginComponent;
-
 import lombok.extern.log4j.Log4j2;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,6 +44,9 @@ public class HeadsPlugin extends JavaPlugin {
 
         CategoryUpdater categoryUpdater = headsPluginComponent.categoryUpdater();
         categoryUpdater.updateCategoriesIfNecessaryAsync();
+
+        getServer().getPluginManager().registerEvents(headsPluginComponent.categoryUpdatedEventListener(), this);
+        getServer().getPluginManager().registerEvents(headsPluginComponent.categoriesUpdatedEventListener(), this);
     }
 
     @Override

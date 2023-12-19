@@ -11,8 +11,8 @@ public interface Profiler {
     <T> T runProfiled(Level logLevel, Supplier<T> supplier);
     <T> T runProfiled(Level logLevel, String doneMessage, Supplier<T> supplier);
 
-    void runProfiled(Runnable runnable);
-    void runProfiled(String doneMessage, Runnable runnable);
-    void runProfiled(Level logLevel, Runnable runnable);
-    void runProfiled(Level logLevel, String doneMessage, Runnable runnable);
+    double runProfiled(Runnable runnable);
+    double runProfiled(String doneMessage, Runnable runnable);
+    double runProfiled(Level logLevel, Runnable runnable);
+    double runProfiled(Level logLevel, String doneMessage, Runnable runnable);
 }
