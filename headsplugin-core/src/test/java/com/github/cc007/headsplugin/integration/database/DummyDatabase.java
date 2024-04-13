@@ -2,7 +2,6 @@ package com.github.cc007.headsplugin.integration.database;
 
 import com.github.cc007.headsplugin.dagger.DaggerHeadsPluginComponent;
 import com.github.cc007.headsplugin.dagger.HeadsPluginComponent;
-
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -108,6 +107,7 @@ public class DummyDatabase {
 
                     final var search = searchRepository.manageNew();
                     search.setSearchTerm("Search1");
+                    search.setLastUpdated(LocalDateTime.now());
                     search.addhead(head1_2);
                     search.addhead(head2_2);
                     search.incrementSearchCount();

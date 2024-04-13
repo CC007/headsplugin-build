@@ -1,7 +1,6 @@
 package com.github.cc007.headsplugin.integration.database.entities;
 
 import com.github.cc007.headsplugin.integration.database.converters.LocalDateTimeConverter;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,23 +39,23 @@ import java.util.Set;
 public class SearchEntity {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
 
     @Version
-    @Column(name = "version")
+    @Column(name = "version", nullable = false)
     private long version;
 
-    @Column(name = "searchTerm", unique = true)
+    @Column(name = "searchTerm", unique = true, nullable = false)
     private String searchTerm;
 
-    @Column(name = "searchCount")
+    @Column(name = "searchCount", nullable = false)
     @Setter(AccessLevel.NONE)
     private long searchCount;
 
-    @Column(name = "lastUpdated")
+    @Column(name = "lastUpdated", nullable = false)
     @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime lastUpdated;
 
