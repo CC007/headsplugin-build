@@ -7,7 +7,6 @@ import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -29,13 +28,15 @@ public class HeadUpdaterImpl implements HeadUpdater {
     public List<HeadEntity> updateHeads(Collection<Head> foundHeads) {
         return transaction.runTransacted(() -> {
             final var foundHeadOwnerStrings = headUtils.getHeadOwnerStrings(foundHeads);
-            final var storedHeadOwnerStrings = headRepository.findAllHeadOwnersByHeadOwnerIn(foundHeadOwnerStrings);
+            final var storedHeads = headRepository.findAllByHeadOwnerIn(foundHeadOwnerStrings);
+            final var storedHeadOwnerStrings = storedHeads.stream()
+                    .map(HeadEntity::getHeadOwner)
+                    .collect(Collectors.toList());
             final var newHeads = getNewHeads(foundHeads, storedHeadOwnerStrings);
             final var newHeadEntities = newHeads.stream()
                     .map(headRepository::createFromHead)
-                    .collect(Collectors.toList());
+                    .toList();
 
-            final var storedHeads = headRepository.findAllByHeadOwnerIn(foundHeadOwnerStrings);
             storedHeads.addAll(newHeadEntities);
             return storedHeads;
         });
