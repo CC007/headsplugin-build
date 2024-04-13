@@ -35,22 +35,22 @@ import java.util.Set;
 public class HeadEntity {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
 
     @Version
-    @Column(name = "version")
+    @Column(name = "version", nullable = false)
     private long version;
 
-    @Column(name = "headOwner", unique = true)
+    @Column(name = "headOwner", unique = true, nullable = false)
     private String headOwner;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "value", length = 1023)
+    @Column(name = "value", length = 1023, nullable = false)
     private String value;
 
     @ToString.Exclude
