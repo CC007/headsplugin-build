@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.github.cc007</groupId>
         <artifactId>headsplugin-dependencies</artifactId>
-        <version>3.3.0</version>
+        <version>3.4.0-SNAPSHOT</version>
         <relativePath>../headsplugin-dependencies</relativePath>
     </parent>
     <artifactId>headsplugin-core</artifactId>

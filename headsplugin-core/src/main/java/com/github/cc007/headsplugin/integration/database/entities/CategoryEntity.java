@@ -1,7 +1,6 @@
 package com.github.cc007.headsplugin.integration.database.entities;
 
 import com.github.cc007.headsplugin.integration.database.converters.LocalDateTimeConverter;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,19 +39,19 @@ import java.util.Set;
 public class CategoryEntity {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
 
     @Version
-    @Column(name = "version")
+    @Column(name = "version", nullable = false)
     private long version;
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
 
-    @Column(name = "lastUpdated")
+    @Column(name = "lastUpdated", nullable = false)
     @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime lastUpdated;
 
