@@ -5,7 +5,7 @@
 
     <groupId>com.github.cc007</groupId>
     <artifactId>headsplugin-build</artifactId>
-    <version>3.4.0</version>
+    <version>3.4.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
