@@ -7,7 +7,6 @@ import com.github.cc007.headsplugin.integration.database.entities.HeadEntity;
 import com.github.cc007.headsplugin.integration.database.repositories.DatabaseRepository;
 import com.github.cc007.headsplugin.integration.database.repositories.HeadRepository;
 import com.github.cc007.headsplugin.integration.database.transaction.Transaction;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -50,10 +49,7 @@ class HeadUpdaterImplTest {
     private HeadUpdaterImpl headUpdater;
 
     @Captor
-    private ArgumentCaptor<List<String>> headOwnerCaptor1;
-
-    @Captor
-    private ArgumentCaptor<List<String>> headOwnerCaptor2;
+    private ArgumentCaptor<List<String>> headOwnerCaptor;
 
     @Test
     void updateHeads() {
@@ -94,34 +90,20 @@ class HeadUpdaterImplTest {
         when(headUtils.getHeadOwnerStrings(foundHeads))
                 .thenCallRealMethod();
 
-        when(headRepository.findAllHeadOwnersByHeadOwnerIn(headOwnerCaptor1.capture()))
-                .thenReturn(List.of(
-                        headOwner1.toString(),
-                        headOwner2.toString()
-                ));
+        when(headRepository.findAllByHeadOwnerIn(headOwnerCaptor.capture()))
+                .thenReturn(storedHeads);
 
         when(headRepository.createFromHead(head3))
                 .thenReturn(newHeadEntity3);
         when(headRepository.createFromHead(head4))
                 .thenReturn(newHeadEntity4);
 
-        when(headRepository.findAllByHeadOwnerIn(headOwnerCaptor2.capture()))
-                .thenReturn(storedHeads);
-
         // execute
         List<HeadEntity> actual = headUpdater.updateHeads(foundHeads);
 
         // verify
         verifyNoMoreInteractions(headRepository, databaseRepository, headUtils, transaction);
-        assertThat(headOwnerCaptor1.getValue(), contains(
-                headOwner1.toString(),
-                headOwner2.toString(),
-                headOwner2.toString(),
-                headOwner3.toString(),
-                headOwner4.toString(),
-                headOwner4.toString()
-        ));
-        assertThat(headOwnerCaptor2.getValue(), contains(
+        assertThat(headOwnerCaptor.getValue(), contains(
                 headOwner1.toString(),
                 headOwner2.toString(),
                 headOwner2.toString(),
