@@ -3,7 +3,6 @@ package com.github.cc007.headsplugin.integration.database.services.jpa;
 import com.github.cc007.headsplugin.business.utils.CollectionUtils;
 import com.github.cc007.headsplugin.config.properties.ConfigProperties;
 import com.github.cc007.headsplugin.integration.database.services.QueryService;
-
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.EntityManager;
@@ -54,7 +53,7 @@ public class JpaQueryService implements QueryService {
                 r.get(propertyName),
                 value
         ));
-        return  getMutableResultList(query);
+        return getMutableResultList(query);
     }
 
     @Override
@@ -68,15 +67,19 @@ public class JpaQueryService implements QueryService {
 
     @Override
     public <E> List<E> findAllByPropertyIn(Class<E> entityType, String propertyName, Collection<String> values) {
-        final var resultList = new ArrayList<E>();
-        final var valueGroups = CollectionUtils.partitionCollection(values, configProperties.getDatabase().getChunkSize());
-        for (final var valueGroup : valueGroups) {
-            final var query = queryByCondition(entityType, (criteriaBuilder, root) ->
-                    root.get(propertyName).in(valueGroup)
-            );
-            resultList.addAll(getMutableResultList(query));
+        try {
+            String queryString = "SELECT e FROM " + entityType.getSimpleName() + " e WHERE e." + entityType.getDeclaredField(propertyName).getName() + " IN :valueGroup";
+            final var resultList = new ArrayList<E>();
+            final var valueGroups = CollectionUtils.partitionCollection(values, configProperties.getDatabase().getChunkSize());
+            for (final var valueGroup : valueGroups) {
+                final var query = entityManager.createQuery(queryString, entityType);
+                query.setParameter("valueGroup", valueGroup);
+                resultList.addAll(getMutableResultList(query));
+            }
+            return resultList;
+        } catch (NoSuchFieldException e) {
+            throw new IllegalArgumentException("Entity of type " + entityType.getSimpleName() + " doesn't contain a property with name " + propertyName, e);
         }
-        return resultList;
     }
 
     @Override
