@@ -1,16 +1,18 @@
 package com.github.cc007.headsplugin.business.services;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.bukkit.Bukkit;
 import org.bukkit.profile.PlayerProfile;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,6 +26,12 @@ import java.util.Optional;
 @Log4j2
 public class OwnerProfileService {
 
+    @Data
+    @AllArgsConstructor
+    static class Ref<T> {
+        private T value;
+    }
+
     /**
      * Create a head owner's {@link PlayerProfile} based on a given head
      *
@@ -32,9 +40,40 @@ public class OwnerProfileService {
      */
     public PlayerProfile createOwnerProfile(@NonNull Head head) {
         final var url = parseHeadValue(head.getValue());
-        final var ownerProfile = Bukkit.createPlayerProfile(head.getHeadOwner(), head.getName());
+        final var name = new Ref<String>(head.getName());
+        fixNameIfNecessary(name);
+        final var ownerProfile = Bukkit.createPlayerProfile(head.getHeadOwner(), name.getValue());
         url.ifPresent(skinUrl -> ownerProfile.getTextures().setSkin(skinUrl));
         return ownerProfile;
+    }
+
+    /**
+     * Fix the name of the head owner when the server version is 1.21 or higher.
+     * Since that version, the name can't contain spaces and can't be longer than 16 characters.
+     *
+     * @param nameRef a reference to the name that needs to be fixed
+     */
+    private void fixNameIfNecessary(@NonNull Ref<String> nameRef) {
+        Optional.of(Bukkit.getBukkitVersion())
+                .map(bukkitVersion -> bukkitVersion.split("-"))
+                .filter(parts -> parts.length >= 1)
+                .map(parts -> parts[0])
+                .map(mcVersion -> mcVersion.split("\\."))
+                .filter(parts -> parts.length >= 2)
+                .map(parts -> parts[1])
+                .filter(part -> part.matches("\\d+"))
+                .map(Integer::parseInt)
+                .filter(minorVersion -> minorVersion >= 21)
+                .ifPresent(ignored -> fixName(nameRef));
+    }
+
+    private void fixName(@NotNull Ref<String> nameRef) {
+        final var rawName = nameRef.getValue();
+        final var nameValidChars = rawName
+                .replaceAll("\\s", "_")
+                .replaceAll("[^!-~]", "*");
+        final var nameValidLength = nameValidChars.substring(0, Math.min(nameValidChars.length(), 16));
+        nameRef.setValue(nameValidLength);
     }
 
     @NonNull
