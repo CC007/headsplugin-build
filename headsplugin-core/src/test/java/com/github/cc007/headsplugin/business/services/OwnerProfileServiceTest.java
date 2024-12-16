@@ -1,6 +1,7 @@
 package com.github.cc007.headsplugin.business.services;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
+import com.github.cc007.headsplugin.business.model.McVersion;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
@@ -18,6 +19,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -41,12 +43,17 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OwnerProfileServiceTest {
 
-    OwnerProfileService ownerProfileService = new OwnerProfileService();
 
     @Mock(lenient = true)
     private Appender appenderMock;
 
     private Appender realAppender;
+
+    @Mock
+    private McVersion mcVersion;
+
+    @InjectMocks
+    OwnerProfileService ownerProfileService;
 
     @Captor
     private ArgumentCaptor<LogEvent> captorLoggingEvent;
@@ -89,7 +96,7 @@ class OwnerProfileServiceTest {
             "test name with spaces",
             "tést\tnÃme",
     })
-    void createOwnerProfileVersion1_20_2(String headName) {
+    void createOwnerProfileMinorVersion20(String headName) {
         // prepare
         try (
                 MockedStatic<Bukkit> bukkitMock = Mockito.mockStatic(Bukkit.class);
@@ -107,8 +114,8 @@ class OwnerProfileServiceTest {
             final var ownerProfileMock = mock(PlayerProfile.class);
             final var ownerTexturesMock = mock(PlayerTextures.class);
 
-            bukkitMock.when(Bukkit::getBukkitVersion)
-                    .thenReturn("1.20.2-R0.1-SNAPSHOT");
+            doReturn(20)
+                    .when(mcVersion).minor();
             bukkitMock.when(() -> Bukkit.createPlayerProfile(headHeadOwner, headName))
                     .thenReturn(ownerProfileMock);
             doReturn(ownerTexturesMock)
@@ -140,7 +147,7 @@ class OwnerProfileServiceTest {
             "test name with spaces, test_name_with_s",
             "tést\tnÃme, t*st_n*me",
     })
-    void createOwnerProfileVersion1_21(String headName, String fixedHeadName) {
+    void createOwnerProfileMinorVersion21(String headName, String fixedHeadName) {
         // prepare
         try (
                 MockedStatic<Bukkit> bukkitMock = Mockito.mockStatic(Bukkit.class);
@@ -158,59 +165,8 @@ class OwnerProfileServiceTest {
             final var ownerProfileMock = mock(PlayerProfile.class);
             final var ownerTexturesMock = mock(PlayerTextures.class);
 
-            bukkitMock.when(Bukkit::getBukkitVersion)
-                    .thenReturn("1.21-R0.1-SNAPSHOT");
-            bukkitMock.when(() -> Bukkit.createPlayerProfile(headHeadOwner, fixedHeadName))
-                    .thenReturn(ownerProfileMock);
-            doReturn(ownerTexturesMock)
-                    .when(ownerProfileMock).getTextures();
-
-            // execute
-            final var actual = ownerProfileService.createOwnerProfile(head);
-
-            // verify
-            verify(ownerTexturesMock).setSkin(captorUrl.capture());
-            verifyNoMoreInteractions(ownerProfileMock, ownerTexturesMock);
-            assertThat(actual, is(ownerProfileMock));
-            assertThat(captorUrl.getValue(), hasToString(skinUrl));
-        }
-    }
-
-    /**
-     * Test if a normal OwnerProfile was created with {@link Bukkit#createPlayerProfile(UUID, String)},
-     * even with a long name when the version is 1.21.
-     * The name should now be truncated to 16 characters.
-     * <p>
-     * using the base64 encoded version of <code>{"textures":{"SKIN":{"url":"http://textures.minecraft.net/texture/74e9c6e98582ffd8ff8feb3322cd1849c43fb16b158abb11ca7b42eda7743eb"}}}</code>
-     */
-    @ParameterizedTest
-    @CsvSource({
-            "testName, testName",
-            "test!name, test!name",
-            "aVeryVeryLongTestName, aVeryVeryLongTes",
-            "test name with spaces, test_name_with_s",
-            "tést\tnÃme, t*st_n*me",
-    })
-    void createOwnerProfileVersion1_21_3(String headName, String fixedHeadName) {
-        // prepare
-        try (
-                MockedStatic<Bukkit> bukkitMock = Mockito.mockStatic(Bukkit.class);
-        ) {
-            final var headHeadOwner = UUID.randomUUID();
-            final var headValue = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzRlOWM2ZTk4NTgyZmZkOGZmOGZlYjMzMjJjZDE4NDljNDNmYjE2YjE1OGFiYjExY2E3YjQyZWRhNzc0M2ViIn19fQ";
-            final var skinUrl = "http://textures.minecraft.net/texture/74e9c6e98582ffd8ff8feb3322cd1849c43fb16b158abb11ca7b42eda7743eb";
-
-            final var head = Head.builder()
-                    .name(headName)
-                    .headOwner(headHeadOwner)
-                    .value(headValue)
-                    .build();
-
-            final var ownerProfileMock = mock(PlayerProfile.class);
-            final var ownerTexturesMock = mock(PlayerTextures.class);
-
-            bukkitMock.when(Bukkit::getBukkitVersion)
-                    .thenReturn("1.21.3-R0.1-SNAPSHOT");
+            doReturn(21)
+                    .when(mcVersion).minor();
             bukkitMock.when(() -> Bukkit.createPlayerProfile(headHeadOwner, fixedHeadName))
                     .thenReturn(ownerProfileMock);
             doReturn(ownerTexturesMock)
@@ -250,8 +206,8 @@ class OwnerProfileServiceTest {
 
             final var ownerProfileMock = mock(PlayerProfile.class);
 
-            bukkitMock.when(Bukkit::getBukkitVersion)
-                    .thenReturn("1.20.2-R0.1-SNAPSHOT");
+            doReturn(20)
+                    .when(mcVersion).minor();
             bukkitMock.when(() -> Bukkit.createPlayerProfile(headHeadOwner, headName))
                     .thenReturn(ownerProfileMock);
 
@@ -292,8 +248,8 @@ class OwnerProfileServiceTest {
 
             final var ownerProfileMock = mock(PlayerProfile.class);
 
-            bukkitMock.when(Bukkit::getBukkitVersion)
-                    .thenReturn("1.20.2-R0.1-SNAPSHOT");
+            doReturn(20)
+                    .when(mcVersion).minor();
             bukkitMock.when(() -> Bukkit.createPlayerProfile(headHeadOwner, headName))
                     .thenReturn(ownerProfileMock);
 
@@ -333,8 +289,8 @@ class OwnerProfileServiceTest {
 
             final var ownerProfileMock = mock(PlayerProfile.class);
 
-            bukkitMock.when(Bukkit::getBukkitVersion)
-                    .thenReturn("1.20.2-R0.1-SNAPSHOT");
+            doReturn(20)
+                    .when(mcVersion).minor();
             bukkitMock.when(() -> Bukkit.createPlayerProfile(headHeadOwner, headName))
                     .thenReturn(ownerProfileMock);
 
@@ -374,8 +330,8 @@ class OwnerProfileServiceTest {
 
             final var ownerProfileMock = mock(PlayerProfile.class);
 
-            bukkitMock.when(Bukkit::getBukkitVersion)
-                    .thenReturn("1.20.2-R0.1-SNAPSHOT");
+            doReturn(20)
+                    .when(mcVersion).minor();
             bukkitMock.when(() -> Bukkit.createPlayerProfile(headHeadOwner, headName))
                     .thenReturn(ownerProfileMock);
 
@@ -415,8 +371,8 @@ class OwnerProfileServiceTest {
 
             final var ownerProfileMock = mock(PlayerProfile.class);
 
-            bukkitMock.when(Bukkit::getBukkitVersion)
-                    .thenReturn("1.20.2-R0.1-SNAPSHOT");
+            doReturn(20)
+                    .when(mcVersion).minor();
             bukkitMock.when(() -> Bukkit.createPlayerProfile(headHeadOwner, headName))
                     .thenReturn(ownerProfileMock);
 
@@ -456,8 +412,8 @@ class OwnerProfileServiceTest {
 
             final var ownerProfileMock = mock(PlayerProfile.class);
 
-            bukkitMock.when(Bukkit::getBukkitVersion)
-                    .thenReturn("1.20.2-R0.1-SNAPSHOT");
+            doReturn(20)
+                    .when(mcVersion).minor();
             bukkitMock.when(() -> Bukkit.createPlayerProfile(headHeadOwner, headName))
                     .thenReturn(ownerProfileMock);
 
@@ -497,8 +453,8 @@ class OwnerProfileServiceTest {
 
             final var ownerProfileMock = mock(PlayerProfile.class);
 
-            bukkitMock.when(Bukkit::getBukkitVersion)
-                    .thenReturn("1.20.2-R0.1-SNAPSHOT");
+            doReturn(20)
+                    .when(mcVersion).minor();
             bukkitMock.when(() -> Bukkit.createPlayerProfile(headHeadOwner, headName))
                     .thenReturn(ownerProfileMock);
 
@@ -539,8 +495,8 @@ class OwnerProfileServiceTest {
 
             final var ownerProfileMock = mock(PlayerProfile.class);
 
-            bukkitMock.when(Bukkit::getBukkitVersion)
-                    .thenReturn("1.20.2-R0.1-SNAPSHOT");
+            doReturn(20)
+                    .when(mcVersion).minor();
             bukkitMock.when(() -> Bukkit.createPlayerProfile(headHeadOwner, headName))
                     .thenReturn(ownerProfileMock);
 
@@ -583,8 +539,8 @@ class OwnerProfileServiceTest {
 
             final var ownerProfileMock = mock(PlayerProfile.class);
 
-            bukkitMock.when(Bukkit::getBukkitVersion)
-                    .thenReturn("1.20.2-R0.1-SNAPSHOT");
+            doReturn(20)
+                    .when(mcVersion).minor();
             bukkitMock.when(() -> Bukkit.createPlayerProfile(headHeadOwner, headName))
                     .thenReturn(ownerProfileMock);
 
@@ -625,8 +581,8 @@ class OwnerProfileServiceTest {
 
             final var ownerProfileMock = mock(PlayerProfile.class);
 
-            bukkitMock.when(Bukkit::getBukkitVersion)
-                    .thenReturn("1.20.2-R0.1-SNAPSHOT");
+            doReturn(20)
+                    .when(mcVersion).minor();
             bukkitMock.when(() -> Bukkit.createPlayerProfile(headHeadOwner, headName))
                     .thenReturn(ownerProfileMock);
 
