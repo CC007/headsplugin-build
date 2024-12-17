@@ -1,13 +1,14 @@
 package com.github.cc007.headsplugin.business.services;
 
 import com.github.cc007.headsplugin.api.business.domain.Head;
-
+import com.github.cc007.headsplugin.business.model.McVersion;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.bukkit.Bukkit;
 import org.bukkit.profile.PlayerProfile;
@@ -22,19 +23,35 @@ import java.util.Optional;
  * Class for decoding and traversing the head value
  */
 @Log4j2
+@RequiredArgsConstructor
 public class OwnerProfileService {
+
+    private final McVersion mcVersion;
 
     /**
      * Create a head owner's {@link PlayerProfile} based on a given head
+     * <br>
+     * Fix the name of the head owner when the server version is 1.21 or higher.
+     * Since that version, the name can't contain characters of ASCII code lower than 33
+     * or higher than 126 and can't be longer than 16 characters.
      *
      * @param head the head with the name, uuid and texture link
      * @return the head owner's player profile
      */
     public PlayerProfile createOwnerProfile(@NonNull Head head) {
         final var url = parseHeadValue(head.getValue());
-        final var ownerProfile = Bukkit.createPlayerProfile(head.getHeadOwner(), head.getName());
+        final var name = mcVersion.minor() >= 21 ? fixName(head.getName()) : head.getName();
+        final var ownerProfile = Bukkit.createPlayerProfile(head.getHeadOwner(), name);
         url.ifPresent(skinUrl -> ownerProfile.getTextures().setSkin(skinUrl));
         return ownerProfile;
+    }
+
+    @NonNull
+    private String fixName(@NonNull String rawName) {
+        final var nameValidChars = rawName
+                .replaceAll("\\s", "_")
+                .replaceAll("[^!-~]", "*");
+        return nameValidChars.substring(0, Math.min(nameValidChars.length(), 16));
     }
 
     @NonNull

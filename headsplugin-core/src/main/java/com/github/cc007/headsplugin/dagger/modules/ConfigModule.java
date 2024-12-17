@@ -1,11 +1,13 @@
 package com.github.cc007.headsplugin.dagger.modules;
 
 import com.github.cc007.headsplugin.api.HeadsPluginApi;
+import com.github.cc007.headsplugin.business.model.McVersion;
 import com.github.cc007.headsplugin.config.properties.CategoriesProperties;
 import com.github.cc007.headsplugin.config.properties.ConfigProperties;
 import com.github.cc007.headsplugin.config.properties.HeadspluginProperties;
 import dagger.Module;
 import dagger.Provides;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -33,6 +35,31 @@ public abstract class ConfigModule {
             throw new IllegalStateException("HeadsPluginAPI has not been enabled yet");
         }
         return headsPluginOptional.get();
+    }
+
+    @Provides
+    @Singleton
+    static McVersion provideMcVersion() {
+        final var mcVersionOptional = Optional.of(Bukkit.getBukkitVersion())
+                .map(bukkitVersion -> bukkitVersion.split("-"))
+                .filter(parts -> parts.length >= 1)
+                .map(parts -> parts[0])
+                .map(mcVersion -> mcVersion.split("\\."))
+                .filter(parts -> parts.length >= 2)
+                .map(parts -> Arrays.stream(parts)
+                        .filter(part -> part.matches("\\d+"))
+                        .map(Integer::parseInt)
+                        .toArray(Integer[]::new)
+                )
+                .map(parts -> switch (parts.length) {
+                    case 2 -> new McVersion(parts[0], parts[1], 0);
+                    default -> new McVersion(parts[0], parts[1], parts[2]);
+                });
+
+        if (mcVersionOptional.isEmpty()) {
+            throw new IllegalStateException("HeadsPluginAPI can't determine the minecraft version");
+        }
+        return mcVersionOptional.get();
     }
 
     @Provides
