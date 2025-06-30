@@ -40,10 +40,15 @@ public class OwnerProfileService {
      */
     public PlayerProfile createOwnerProfile(@NonNull Head head) {
         final var url = parseHeadValue(head.getValue());
-        final var name = mcVersion.minor() >= 21 ? fixName(head.getName()) : head.getName();
+        final var name = isNameFixNeeded() ? fixName(head.getName()) : head.getName();
         final var ownerProfile = Bukkit.createPlayerProfile(head.getHeadOwner(), name);
         url.ifPresent(skinUrl -> ownerProfile.getTextures().setSkin(skinUrl));
         return ownerProfile;
+    }
+
+    private boolean isNameFixNeeded() {
+        return mcVersion.minor() >= 21 ||
+               (mcVersion.minor() == 20 && mcVersion.patch() >= 6);
     }
 
     @NonNull
