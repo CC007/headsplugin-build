@@ -20,11 +20,11 @@
         <spring-boot.version>2.5.0</spring-boot.version>
         <spring-cloud.version>2020.0.3</spring-cloud.version>
         <switchyard.version>2.1.0.Final</switchyard.version>
-        <dagger2.version>2.40.5</dagger2.version>
-        <log4j.version>2.17.1</log4j.version>
+        <dagger2.version>2.57.2</dagger2.version>
+        <log4j.version>2.25.3</log4j.version>
         <openjpa.version>3.2.0</openjpa.version>
-        <jpa.version>1.0-SNAPSHOT</jpa.version>
-        <feign.version>11.2</feign.version>
+        <feign.version>13.6</feign.version>
+        <lombok.version>1.18.42</lombok.version>
     </properties>
 
     <repositories>
@@ -58,14 +58,14 @@
         <!-- repo for Paper -->
         <repository>
             <id>papermc</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
 
         <!-- repo for headsplugin-api -->
-        <repository>
-            <id>hpa</id>
-            <url>https://maven.pkg.github.com/CC007/HeadsPluginAPI</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>cqit-mvn-public</id>-->
+<!--            <url>https://nexus.cqit.nl/repository/maven-public</url>-->
+<!--        </repository>-->
     </repositories>
 
     <dependencyManagement>
@@ -74,7 +74,7 @@
             <dependency>
                 <groupId>com.github.cc007</groupId>
                 <artifactId>headsplugin-api</artifactId>
-                <version>3.3.0</version>
+                <version>3.5.0</version>
             </dependency>
 
             <!-- Minecraft API -->
@@ -139,61 +139,61 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.14.0</version>
+                <version>2.21.0</version>
             </dependency>
 
             <!-- Commons collections -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
-                <version>4.3</version>
+                <version>4.5.0</version>
             </dependency>
 
             <!-- Commons text -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
-                <version>1.10.0</version>
+                <version>1.15.0</version>
             </dependency>
 
             <!-- Apache HTTP Components -->
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.5.13</version>
+                <version>4.5.14</version>
             </dependency>
 
             <!-- Lombok -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.20</version>
+                <version>${lombok.version}</version>
             </dependency>
 
             <!-- JPA -->
             <dependency>
                 <groupId>jakarta.persistence</groupId>
                 <artifactId>jakarta.persistence-api</artifactId>
-                <version>2.2.3</version>
+                <version>3.2.0</version>
             </dependency>
 
             <!-- JSoup -->
             <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
-                <version>1.15.3</version>
+                <version>1.21.2</version>
             </dependency>
 
             <!-- Caching -->
             <dependency>
                 <groupId>javax.cache</groupId>
                 <artifactId>cache-api</artifactId>
-                <version>1.1.0</version>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
-                <version>3.6.2</version>
+                <version>3.11.1</version>
             </dependency>
 
             <!-- Database -->
@@ -205,7 +205,7 @@
             <dependency>
                 <groupId>org.hsqldb</groupId>
                 <artifactId>hsqldb</artifactId>
-                <version>2.7.1</version>
+                <version>2.7.4</version>
                 <scope>runtime</scope>
             </dependency>
 
@@ -213,7 +213,7 @@
             <dependency>
                 <groupId>org.bstats</groupId>
                 <artifactId>bstats-bukkit</artifactId>
-                <version>1.7</version>
+                <version>3.1.0</version>
             </dependency>
 
             <!-- SwitchYard -->
@@ -234,20 +234,20 @@
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
-                <version>2.0</version>
+                <version>2.5</version>
             </dependency>
 
             <!-- test dependencies -->
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
-                <version>5.7.2</version>
+                <version>5.13.4</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest</artifactId>
-                <version>2.2</version>
+                <version>3.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -265,7 +265,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>3.11.2</version>
+                <version>5.21.0</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -277,7 +277,11 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.2</version>
+                    <version>3.5.4</version>
+
+                    <configuration>
+                        <argLine>-javaagent:${settings.localRepository}/net/bytebuddy/byte-buddy-agent/1.17.7/byte-buddy-agent-1.17.7.jar</argLine>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
