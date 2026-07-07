@@ -47,7 +47,7 @@ public class OwnerProfileService {
     }
 
     private boolean isNameFixNeeded() {
-        return mcVersion.minor() >= 21 ||
+        return mcVersion.major() > 1 || mcVersion.minor() >= 21 ||
                (mcVersion.minor() == 20 && mcVersion.patch() >= 6);
     }
 
