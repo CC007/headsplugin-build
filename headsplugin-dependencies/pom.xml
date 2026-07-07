@@ -62,10 +62,10 @@
         </repository>
 
         <!-- repo for headsplugin-api -->
-        <repository>
-            <id>hpa</id>
-            <url>https://maven.pkg.github.com/CC007/HeadsPluginAPI</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>cqit-mvn-public</id>-->
+<!--            <url>https://nexus.cqit.nl/repository/maven-public</url>-->
+<!--        </repository>-->
     </repositories>
 
     <dependencyManagement>
@@ -74,7 +74,7 @@
             <dependency>
                 <groupId>com.github.cc007</groupId>
                 <artifactId>headsplugin-api</artifactId>
-                <version>3.3.0</version>
+                <version>3.5.0</version>
             </dependency>
 
             <!-- Minecraft API -->
